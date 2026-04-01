@@ -20,7 +20,7 @@ const navItems = [
   { href: "/donor", label: "Donor Portal", icon: User },
   { href: "/hospital", label: "Hospital Dashboard", icon: Building2 },
   { href: "/admin", label: "Admin Panel", icon: LayoutDashboard },
-  { href: "/chat", label: "AI Assistant", icon: MessageCircle },
+
 ]
 
 export function Navigation() {
