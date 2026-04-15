@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify
 from ultralytics import YOLO
 import os
-import uuid
+
 app = Flask(__name__)
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -33,9 +33,6 @@ def check_health_status(counts):
         reasons.append("Low Platelets count")
 
     return status, reasons
-@app.route('/')
-def home():
-    return "Blood Analysis API is running 🚀"
 
 @app.route('/analyze-blood', methods=['POST'])
 def analyze_blood():
@@ -43,12 +40,11 @@ def analyze_blood():
         return jsonify({'error': 'No image provided'}), 400
     
     file = request.files['image']
-    filename = str(uuid.uuid4()) + ".jpg"
-    img_path = os.path.join(upload_folder, filename)
+    img_path = os.path.join(upload_folder, file.filename)
     file.save(img_path)
 
     # تشغيل YOLOv8 للتوقع
-    results = model(img_path)
+    results = model.predict(source=img_path, conf=0.25)
     
     counts = {"RBC": 0, "WBC": 0, "Platelets": 0}
     class_names = {0: 'RBC', 1: 'WBC', 2: 'Platelets'}
@@ -72,4 +68,4 @@ def analyze_blood():
     })
 
 if __name__ == '__main__':
-   app.run(host='0.0.0.0', port=5000, debug=True)
+    app.run(port=5000, debug=True)
