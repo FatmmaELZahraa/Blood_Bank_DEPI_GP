@@ -1,3 +1,4 @@
+import ProfilePage from "@/components/profile" 
 import { Navigation } from "@/components/navigation"
 import { HeroSection } from "@/components/hero-section"
 import { FeaturesGrid } from "@/components/features-grid"
@@ -10,6 +11,7 @@ export default function HomePage() {
     <div className="min-h-screen bg-background">
       <Navigation />
       <main>
+        <ProfilePage/>
         <HeroSection />
         <StatsSection />
         <FeaturesGrid />
