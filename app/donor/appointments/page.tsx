@@ -153,20 +153,7 @@ export default function AppointmentsPage() {
             <div className="space-y-6">
               {/* Step 1: Select Center */}
               <div>
-                <h3 className="mb-4 flex items-center gap-2 font-semibold text-foreground">
-                  <span className="flex h-6 w-6 items-center justify-center rounded-full bg-primary text-sm text-primary-foreground">
-                    1
-                  </span>
-                  Select Blood Center
-                </h3>
-                
-                {/* Map Placeholder */}
-                <div className="mb-4 flex h-48 items-center justify-center rounded-lg bg-muted">
-                  <div className="text-center">
-                    <Navigation className="mx-auto mb-2 h-8 w-8 text-muted-foreground" />
-                    <p className="text-sm text-muted-foreground">Interactive map showing nearby centers</p>
-                  </div>
-                </div>
+           
 
                 <RadioGroup
                   value={selectedCenter?.toString()}
