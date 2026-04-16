@@ -70,88 +70,12 @@ export default function AdminSettingsPage() {
               />
             </div>
           </div>
-          <div className="space-y-2">
-            <Label htmlFor="timezone">Timezone</Label>
-            <Select 
-              value={settings.timezone} 
-              onValueChange={(value) => setSettings({ ...settings, timezone: value })}
-            >
-              <SelectTrigger>
-                <Globe className="mr-2 h-4 w-4" />
-                <SelectValue placeholder="Select timezone" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="America/New_York">Eastern Time (ET)</SelectItem>
-                <SelectItem value="America/Chicago">Central Time (CT)</SelectItem>
-                <SelectItem value="America/Denver">Mountain Time (MT)</SelectItem>
-                <SelectItem value="America/Los_Angeles">Pacific Time (PT)</SelectItem>
-                <SelectItem value="UTC">UTC</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
+      
         </CardContent>
       </Card>
 
       {/* Notification Settings */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Bell className="h-5 w-5 text-primary" />
-            Notification Settings
-          </CardTitle>
-          <CardDescription>Manage system notifications and alerts</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-6">
-          <div className="flex items-center justify-between">
-            <div className="space-y-0.5">
-              <Label>SOS Request Notifications</Label>
-              <p className="text-sm text-muted-foreground">
-                Receive alerts when hospitals send SOS requests
-              </p>
-            </div>
-            <Switch
-              checked={settings.sosNotifications}
-              onCheckedChange={(checked) => setSettings({ ...settings, sosNotifications: checked })}
-            />
-          </div>
-          <div className="flex items-center justify-between">
-            <div className="space-y-0.5">
-              <Label>Low Stock Alerts</Label>
-              <p className="text-sm text-muted-foreground">
-                Get notified when blood inventory falls below threshold
-              </p>
-            </div>
-            <Switch
-              checked={settings.lowStockAlerts}
-              onCheckedChange={(checked) => setSettings({ ...settings, lowStockAlerts: checked })}
-            />
-          </div>
-          <div className="flex items-center justify-between">
-            <div className="space-y-0.5">
-              <Label>New Donor Notifications</Label>
-              <p className="text-sm text-muted-foreground">
-                Receive alerts when new donors register
-              </p>
-            </div>
-            <Switch
-              checked={settings.newDonorNotifications}
-              onCheckedChange={(checked) => setSettings({ ...settings, newDonorNotifications: checked })}
-            />
-          </div>
-          <div className="flex items-center justify-between">
-            <div className="space-y-0.5">
-              <Label>Weekly Reports</Label>
-              <p className="text-sm text-muted-foreground">
-                Receive automated weekly summary reports
-              </p>
-            </div>
-            <Switch
-              checked={settings.weeklyReports}
-              onCheckedChange={(checked) => setSettings({ ...settings, weeklyReports: checked })}
-            />
-          </div>
-        </CardContent>
-      </Card>
+    
 
       {/* Inventory Settings */}
       <Card>
@@ -204,36 +128,7 @@ export default function AdminSettingsPage() {
       </Card>
 
       {/* System Settings */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Shield className="h-5 w-5 text-primary" />
-            System Settings
-          </CardTitle>
-          <CardDescription>Advanced system configuration</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-6">
-          <div className="flex items-center justify-between">
-            <div className="space-y-0.5">
-              <Label className="text-destructive">Maintenance Mode</Label>
-              <p className="text-sm text-muted-foreground">
-                Temporarily disable public access for maintenance
-              </p>
-            </div>
-            <Switch
-              checked={settings.maintenanceMode}
-              onCheckedChange={(checked) => setSettings({ ...settings, maintenanceMode: checked })}
-            />
-          </div>
-          {settings.maintenanceMode && (
-            <div className="rounded-lg border border-destructive/50 bg-destructive/10 p-4">
-              <p className="text-sm text-destructive">
-                Warning: Maintenance mode is enabled. Public users cannot access the system.
-              </p>
-            </div>
-          )}
-        </CardContent>
-      </Card>
+     
 
       {/* Save Button */}
       <div className="flex justify-end">

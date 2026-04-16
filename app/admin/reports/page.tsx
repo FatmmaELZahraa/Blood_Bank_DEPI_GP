@@ -303,38 +303,7 @@ export default function AdminReportsPage() {
       </Card>
 
       {/* Available Reports */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <FileText className="h-5 w-5 text-primary" />
-            Available Reports
-          </CardTitle>
-          <CardDescription>Generate and download detailed reports</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {reportTypes.map((report) => (
-              <div
-                key={report.id}
-                className="flex items-center justify-between rounded-lg border border-border p-4"
-              >
-                <div>
-                  <p className="font-medium text-foreground">{report.name}</p>
-                  <div className="mt-1 flex items-center gap-2">
-                    <Badge variant="outline">{report.type}</Badge>
-                    <span className="text-xs text-muted-foreground">
-                      Last: {new Date(report.lastGenerated).toLocaleDateString()}
-                    </span>
-                  </div>
-                </div>
-                <Button variant="ghost" size="icon">
-                  <Download className="h-4 w-4" />
-                </Button>
-              </div>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
+ 
     </div>
   )
 }
