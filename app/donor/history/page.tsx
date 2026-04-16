@@ -224,36 +224,7 @@ export default function DonationHistoryPage() {
         </CardContent>
       </Card>
 
-      {/* Donation Certificate */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Donation Certificates</CardTitle>
-          <CardDescription>Download your official donation certificates</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {donationHistory.slice(0, 3).map((donation) => (
-              <div
-                key={donation.id}
-                className="flex items-center justify-between rounded-lg border border-border p-4"
-              >
-                <div>
-                  <p className="font-medium text-foreground">
-                    {new Date(donation.date).toLocaleDateString("en-US", {
-                      year: "numeric",
-                      month: "short"
-                    })}
-                  </p>
-                  <p className="text-sm text-muted-foreground">{donation.type}</p>
-                </div>
-                <Button variant="ghost" size="sm">
-                  <Download className="h-4 w-4" />
-                </Button>
-              </div>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
+   
     </div>
   )
 }
