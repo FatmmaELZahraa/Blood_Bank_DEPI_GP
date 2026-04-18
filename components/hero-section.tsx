@@ -33,19 +33,40 @@ export function HeroSection() {
 
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row gap-4">
-            <Button asChild size="lg" className="gap-2">
-              <Link href="/donor">
-                <Droplet className="h-5 w-5" />
-                Become a Donor
-              </Link>
-            </Button>
-            <Button asChild variant="outline" size="lg" className="gap-2">
-              <Link href="/hospital">
-                Request Blood
-                <ArrowRight className="h-4 w-4" />
-              </Link>
-            </Button>
-          </div>
+
+  {/* Become Donor */}
+  <Button
+  asChild
+  size="lg"
+  className="gap-2 bg-red-600 hover:bg-red-700 text-white shadow-md transition-all duration-300 hover:scale-105"
+>
+  <Link href="/donor">
+    <Droplet className="h-5 w-5" />
+    Become a Donor
+  </Link>
+</Button>
+
+  {/* Request Blood */}
+  <Button asChild variant="outline" size="lg" className="gap-2">
+    <Link href="/hospital">
+      Request Blood
+      <ArrowRight className="h-4 w-4" />
+    </Link>
+  </Button>
+
+  {/* 🔥 Eligibility Button (Updated) */}
+  <Button
+    asChild
+    size="lg"
+    className="gap-2 bg-red-600 hover:bg-red-700 text-white shadow-md transition-all duration-300 hover:scale-105"
+  >
+    <Link href="/hospital/donor-eligibility">
+      <Heart className="h-5 w-5" />
+      Check Eligibility
+    </Link>
+  </Button>
+
+</div>
 
           {/* Trust indicators */}
           <div className="flex flex-wrap items-center justify-center gap-8 mt-16 pt-8 border-t border-border">
