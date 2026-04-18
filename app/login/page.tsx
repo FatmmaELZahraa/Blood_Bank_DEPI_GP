@@ -1,13 +1,20 @@
 "use client";
 import { useState } from "react";
+import { useRouter } from "next/navigation"; // 1. استيراد useRouter
+import Link from "next/link";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const router = useRouter(); // 2. تهيئة الراوتر
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // هنا تضع منطق التحقق من البيانات (مثل إرسالها للـ API)
     console.log(email, password);
+
+    router.push(""); 
   };
 
   return (
@@ -44,6 +51,12 @@ export default function LoginPage() {
         >
           Login
         </button>
+        <p className="text-sm text-center mt-4 text-gray-500">
+          Don't have an account?{" "}
+          <Link href="/signup" className="text-[#3DBBC7] hover:underline">
+            Sign Up
+          </Link>
+        </p>
       </form>
     </div>
   );

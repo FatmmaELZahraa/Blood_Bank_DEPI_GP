@@ -19,7 +19,7 @@ import Link from "next/link"
 
 // Mock donor data
 const donorData = {
-  name: "John Doe",
+  name: "Fatma ",
   bloodType: "O+",
   totalDonations: 12,
   lastDonation: "2026-01-15",
