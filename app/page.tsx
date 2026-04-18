@@ -16,9 +16,9 @@ import { useState } from "react";
 export default function HomePage() {
   const [isLoggedIn, setIsLoggedIn] = useState(false); 
 
-  if (!isLoggedIn) {
-    return <LoginPage />;
-  }
+  // if (!isLoggedIn) {
+  //   return <LoginPage />;
+  // }
 
   return (
     <div className="min-h-screen bg-background">
