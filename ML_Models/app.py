@@ -2,8 +2,10 @@
 from flask import Flask, request, jsonify
 from ultralytics import YOLO
 import os
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app)
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 model_path = os.path.join(BASE_DIR, 'models', 'best.pt')
@@ -13,10 +15,7 @@ upload_folder = os.path.join(BASE_DIR, 'uploads')
 os.makedirs(upload_folder, exist_ok=True)
 
 def check_health_status(counts):
-    """
-    ملاحظة: هذه النسب تقريبية لأغراض المشروع البرمجي فقط.
-    في الواقع، تعتمد النسب على حجم العينة المجهرية.
-    """
+
     status = "Normal"
     reasons = []
 

@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\Blood_Bank\\Blood_Bank\\Blood_Bank.csproj": {}
+    "C:\\Users\\pc2\\Downloads\\Depi_Gp\\Blood_Bank_DEPI_GP\\Blood_Bank\\Blood_Bank\\Blood_Bank.csproj": {}
   },
   "projects": {
-    "D:\\Blood_Bank\\Blood_Bank\\Blood_Bank.csproj": {
+    "C:\\Users\\pc2\\Downloads\\Depi_Gp\\Blood_Bank_DEPI_GP\\Blood_Bank\\Blood_Bank\\Blood_Bank.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Blood_Bank\\Blood_Bank\\Blood_Bank.csproj",
+        "projectUniqueName": "C:\\Users\\pc2\\Downloads\\Depi_Gp\\Blood_Bank_DEPI_GP\\Blood_Bank\\Blood_Bank\\Blood_Bank.csproj",
         "projectName": "Blood_Bank",
-        "projectPath": "D:\\Blood_Bank\\Blood_Bank\\Blood_Bank.csproj",
+        "projectPath": "C:\\Users\\pc2\\Downloads\\Depi_Gp\\Blood_Bank_DEPI_GP\\Blood_Bank\\Blood_Bank\\Blood_Bank.csproj",
         "packagesPath": "C:\\Users\\pc2\\.nuget\\packages\\",
-        "outputPath": "D:\\Blood_Bank\\Blood_Bank\\obj\\",
+        "outputPath": "C:\\Users\\pc2\\Downloads\\Depi_Gp\\Blood_Bank_DEPI_GP\\Blood_Bank\\Blood_Bank\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
