@@ -1,190 +1,546 @@
+// "use client"
+
+// import { useState } from "react"
+// import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
+// import { Input } from "@/components/ui/input"
+// import { Button } from "@/components/ui/button"
+// import { Label } from "@/components/ui/label"
+// import { Badge } from "@/components/ui/badge"
+// import { 
+//   Upload, FileImage, Activity, AlertCircle, CheckCircle2, 
+//   HeartPulse, Weight, User, ArrowRightLeft 
+// } from "lucide-react"
+
+// interface AnalysisResult {
+//   status: string;
+//   analysis: {
+//     RBC: number;
+//     WBC: number;
+//     Platelets: number;
+//   };
+//   overall_health: string;
+//   observations: string[];
+//   message: string;
+// }
+
+// export default function BloodServicesPage() {
+//   // --- States لمكون تحليل الصور ---
+//   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+//   const [analysisLoading, setAnalysisLoading] = useState(false);
+//   const [analysisResult, setAnalysisResult] = useState<AnalysisResult | null>(null);
+//   const [analysisError, setAnalysisError] = useState<string | null>(null);
+
+//   // --- States لمكون أهلية المتبرع ---
+//   const [age, setAge] = useState("")
+//   const [weight, setWeight] = useState("")
+//   const [chronic, setChronic] = useState(false)
+//   const [eligibilityResult, setEligibilityResult] = useState<null | { status: string; message: string }>(null)
+
+//   // --- وظيفة تحليل الصورة ---
+//   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+//     if (e.target.files && e.target.files[0]) {
+//       setSelectedFile(e.target.files[0]);
+//       setAnalysisError(null);
+//     }
+//   };
+
+//   const uploadAndAnalyze = async () => {
+//     if (!selectedFile) {
+//       setAnalysisError("Please select an image first.");
+//       return;
+//     }
+//     setAnalysisLoading(true);
+//     setAnalysisError(null);
+//     const formData = new FormData();
+//     formData.append('image', selectedFile);
+
+//     try {
+//       const response = await fetch('http://127.0.0.1:5000/analyze-blood', {
+//         method: 'POST',
+//         body: formData,
+//       });
+//       if (!response.ok) throw new Error("Failed to analyze image");
+//       const data: AnalysisResult = await response.json();
+//       setAnalysisResult(data);
+//     } catch (err) {
+//       setAnalysisError("Could not connect to the server. Make sure Flask is running.");
+//     } finally {
+//       setAnalysisLoading(false);
+//     }
+//   };
+
+//   const checkEligibility = () => {
+//     if (!age || !weight) {
+//       setEligibilityResult({ status: "Rejected", message: "Please fill in all fields." })
+//       return
+//     }
+//     if (parseInt(age) < 18) {
+//       setEligibilityResult({ status: "Rejected", message: "Age must be at least 18." })
+//       return
+//     }
+//     if (parseInt(weight) < 50) {
+//       setEligibilityResult({ status: "Rejected", message: "Weight must be at least 50 kg." })
+//       return
+//     }
+//     if (chronic) {
+//       setEligibilityResult({ status: "Rejected", message: "Chronic diseases are not allowed." })
+//       return
+//     }
+//     setEligibilityResult({ status: "Accepted", message: "You are eligible to donate blood ✅" })
+//   }
+
+//   return (
+//     <div className="container mx-auto py-10 px-4 space-y-12">
+      
+//       <div className="text-center space-y-2">
+//         <h1 className="text-4xl font-extrabold tracking-tight">Blood Services Dashboard</h1>
+//         <p className="text-muted-foreground text-lg">Manage blood analysis and donor eligibility in one place.</p>
+//       </div>
+
+//       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+        
+//         <Card className="shadow-xl border-t-4 border-t-red-600 h-full">
+//           <CardHeader>
+//             <div className="flex items-center gap-3 mb-2">
+//               <Activity className="h-6 w-6 text-red-600" />
+//               <CardTitle>AI Blood Cell Analysis</CardTitle>
+//             </div>
+//             <CardDescription>Upload microscopic image to count RBC, WBC, and Platelets</CardDescription>
+//           </CardHeader>
+//           <CardContent className="space-y-6">
+//             <div className="flex items-center justify-center w-full">
+//               <label className="flex flex-col items-center justify-center w-full h-44 border-2 border-dashed rounded-lg cursor-pointer bg-slate-50 hover:bg-slate-100 transition-all">
+//                 <div className="flex flex-col items-center justify-center pt-5 pb-6 text-center px-4">
+//                   <Upload className="w-8 h-8 mb-3 text-slate-400" />
+//                   <p className="text-sm text-slate-600">
+//                     {selectedFile ? <span className="font-bold text-red-600">{selectedFile.name}</span> : "Click to upload blood smear"}
+//                   </p>
+//                 </div>
+//                 <input type="file" className="hidden" accept="image/*" onChange={handleFileChange} />
+//               </label>
+//             </div>
+
+//             <Button onClick={uploadAndAnalyze} disabled={analysisLoading || !selectedFile} className="w-full">
+//               {analysisLoading ? "Processing..." : "Blood Analysis"}
+//             </Button>
+
+//             {analysisError && (
+//               <div className="p-3 text-xs bg-red-50 text-red-700 border border-red-200 rounded-md flex gap-2">
+//                 <AlertCircle className="h-4 w-4" /> {analysisError}
+//               </div>
+//             )}
+
+//             {analysisResult && (
+//               <div className="p-4 bg-slate-50 rounded-xl border space-y-4 animate-in fade-in">
+//                 <div className="flex justify-between items-center">
+//                   <span className="text-sm font-bold uppercase tracking-wider">Results:</span>
+//                   <Badge variant={analysisResult.overall_health === "Normal" ? "default" : "destructive"}>
+//                     {analysisResult.overall_health}
+//                   </Badge>
+//                 </div>
+//                 <div className="grid grid-cols-3 gap-2 text-center">
+//                   <div className="bg-white p-2 rounded shadow-sm border"><p className="text-[10px] text-muted-foreground">RBC</p><p className="font-bold">{analysisResult.analysis.RBC}</p></div>
+//                   <div className="bg-white p-2 rounded shadow-sm border"><p className="text-[10px] text-muted-foreground">WBC</p><p className="font-bold">{analysisResult.analysis.WBC}</p></div>
+//                   <div className="bg-white p-2 rounded shadow-sm border"><p className="text-[10px] text-muted-foreground">PLT</p><p className="font-bold">{analysisResult.analysis.Platelets}</p></div>
+//                 </div>
+//               </div>
+//             )}
+//           </CardContent>
+//         </Card>
+
+//         {/* --- المكون الثاني: التأكد من أهلية المتبرع --- */}
+//         <Card className="shadow-xl border-t-4 border-t-blue-600 h-full">
+//           <CardHeader>
+//             <div className="flex items-center gap-3 mb-2">
+//               <User className="h-6 w-6 text-blue-600" />
+//               <CardTitle>Donor Eligibility Check</CardTitle>
+//             </div>
+//             <CardDescription>Enter physical details to confirm donation eligibility</CardDescription>
+//           </CardHeader>
+//           <CardContent className="space-y-5">
+//             <div className="space-y-2">
+//               <Label className="flex items-center gap-2"><User className="h-4 w-4" /> Age</Label>
+//               <Input type="number" placeholder="Min 18 years" value={age} onChange={(e) => setAge(e.target.value)} />
+//             </div>
+//             <div className="space-y-2">
+//               <Label className="flex items-center gap-2"><Weight className="h-4 w-4" /> Weight (kg)</Label>
+//               <Input type="number" placeholder="Min 50 kg" value={weight} onChange={(e) => setWeight(e.target.value)} />
+//             </div>
+//             <div className="flex items-center gap-3 rounded-lg border p-3 bg-slate-50">
+//               <input type="checkbox" checked={chronic} onChange={() => setChronic(!chronic)} className="h-4 w-4" id="chronic" />
+//               <Label htmlFor="chronic" className="flex items-center gap-2 cursor-pointer text-sm">
+//                 <HeartPulse className="h-4 w-4 text-red-500" /> Do you have chronic diseases?
+//               </Label>
+//             </div>
+
+//             <Button onClick={checkEligibility} variant="outline" className="w-full border-blue-600 text-blue-600 hover:bg-blue-50">
+//               Check Eligibility
+//             </Button>
+
+//             {eligibilityResult && (
+//               <div className="text-center p-4 border-t animate-in slide-in-from-bottom-2">
+//                 <Badge variant={eligibilityResult.status === "Accepted" ? "default" : "destructive"} className="mb-2">
+//                   {eligibilityResult.status}
+//                 </Badge>
+//                 <p className="text-sm text-muted-foreground">{eligibilityResult.message}</p>
+//               </div>
+//             )}
+//           </CardContent>
+//         </Card>
+
+//       </div>
+//     </div>
+//   )
+// }
+
+// "use client"
+
+// import { useState, useEffect } from "react"
+// import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
+// import { Button } from "@/components/ui/button"
+// import { Input } from "@/components/ui/input"
+// import { Label } from "@/components/ui/label"
+// import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+// import { Badge } from "@/components/ui/badge"
+// import { Droplets, Activity, Users, AlertTriangle, CheckCircle, Calendar, Hospital, Siren } from "lucide-react"
+
+// export default function BloodShortageFullForm() {
+//   const [mounted, setMounted] = useState(false);
+//   const [formData, setFormData] = useState({
+//     bloodType: "A+",
+//     availableUnits: "",
+//     prevDayStock: "",
+//     donatedUnits: "",
+//     requestedUnits: "",
+//     donorCount: "",
+//     hospitalRequests: "",
+//     emergencyCases: "",
+//     isHoliday: "0",
+//     specialEvent: "0"
+//   });
+//   const [prediction, setPrediction] = useState<number | null>(null);
+//   const [loading, setLoading] = useState(false);
+
+//   useEffect(() => { setMounted(true); }, []);
+
+//   const handlePredict = async () => {
+//     setLoading(true);
+    
+//     // بناء المصفوفة الـ 18 كما تدرب عليها الموديل
+//     const payload = new Array(18).fill(0);
+    
+//     payload[1] = new Date().getMonth() + 1; // الشهر الحالي
+//     payload[3] = Number(formData.availableUnits);
+//     payload[4] = Number(formData.prevDayStock);
+//     payload[5] = Number(formData.donatedUnits);
+//     payload[6] = Number(formData.requestedUnits);
+//     payload[7] = Number(formData.donorCount);
+//     payload[8] = Number(formData.hospitalRequests);
+//     payload[9] = Number(formData.emergencyCases);
+//     payload[10] = Number(formData.isHoliday);
+//     payload[11] = Number(formData.specialEvent);
+
+//     try {
+//       const response = await fetch("http://127.0.0.1:5000/predict", {
+//         method: "POST",
+//         headers: { "Content-Type": "application/json" },
+//         body: JSON.stringify({ data: payload }),
+//       });
+//       const result = await response.json();
+//       setPrediction(result.prediction);
+//     } catch (error) {
+//       console.error("Prediction error:", error);
+//     } finally {
+//       setLoading(false);
+//     }
+//   };
+
+//   if (!mounted) return null;
+
+//   return (
+//     <div className="container mx-auto py-10 px-4">
+//       <Card className="max-w-3xl mx-auto shadow-2xl border-t-4 border-red-600" suppressHydrationWarning>
+//         <CardHeader className="text-center">
+//           <CardTitle className="text-3xl font-bold flex justify-center items-center gap-2">
+//             <Droplets className="text-red-600" /> Blood Shortage AI Predictor
+//           </CardTitle>
+//           <CardDescription>Fill in all details from the daily report for accurate prediction</CardDescription>
+//         </CardHeader>
+
+//         <CardContent className="space-y-8">
+//           {/* Main Inputs Grid */}
+//           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            
+//             {/* Blood Type & Month Section */}
+//             <div className="space-y-4 p-4 bg-slate-50 rounded-xl border">
+//                <Label className="font-bold text-red-700">General Info</Label>
+//                <div className="space-y-2">
+//                   <Label>Blood Type</Label>
+//                   <Select onValueChange={(v) => setFormData({...formData, bloodType: v})}>
+//                     <SelectTrigger><SelectValue placeholder="A+" /></SelectTrigger>
+//                     <SelectContent>
+//                       {["A+","A-","B+","B-","AB+","AB-","O+","O-"].map(t => <SelectItem key={t} value={t}>{t}</SelectItem>)}
+//                     </SelectContent>
+//                   </Select>
+//                </div>
+//             </div>
+
+//             {/* Units Section */}
+//             <div className="space-y-4 p-4 bg-red-50/30 rounded-xl border">
+//                <Label className="font-bold text-red-700">Unit Metrics</Label>
+//                <Input placeholder="Available Units" type="number" onChange={(e)=>setFormData({...formData, availableUnits: e.target.value})} />
+//                <Input placeholder="Previous Day Stock" type="number" onChange={(e)=>setFormData({...formData, prevDayStock: e.target.value})} />
+//                <Input placeholder="Donated Units" type="number" onChange={(e)=>setFormData({...formData, donatedUnits: e.target.value})} />
+//                <Input placeholder="Requested Units" type="number" onChange={(e)=>setFormData({...formData, requestedUnits: e.target.value})} />
+//             </div>
+
+//             {/* Requests Section */}
+//             <div className="space-y-4 p-4 bg-blue-50/30 rounded-xl border">
+//                <Label className="font-bold text-blue-700">Demographics & Requests</Label>
+//                <div className="flex items-center gap-2"><Users size={16}/> <Input placeholder="Donor Count" type="number" onChange={(e)=>setFormData({...formData, donorCount: e.target.value})} /></div>
+//                <div className="flex items-center gap-2"><Hospital size={16}/> <Input placeholder="Hospital Requests" type="number" onChange={(e)=>setFormData({...formData, hospitalRequests: e.target.value})} /></div>
+//                <div className="flex items-center gap-2"><Siren size={16}/> <Input placeholder="Emergency Cases" type="number" onChange={(e)=>setFormData({...formData, emergencyCases: e.target.value})} /></div>
+//             </div>
+
+//             {/* Events Section */}
+//             <div className="space-y-4 p-4 bg-amber-50/30 rounded-xl border">
+//                <Label className="font-bold text-amber-700">Calendar Context</Label>
+//                <div className="space-y-1">
+//                  <Label className="text-xs">Is Holiday?</Label>
+//                  <Select onValueChange={(v) => setFormData({...formData, isHoliday: v})}>
+//                    <SelectTrigger><SelectValue placeholder="No" /></SelectTrigger>
+//                    <SelectContent><SelectItem value="0">No</SelectItem><SelectItem value="1">Yes</SelectItem></SelectContent>
+//                  </Select>
+//                </div>
+//                <div className="space-y-1">
+//                  <Label className="text-xs">Special Event?</Label>
+//                  <Select onValueChange={(v) => setFormData({...formData, specialEvent: v})}>
+//                    <SelectTrigger><SelectValue placeholder="No" /></SelectTrigger>
+//                    <SelectContent><SelectItem value="0">No</SelectItem><SelectItem value="1">Yes</SelectItem></SelectContent>
+//                  </Select>
+//                </div>
+//             </div>
+
+//           </div>
+
+//           <Button 
+//             onClick={handlePredict} 
+//             disabled={loading} 
+//             className="w-full h-14 text-xl bg-red-600 hover:bg-red-700 shadow-lg"
+//             suppressHydrationWarning
+//           >
+//             {loading ? "AI Processing..." : "Check Shortage Risk"}
+//           </Button>
+
+//           {/* Result Display */}
+//           {prediction !== null && (
+//             <div className={`p-8 rounded-2xl border-2 text-center animate-in zoom-in-95 duration-300 ${
+//               prediction === 1 ? "bg-red-50 border-red-200 text-red-900" : "bg-green-50 border-green-200 text-green-900"
+//             }`}>
+//               {prediction === 1 ? <AlertTriangle className="mx-auto h-12 w-12 mb-4 text-red-600 animate-bounce" /> : <CheckCircle className="mx-auto h-12 w-12 mb-4 text-green-600" />}
+//               <h3 className="text-2xl font-black mb-2">{prediction === 1 ? "CRITICAL SHORTAGE" : "STOCK STABLE"}</h3>
+//               <p className="text-sm opacity-75">Based on 18 data features analyzed by our AI model.</p>
+//             </div>
+//           )}
+//         </CardContent>
+//       </Card>
+//     </div>
+//   )
+// }
+
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
 import { Badge } from "@/components/ui/badge"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { 
   Upload, FileImage, Activity, AlertCircle, CheckCircle2, 
-  HeartPulse, Weight, User, ArrowRightLeft 
+  HeartPulse, Weight, User, Droplets, Hospital, Siren, Calendar, TrendingUp
 } from "lucide-react"
 
+// --- Interfaces ---
 interface AnalysisResult {
-  status: string;
-  analysis: {
-    RBC: number;
-    WBC: number;
-    Platelets: number;
-  };
+  analysis: { RBC: number; WBC: number; Platelets: number };
   overall_health: string;
   observations: string[];
-  message: string;
 }
 
-export default function BloodServicesPage() {
-  // --- States لمكون تحليل الصور ---
+export default function BloodServicesDashboard() {
+  const [mounted, setMounted] = useState(false);
+
+  // --- States: Blood Image Analysis ---
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [analysisLoading, setAnalysisLoading] = useState(false);
   const [analysisResult, setAnalysisResult] = useState<AnalysisResult | null>(null);
   const [analysisError, setAnalysisError] = useState<string | null>(null);
 
-  // --- States لمكون أهلية المتبرع ---
-  const [age, setAge] = useState("")
-  const [weight, setWeight] = useState("")
-  const [chronic, setChronic] = useState(false)
-  const [eligibilityResult, setEligibilityResult] = useState<null | { status: string; message: string }>(null)
+  // --- States: Donor Eligibility ---
+  const [donorData, setDonorData] = useState({ age: "", weight: "", chronic: false });
+  const [eligibilityResult, setEligibilityResult] = useState<{ status: string; message: string } | null>(null);
 
-  // --- وظيفة تحليل الصورة ---
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      setSelectedFile(e.target.files[0]);
-      setAnalysisError(null);
-    }
-  };
+  // --- States: Shortage Prediction ---
+  const [shortageData, setShortageData] = useState({
+    bloodType: "A+", availableUnits: "", prevDayStock: "", donatedUnits: "", 
+    requestedUnits: "", donorCount: "", hospitalRequests: "", emergencyCases: "",
+    isHoliday: "0", specialEvent: "0"
+  });
+  const [prediction, setPrediction] = useState<number | null>(null);
+  const [predictionLoading, setPredictionLoading] = useState(false);
 
-  const uploadAndAnalyze = async () => {
-    if (!selectedFile) {
-      setAnalysisError("Please select an image first.");
-      return;
-    }
-    setAnalysisLoading(true);
-    setAnalysisError(null);
-    const formData = new FormData();
-    formData.append('image', selectedFile);
+  useEffect(() => { setMounted(true); }, []);
 
+  // --- Functions ---
+
+  const handleAnalysis = async () => {
+    if (!selectedFile) return setAnalysisError("Please select an image.");
+    setAnalysisLoading(true); setAnalysisError(null);
+    const formData = new FormData(); formData.append('image', selectedFile);
     try {
-      const response = await fetch('http://127.0.0.1:5000/analyze-blood', {
-        method: 'POST',
-        body: formData,
-      });
-      if (!response.ok) throw new Error("Failed to analyze image");
-      const data: AnalysisResult = await response.json();
+      const res = await fetch('http://127.0.0.1:5000/analyze-blood', { method: 'POST', body: formData });
+      const data = await res.json();
       setAnalysisResult(data);
-    } catch (err) {
-      setAnalysisError("Could not connect to the server. Make sure Flask is running.");
-    } finally {
-      setAnalysisLoading(false);
-    }
+    } catch { setAnalysisError("Server connection failed."); }
+    finally { setAnalysisLoading(false); }
   };
 
   const checkEligibility = () => {
-    if (!age || !weight) {
-      setEligibilityResult({ status: "Rejected", message: "Please fill in all fields." })
-      return
+    const { age, weight, chronic } = donorData;
+    if (!age || !weight) return setEligibilityResult({ status: "Rejected", message: "Fill all fields." });
+    if (parseInt(age) < 18 || parseInt(weight) < 50 || chronic) {
+      return setEligibilityResult({ status: "Rejected", message: "Criteria not met (Age/Weight/Chronic)." });
     }
-    if (parseInt(age) < 18) {
-      setEligibilityResult({ status: "Rejected", message: "Age must be at least 18." })
-      return
-    }
-    if (parseInt(weight) < 50) {
-      setEligibilityResult({ status: "Rejected", message: "Weight must be at least 50 kg." })
-      return
-    }
-    if (chronic) {
-      setEligibilityResult({ status: "Rejected", message: "Chronic diseases are not allowed." })
-      return
-    }
-    setEligibilityResult({ status: "Accepted", message: "You are eligible to donate blood ✅" })
-  }
+    setEligibilityResult({ status: "Accepted", message: "Eligible to donate! ✅" });
+  };
+
+  const handlePredictShortage = async () => {
+    setPredictionLoading(true);
+    const payload = new Array(18).fill(0);
+    payload[1] = new Date().getMonth() + 1;
+    payload[3] = Number(shortageData.availableUnits);
+    payload[4] = Number(shortageData.prevDayStock);
+    payload[5] = Number(shortageData.donatedUnits);
+    payload[6] = Number(shortageData.requestedUnits);
+    payload[7] = Number(shortageData.donorCount);
+    payload[8] = Number(shortageData.hospitalRequests);
+    payload[9] = Number(shortageData.emergencyCases);
+    payload[10] = Number(shortageData.isHoliday);
+    payload[11] = Number(shortageData.specialEvent);
+
+    try {
+      const res = await fetch("http://127.0.0.1:6000/predict", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ data: payload }),
+      });
+      const result = await res.json();
+      setPrediction(result.prediction);
+    } catch { console.error("Prediction failed."); }
+    finally { setPredictionLoading(false); }
+  };
+
+  if (!mounted) return null;
 
   return (
-    <div className="container mx-auto py-10 px-4 space-y-12">
-      
-      <div className="text-center space-y-2">
-        <h1 className="text-4xl font-extrabold tracking-tight">Blood Services Dashboard</h1>
-        <p className="text-muted-foreground text-lg">Manage blood analysis and donor eligibility in one place.</p>
-      </div>
+    <div className="container mx-auto py-10 px-4 space-y-10">
+      <header className="text-center space-y-2">
+        <h1 className="text-4xl font-black text-red-600 flex justify-center items-center gap-3">
+          <Droplets size={40} /> BLOOD BANK AI COMMAND
+        </h1>
+        <p className="text-muted-foreground uppercase tracking-widest text-sm font-bold">Integrated Healthcare Management System</p>
+      </header>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+      <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
         
-        <Card className="shadow-xl border-t-4 border-t-red-600 h-full">
+        {/* SECTION 1: IMAGE ANALYSIS */}
+        <Card className="shadow-lg border-t-4 border-red-500">
           <CardHeader>
-            <div className="flex items-center gap-3 mb-2">
-              <Activity className="h-6 w-6 text-red-600" />
-              <CardTitle>AI Blood Cell Analysis</CardTitle>
-            </div>
-            <CardDescription>Upload microscopic image to count RBC, WBC, and Platelets</CardDescription>
+            <CardTitle className="flex items-center gap-2"><FileImage className="text-red-500"/> Cell Analysis</CardTitle>
+            <CardDescription>Upload microscopic slide image</CardDescription>
           </CardHeader>
-          <CardContent className="space-y-6">
-            <div className="flex items-center justify-center w-full">
-              <label className="flex flex-col items-center justify-center w-full h-44 border-2 border-dashed rounded-lg cursor-pointer bg-slate-50 hover:bg-slate-100 transition-all">
-                <div className="flex flex-col items-center justify-center pt-5 pb-6 text-center px-4">
-                  <Upload className="w-8 h-8 mb-3 text-slate-400" />
-                  <p className="text-sm text-slate-600">
-                    {selectedFile ? <span className="font-bold text-red-600">{selectedFile.name}</span> : "Click to upload blood smear"}
-                  </p>
-                </div>
-                <input type="file" className="hidden" accept="image/*" onChange={handleFileChange} />
+          <CardContent className="space-y-4">
+            <div className="border-2 border-dashed rounded-xl p-6 text-center bg-slate-50">
+              <input type="file" className="hidden" id="blood-upload" accept="image/*" onChange={(e) => setSelectedFile(e.target.files?.[0] || null)} />
+              <label htmlFor="blood-upload" className="cursor-pointer">
+                <Upload className="mx-auto mb-2 text-slate-400" />
+                <p className="text-xs font-bold">{selectedFile ? selectedFile.name : "Choose Image"}</p>
               </label>
             </div>
-
-            <Button onClick={uploadAndAnalyze} disabled={analysisLoading || !selectedFile} className="w-full">
-              {analysisLoading ? "Processing..." : "Blood Analysis"}
+            <Button onClick={handleAnalysis} disabled={analysisLoading} className="w-full bg-red-600">
+              {analysisLoading ? "Analyzing..." : "Analyze Slide"}
             </Button>
-
-            {analysisError && (
-              <div className="p-3 text-xs bg-red-50 text-red-700 border border-red-200 rounded-md flex gap-2">
-                <AlertCircle className="h-4 w-4" /> {analysisError}
-              </div>
-            )}
-
             {analysisResult && (
-              <div className="p-4 bg-slate-50 rounded-xl border space-y-4 animate-in fade-in">
-                <div className="flex justify-between items-center">
-                  <span className="text-sm font-bold uppercase tracking-wider">Results:</span>
-                  <Badge variant={analysisResult.overall_health === "Normal" ? "default" : "destructive"}>
-                    {analysisResult.overall_health}
-                  </Badge>
+              <div className="p-3 bg-red-50 rounded-lg border border-red-100 text-sm animate-in fade-in">
+                <div className="flex justify-between mb-2 font-bold">
+                  <span>Status: {analysisResult.overall_health}</span>
+                  <Badge variant={analysisResult.overall_health === "Normal" ? "default" : "destructive"}>Model Checked</Badge>
                 </div>
-                <div className="grid grid-cols-3 gap-2 text-center">
-                  <div className="bg-white p-2 rounded shadow-sm border"><p className="text-[10px] text-muted-foreground">RBC</p><p className="font-bold">{analysisResult.analysis.RBC}</p></div>
-                  <div className="bg-white p-2 rounded shadow-sm border"><p className="text-[10px] text-muted-foreground">WBC</p><p className="font-bold">{analysisResult.analysis.WBC}</p></div>
-                  <div className="bg-white p-2 rounded shadow-sm border"><p className="text-[10px] text-muted-foreground">PLT</p><p className="font-bold">{analysisResult.analysis.Platelets}</p></div>
-                </div>
+                <p className="text-[10px] text-muted-foreground">RBC: {analysisResult.analysis.RBC} | WBC: {analysisResult.analysis.WBC} | PLT: {analysisResult.analysis.Platelets}</p>
               </div>
             )}
           </CardContent>
         </Card>
 
-        {/* --- المكون الثاني: التأكد من أهلية المتبرع --- */}
-        <Card className="shadow-xl border-t-4 border-t-blue-600 h-full">
+        {/* SECTION 2: ELIGIBILITY */}
+        <Card className="shadow-lg border-t-4 border-blue-500">
           <CardHeader>
-            <div className="flex items-center gap-3 mb-2">
-              <User className="h-6 w-6 text-blue-600" />
-              <CardTitle>Donor Eligibility Check</CardTitle>
-            </div>
-            <CardDescription>Enter physical details to confirm donation eligibility</CardDescription>
+            <CardTitle className="flex items-center gap-2"><User className="text-blue-500"/> Donor Screening</CardTitle>
+            <CardDescription>Physical condition check</CardDescription>
           </CardHeader>
-          <CardContent className="space-y-5">
-            <div className="space-y-2">
-              <Label className="flex items-center gap-2"><User className="h-4 w-4" /> Age</Label>
-              <Input type="number" placeholder="Min 18 years" value={age} onChange={(e) => setAge(e.target.value)} />
+          <CardContent className="space-y-4">
+            <div className="grid grid-cols-2 gap-3">
+              <div className="space-y-1"><Label>Age</Label><Input type="number" value={donorData.age} onChange={(e)=>setDonorData({...donorData, age: e.target.value})}/></div>
+              <div className="space-y-1"><Label>Weight</Label><Input type="number" value={donorData.weight} onChange={(e)=>setDonorData({...donorData, weight: e.target.value})}/></div>
             </div>
-            <div className="space-y-2">
-              <Label className="flex items-center gap-2"><Weight className="h-4 w-4" /> Weight (kg)</Label>
-              <Input type="number" placeholder="Min 50 kg" value={weight} onChange={(e) => setWeight(e.target.value)} />
+            <div className="flex items-center gap-2 p-3 bg-slate-50 rounded-lg">
+              <input type="checkbox" id="chronic" checked={donorData.chronic} onChange={()=>setDonorData({...donorData, chronic: !donorData.chronic})} />
+              <Label htmlFor="chronic" className="text-xs">Any Chronic Diseases?</Label>
             </div>
-            <div className="flex items-center gap-3 rounded-lg border p-3 bg-slate-50">
-              <input type="checkbox" checked={chronic} onChange={() => setChronic(!chronic)} className="h-4 w-4" id="chronic" />
-              <Label htmlFor="chronic" className="flex items-center gap-2 cursor-pointer text-sm">
-                <HeartPulse className="h-4 w-4 text-red-500" /> Do you have chronic diseases?
-              </Label>
-            </div>
-
-            <Button onClick={checkEligibility} variant="outline" className="w-full border-blue-600 text-blue-600 hover:bg-blue-50">
-              Check Eligibility
-            </Button>
-
+            <Button onClick={checkEligibility} variant="outline" className="w-full border-blue-600 text-blue-600">Verify Donor</Button>
             {eligibilityResult && (
-              <div className="text-center p-4 border-t animate-in slide-in-from-bottom-2">
-                <Badge variant={eligibilityResult.status === "Accepted" ? "default" : "destructive"} className="mb-2">
-                  {eligibilityResult.status}
-                </Badge>
-                <p className="text-sm text-muted-foreground">{eligibilityResult.message}</p>
+              <div className={`p-3 rounded-lg text-center font-bold text-xs ${eligibilityResult.status === "Accepted" ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"}`}>
+                {eligibilityResult.message}
               </div>
             )}
+          </CardContent>
+        </Card>
+
+        {/* SECTION 3: PREDICTION (THE BIG ONE) */}
+        <Card className="shadow-lg border-t-4 border-black xl:col-span-1">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2"><TrendingUp /> Shortage Forecast</CardTitle>
+            <CardDescription>AI Prediction based on 18 features</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-3">
+             <div className="grid grid-cols-2 gap-2">
+                <Input placeholder="Available" type="number" onChange={(e)=>setShortageData({...shortageData, availableUnits: e.target.value})} />
+                <Input placeholder="Prev Stock" type="number" onChange={(e)=>setShortageData({...shortageData, prevDayStock: e.target.value})} />
+                <Input placeholder="Donated" type="number" onChange={(e)=>setShortageData({...shortageData, donatedUnits: e.target.value})} />
+                <Input placeholder="Requested" type="number" onChange={(e)=>setShortageData({...shortageData, requestedUnits: e.target.value})} />
+                <Input placeholder="Donor Count" type="number" onChange={(e)=>setShortageData({...shortageData, donorCount: e.target.value})} />
+                <Input placeholder="Emergency" type="number" onChange={(e)=>setShortageData({...shortageData, emergencyCases: e.target.value})} />
+             </div>
+             <div className="grid grid-cols-2 gap-2">
+               <Select onValueChange={(v)=>setShortageData({...shortageData, isHoliday: v})}>
+                 <SelectTrigger className="text-xs"><SelectValue placeholder="Holiday?" /></SelectTrigger>
+                 <SelectContent><SelectItem value="0">Work Day</SelectItem><SelectItem value="1">Holiday</SelectItem></SelectContent>
+               </Select>
+               <Select onValueChange={(v)=>setShortageData({...shortageData, specialEvent: v})}>
+                 <SelectTrigger className="text-xs"><SelectValue placeholder="Event?" /></SelectTrigger>
+                 <SelectContent><SelectItem value="0">Normal</SelectItem><SelectItem value="1">Special Event</SelectItem></SelectContent>
+               </Select>
+             </div>
+             <Button onClick={handlePredictShortage} disabled={predictionLoading} className="w-full bg-black text-white">
+                {predictionLoading ? "Predicting..." : "Predict Shortage Risk"}
+             </Button>
+             {prediction !== null && (
+               <div className={`p-4 rounded-xl border-2 text-center font-black animate-bounce ${prediction === 1 ? "bg-red-600 text-white" : "bg-green-600 text-white"}`}>
+                  {prediction === 1 ? "⚠️ CRITICAL SHORTAGE" : "✅ STABLE SUPPLY"}
+               </div>
+             )}
           </CardContent>
         </Card>
 
