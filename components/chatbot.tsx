@@ -348,6 +348,7 @@ export function Chatbot() {
     { text: "Find nearest blood bank", icon: MapPin },
     { text: "Book an appointment", icon: Calendar },
     { text: "SOS alerts info", icon: AlertTriangle },
+    
   ]
 
   const getMessageIcon = (type: Message["type"]) => {

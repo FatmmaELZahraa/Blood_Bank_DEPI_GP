@@ -29,10 +29,10 @@ export function Footer() {
           {/* Brand */}
           <div className="col-span-2 md:col-span-1">
             <Link href="/" className="flex items-center gap-2 mb-4">
-              <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary">
-                <Droplet className="h-5 w-5 text-primary-foreground" />
-              </div>
-              <span className="text-xl font-semibold text-foreground">BloodLink</span>
+              <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-destructive">
+            <Droplet className="h-5 w-5 text-primary-foreground" />
+          </div>
+              <span className="text-xl font-semibold text-foreground font-serif">BloodLink</span>
             </Link>
             <p className="text-sm text-muted-foreground max-w-xs">
               Connecting blood banks, hospitals, and donors to save lives through technology.
