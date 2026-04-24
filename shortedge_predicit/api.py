@@ -56,4 +56,4 @@ def predict():
         return jsonify({"error": str(e)})
 
 if __name__ == "__main__":
-    api.run(debug=True, port=6000)
+    api.run(debug=True, port=4000)
