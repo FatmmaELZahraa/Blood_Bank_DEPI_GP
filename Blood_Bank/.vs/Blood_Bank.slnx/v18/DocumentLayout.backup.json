@@ -3,8 +3,8 @@
   "WorkspaceRootPath": "D:\\Blood_Bank\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\Blood_Bank\\Blood_Bank\\Migrations\\20260421184623_FirstMigration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:Blood_Bank\\Migrations\\20260421184623_FirstMigration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{ACD261C6-EDA4-D21E-8F02-80938C0B1DA3}|Blood_Bank\\Blood_Bank.csproj|d:\\blood_bank\\blood_bank\\migrations\\20260421184623_firstmigration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{ACD261C6-EDA4-D21E-8F02-80938C0B1DA3}|Blood_Bank\\Blood_Bank.csproj|solutionrelative:blood_bank\\migrations\\20260421184623_firstmigration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{ACD261C6-EDA4-D21E-8F02-80938C0B1DA3}|Blood_Bank\\Blood_Bank.csproj|d:\\blood_bank\\blood_bank\\models\\donor.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -87,8 +87,7 @@
               "RelativeToolTip": "Blood_Bank\\Models\\Donor.cs",
               "ViewState": "AgIAAAgAAAAwMzMzMzM0wAwAAAAkAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-04-18T10:43:30.194Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-04-18T10:43:30.194Z"
             },
             {
               "$type": "Document",
@@ -112,8 +111,7 @@
               "RelativeToolTip": "Blood_Bank\\Models\\Appointment.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAAtAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-04-18T12:36:56.373Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-04-18T12:36:56.373Z"
             },
             {
               "$type": "Document",
@@ -125,8 +123,7 @@
               "RelativeToolTip": "Blood_Bank\\Data\\AppDbContext.cs",
               "ViewState": "AgIAAFAAAAAAAAAAAADwv1sAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-04-18T09:26:16.709Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-04-18T09:26:16.709Z"
             },
             {
               "$type": "Document",

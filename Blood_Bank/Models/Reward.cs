@@ -1,4 +1,5 @@
-    namespace Blood_Bank.Models;
+namespace Blood_Bank.Models
+{
 
     public class Reward
     {
@@ -10,3 +11,4 @@
         public Donor? Donor { get; set; }
 
     }
+}
