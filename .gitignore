@@ -18,5 +18,5 @@ node_modules/
 .vercel
 uploads/*
 !uploads/.gitkeep
-bin/
-obj/
+Blood_Bank/bin/
+Blood_Bank/obj/
