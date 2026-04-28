@@ -9,7 +9,6 @@ import {
   CheckCircle,
   Search,
   Filter,
-  RefreshCw
 } from "lucide-react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -36,7 +35,7 @@ import {
 
 // Mock inventory data
 const initialInventory = [
-  { type: "A+", units: 45, capacity: 100, expiringSoon: 5, lastUpdated: "2 hours ago" },
+  { type: "A+", units: 4, capacity: 100, expiringSoon: 5, lastUpdated: "2 hours ago" },
   { type: "A-", units: 12, capacity: 50, expiringSoon: 2, lastUpdated: "3 hours ago" },
   { type: "B+", units: 38, capacity: 80, expiringSoon: 3, lastUpdated: "1 hour ago" },
   { type: "B-", units: 8, capacity: 40, expiringSoon: 1, lastUpdated: "4 hours ago" },
@@ -221,9 +220,6 @@ export default function InventoryPage() {
                   </DialogFooter>
                 </DialogContent>
               </Dialog>
-              <Button variant="outline" size="icon">
-                <RefreshCw className="h-4 w-4" />
-              </Button>
             </div>
           </div>
         </CardHeader>

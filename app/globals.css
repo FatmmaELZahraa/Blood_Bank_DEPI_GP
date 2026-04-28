@@ -40,13 +40,13 @@
 }
 
 .dark {
-  --background: oklch(0.13 0.015 280);
+  --background: oklch(0.15 0.02 280);
   --foreground: oklch(0.95 0.01 280);
   --card: oklch(0.17 0.015 280);
   --card-foreground: oklch(0.95 0.01 280);
   --popover: oklch(0.17 0.015 280);
   --popover-foreground: oklch(0.95 0.01 280);
-  --primary: oklch(0.6 0.22 15);
+  --primary: oklch(79.884% 0.16543 104.954);
   --primary-foreground: oklch(0.98 0 0);
   --secondary: oklch(0.22 0.015 280);
   --secondary-foreground: oklch(0.95 0.01 280);
