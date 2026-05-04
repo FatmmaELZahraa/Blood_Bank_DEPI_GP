@@ -14,19 +14,19 @@ export function HeroSection() {
       <div className="container">
         <div className="flex flex-col items-center text-center max-w-4xl mx-auto">
           {/* Badge */}
-          <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary text-sm font-medium mb-8">
-            <Heart className="h-4 w-4" />
+          <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary text-sm font-medium mb-8" font-serif>
+            <Heart className="h-4 w-4 font-serif" />
             <span>Saving Lives Through Technology</span>
           </div>
 
           {/* Headline */}
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-foreground leading-tight text-balance mb-6">
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-foreground leading-tight text-balance mb-6 font-serif">
             Infrastructure to Power the{" "}
             <span className="text-primary">Blood Bank Network</span>
           </h1>
 
           {/* Description */}
-          <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mb-10 text-pretty">
+          <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mb-10 text-pretty font-serif">
             Seamlessly connect hospitals, blood banks, and donors on a unified platform. 
             Manage inventory, track donations, and respond to emergencies in real-time.
           </p>

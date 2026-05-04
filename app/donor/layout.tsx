@@ -56,7 +56,7 @@ export default function DonorLayout({
         </Button>
         <Link href="/" className="flex items-center gap-2">
           <Droplets className="h-6 w-6 text-primary" />
-          <span className="font-bold text-foreground">BloodLink</span>
+          <span className="font-bold text-foreground font-serif">BloodLink</span>
         </Link>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -95,7 +95,7 @@ export default function DonorLayout({
           <div className="hidden items-center gap-2 border-b border-border px-6 py-4 lg:flex">
             <Link href="/" className="flex items-center gap-2">
               <Droplets className="h-7 w-7 text-primary" />
-              <span className="text-xl font-bold text-foreground">BloodLink</span>
+              <span className="text-xl font-bold text-foreground font-serif">BloodLink</span>
             </Link>
           </div>
 
@@ -107,8 +107,8 @@ export default function DonorLayout({
                 <AvatarFallback className="bg-primary text-primary-foreground text-lg">JD</AvatarFallback>
               </Avatar>
               <div>
-                <p className="font-semibold text-foreground">John Doe</p>
-                <p className="text-sm text-muted-foreground">Blood Type: O+</p>
+                <p className="font-semibold text-foreground font-serif">John Doe</p>
+                <p className="text-sm text-muted-foreground font-serif">Blood Type: O+</p>
               </div>
             </div>
           </div>
@@ -143,11 +143,11 @@ export default function DonorLayout({
           <div className="absolute bottom-0 left-0 right-0 border-t border-border p-4">
             <div className="rounded-lg bg-primary/10 p-3">
               <div className="flex items-center justify-between">
-                <span className="text-sm font-medium text-foreground">Total Points</span>
+                <span className="text-sm font-medium text-foreground font-serif">Total Points</span>
                 <Award className="h-5 w-5 text-primary" />
               </div>
-              <p className="mt-1 text-2xl font-bold text-primary">2,450</p>
-              <p className="text-xs text-muted-foreground">Gold Donor Status</p>
+              <p className="mt-1 text-2xl font-bold text-primary font-serif">2,450</p>
+              <p className="text-xs text-muted-foreground font-serif">Gold Donor Status</p>
             </div>
           </div>
         </aside>
@@ -165,8 +165,8 @@ export default function DonorLayout({
           {/* Desktop Header */}
           <div className="mb-6 hidden items-center justify-between lg:flex">
             <div>
-              <h1 className="text-2xl font-bold text-foreground">Welcome back, John!</h1>
-              <p className="text-muted-foreground">Manage your donations and track your impact</p>
+              <h1 className="text-2xl font-bold text-foreground font-serif">Welcome back, Fatma</h1>
+              <p className="text-muted-foreground font-serif">Manage your donations and track your impact</p>
             </div>
             <div className="flex items-center gap-4">
               <Button variant="ghost" size="icon" className="relative">
@@ -182,17 +182,23 @@ export default function DonorLayout({
                       <AvatarImage src="/avatar.jpg" />
                       <AvatarFallback className="bg-primary text-primary-foreground">JD</AvatarFallback>
                     </Avatar>
-                    <span className="hidden xl:inline">John Doe</span>
+                    <span className="hidden xl:inline font-serif">John Doe</span>
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
+                  <DropdownMenuItem>
+                    <Link href="/donor/profile" className="flex items-center gap-2">
+                      <User className="h-4 w-4" />
+                      Profile
+                    </Link>
+                  </DropdownMenuItem>
                   <DropdownMenuItem>
                     <Settings className="mr-2 h-4 w-4" />
                     Settings
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem asChild>
-                    <Link href="/">
+                    <Link href="/login">
                       <LogOut className="mr-2 h-4 w-4" />
                       Sign Out
                     </Link>
