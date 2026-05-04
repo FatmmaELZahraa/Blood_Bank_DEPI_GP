@@ -1,7 +1,10 @@
 {
   "ExpandedNodes": [
     "",
-    "\\Properties"
+    "\\Blood_Bank",
+    "\\Blood_Bank\\Models",
+    "\\Models"
   ],
+  "SelectedNode": "\\Blood_Bank",
   "PreviewInSolutionExplorer": false
 }
