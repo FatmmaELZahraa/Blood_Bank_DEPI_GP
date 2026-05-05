@@ -54,7 +54,6 @@ export function HeroSection() {
     </Link>
   </Button>
 
-  {/* 🔥 Eligibility Button (Updated) */}
   <Button
     asChild
     size="lg"

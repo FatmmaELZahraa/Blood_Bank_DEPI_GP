@@ -25,11 +25,11 @@ export default function LoginPage() {
 
       if (response.ok) {
         const data = await response.json(); 
-        
+        console.log("البيانات القادمة من السيرفر:", data);
         localStorage.setItem("token", data.token);
         localStorage.setItem("userRole", data.role);
         localStorage.setItem("userName", data.name);
-
+console.log("تم الحفظ بنجاح في LocalStorage!");
         if (data.role === "Admin") {
           router.push("/admin"); 
         } else {
