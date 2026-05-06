@@ -112,10 +112,10 @@ export function FeaturesGrid() {
     <section className="py-20 bg-background">
       <div className="container">
         <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4 text-balance">
+          <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4 text-balance font-serif">
             One Integration. Complete Blood Management.
           </h2>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto font-serif">
             Structured data. Dedicated support. Minimal operational headaches.
           </p>
         </div>
@@ -123,7 +123,7 @@ export function FeaturesGrid() {
         <div className="space-y-16">
           {features.map((section) => (
             <div key={section.category}>
-              <h3 className="text-xl font-semibold text-foreground mb-6 flex items-center gap-2">
+              <h3 className="text-xl font-semibold text-foreground mb-6 flex items-center gap-2 font-serif">
                 <div className="h-1 w-8 bg-primary rounded-full" />
                 {section.category}
               </h3>
@@ -136,10 +136,10 @@ export function FeaturesGrid() {
                         <div className="p-2 w-fit rounded-lg bg-secondary group-hover:bg-primary/10 transition-colors mb-2">
                           <Icon className="h-5 w-5 text-primary" />
                         </div>
-                        <CardTitle className="text-base">{feature.title}</CardTitle>
+                        <CardTitle className="text-base font-serif">{feature.title}</CardTitle>
                       </CardHeader>
                       <CardContent>
-                        <CardDescription className="text-sm">
+                        <CardDescription className="text-sm font-serif">
                           {feature.description}
                         </CardDescription>
                       </CardContent>

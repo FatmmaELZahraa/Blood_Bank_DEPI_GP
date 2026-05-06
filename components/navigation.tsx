@@ -39,7 +39,7 @@ export function Navigation() {
         </Link>
 
         {/* Desktop Navigation */}
-        <nav className="hidden md:flex items-center gap-1">
+        <nav className="hidden md:flex items-center gap-1 font-serif">
           {navItems.map((item) => {
             const Icon = item.icon
             const isActive = pathname === item.href

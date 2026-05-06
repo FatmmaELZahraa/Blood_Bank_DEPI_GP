@@ -65,7 +65,7 @@ export function StatsSection() {
   return (
     <section className="py-16 bg-card border-y border-border">
       <div className="container">
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 font-serif">
           {stats.map((stat) => {
             const Icon = stat.icon
             return (
@@ -76,7 +76,9 @@ export function StatsSection() {
                 <div className="text-3xl md:text-4xl font-bold text-foreground mb-2">
                   <AnimatedCounter value={stat.value} suffix={stat.suffix} />
                 </div>
-                <div className="text-sm text-muted-foreground">{stat.label}</div>
+                <div className="text-sm text-muted-foreground font-serif">
+                  {stat.label}
+                </div>
               </div>
             )
           })}

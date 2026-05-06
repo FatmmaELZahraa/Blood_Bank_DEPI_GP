@@ -33,10 +33,10 @@ export function HowItWorks() {
     <section className="py-20 bg-card border-t border-border">
       <div className="container">
         <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
+          <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4 font-serif">
             How It Works
           </h2>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto font-serif">
             Get started in minutes with our streamlined process.
           </p>
         </div>
@@ -45,10 +45,10 @@ export function HowItWorks() {
           {steps.map((item, index) => {
             const Icon = item.icon
             return (
-              <Card key={item.step} className="relative overflow-hidden">
+              <Card key={item.step} className="relative overflow-hidden font-serif">
                 <CardContent className="pt-8 pb-6">
                   {/* Step number */}
-                  <div className="absolute top-4 right-4 text-6xl font-bold text-muted/20">
+                  <div className="absolute top-4 right-4 text-6xl font-bold text-muted/20 font-serif">
                     {item.step}
                   </div>
                   
@@ -58,10 +58,10 @@ export function HowItWorks() {
                   </div>
 
                   {/* Content */}
-                  <h3 className="text-lg font-semibold text-foreground mb-2">
+                  <h3 className="text-lg font-semibold text-foreground mb-2 font-serif">
                     {item.title}
                   </h3>
-                  <p className="text-sm text-muted-foreground">
+                  <p className="text-sm text-muted-foreground font-serif">
                     {item.description}
                   </p>
 

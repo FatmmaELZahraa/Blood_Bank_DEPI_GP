@@ -34,7 +34,7 @@ export function Footer() {
           </div>
               <span className="text-xl font-semibold text-foreground font-serif">BloodLink</span>
             </Link>
-            <p className="text-sm text-muted-foreground max-w-xs">
+            <p className="text-sm text-muted-foreground max-w-xs font-serif">
               Connecting blood banks, hospitals, and donors to save lives through technology.
             </p>
           </div>
@@ -42,13 +42,13 @@ export function Footer() {
           {/* Links */}
           {Object.entries(footerLinks).map(([category, links]) => (
             <div key={category}>
-              <h4 className="font-semibold text-foreground mb-4">{category}</h4>
-              <ul className="space-y-3">
+              <h4 className="font-semibold text-foreground mb-4 font-serif">{category}</h4>
+              <ul className="space-y-3 font-serif">
                 {links.map((link) => (
                   <li key={link.label}>
                     <Link 
                       href={link.href}
-                      className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                      className="text-sm text-muted-foreground hover:text-foreground transition-colors font-serif"
                     >
                       {link.label}
                     </Link>
@@ -61,17 +61,17 @@ export function Footer() {
 
         {/* Bottom */}
         <div className="border-t border-border mt-12 pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
-          <p className="text-sm text-muted-foreground">
+          <p className="text-sm text-muted-foreground font-serif">
             2026 BloodLink Network. All rights reserved.
           </p>
           <div className="flex items-center gap-6">
-            <Link href="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+            <Link href="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors font-serif">
               Twitter
             </Link>
-            <Link href="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+            <Link href="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors font-serif">
               LinkedIn
             </Link>
-            <Link href="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+            <Link href="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors font-serif">
               GitHub
             </Link>
           </div>
