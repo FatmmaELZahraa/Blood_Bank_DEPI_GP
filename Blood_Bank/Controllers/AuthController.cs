@@ -1,13 +1,14 @@
 ﻿using Blood_Bank.Data;
 using Blood_Bank.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using static Blood_Bank.DTO.Authenticationdto;
-using Microsoft.EntityFrameworkCore;
 
 namespace Blood_Bank.Controllers
 {
@@ -17,6 +18,44 @@ namespace Blood_Bank.Controllers
     {
         private readonly AppDbContext _context;
         private readonly IConfiguration _config;
+
+
+        [HttpGet("profile")]
+        [Authorize]
+        public async Task<ActionResult> GetProfile()
+        {
+            var email = User.FindFirstValue(ClaimTypes.Email);
+
+            var user = await _context.User.FirstOrDefaultAsync(u => u.Email == email);
+
+            if (user == null) return NotFound("User not found");
+
+            if (user is Donor donor)
+            {
+                return Ok(new
+                {
+                  
+                
+                    name = donor.Name,
+                    email = donor.Email,
+                    phone = donor.phone,
+                    role = "Donor",
+                    totalDonations = donor.TotalDonations,
+                    bloodType = donor.BloodType,
+                    lastDonationDate = donor.LastDonationDate,
+                    points = donor.Points,
+                    medicalHistory= donor.MedicalHistory
+                });
+            }
+
+            return Ok(new
+            {
+                name = user.Name,
+                email = user.Email,
+                phone = user.phone,
+                role = "Admin"
+            });
+        }
         public AuthController(AppDbContext context, IConfiguration config)
         {
             _context = context;
@@ -79,19 +118,21 @@ namespace Blood_Bank.Controllers
         {
             return Ok(new { message = "Logged out successfully" });
         }
+      
         private string GenerateJwtToken(User user, string role)
         {
             var claims = new[] {
-            new Claim(ClaimTypes.NameIdentifier, user.UserID.ToString()),
-            new Claim(ClaimTypes.Email, user.Email),
-            new Claim(ClaimTypes.Role, role)
-        };
+        new Claim(ClaimTypes.NameIdentifier, user.UserID.ToString()),
+        new Claim(ClaimTypes.Email, user.Email),
+        new Claim(ClaimTypes.Role, role)
+    };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
             var token = new JwtSecurityToken(
                 issuer: _config["Jwt:Issuer"],
+                audience: _config["Jwt:Audience"], 
                 claims: claims,
                 expires: DateTime.Now.AddDays(7),
                 signingCredentials: creds

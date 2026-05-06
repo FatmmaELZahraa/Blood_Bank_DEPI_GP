@@ -6,9 +6,15 @@
        
         public DateTime AppointmentDate { get; set; }
         public string ?Location { get; set; }
+        public string CenterName { get; set; } = string.Empty;
+        public string CenterAddress { get; set; } = string.Empty;
+
+        public string TimeSlot { get; set; } = string.Empty;
 
         public DateTime Time { get; set; }
         public Donor ?Donor { get; set; }
         public int DonorId { get; set; }
+        public string Status { get; set; } = "Confirmed";
+        public DateTime CreatedAt { get; set; } = DateTime.Now;
     }
 }
