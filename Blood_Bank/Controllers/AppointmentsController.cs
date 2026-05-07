@@ -1,11 +1,12 @@
 ﻿using Blood_Bank.Data;
 using Blood_Bank.DTO;
 using Blood_Bank.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace Blood_Bank.Controllers
 {
@@ -79,6 +80,36 @@ namespace Blood_Bank.Controllers
             await _context.SaveChangesAsync();
 
             return Ok(new { message = "Appointment cancelled." });
+        }
+
+        [HttpGet("donation-history")]
+        [Authorize]
+        public async Task<ActionResult> GetDonationHistory()
+        {
+            var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+
+            var history = await _context.Appointments
+                .Where(a => a.DonorId == userId && (a.Status == "Completed" || a.AppointmentDate < DateTime.Now))
+                .OrderByDescending(a => a.AppointmentDate) 
+                .Select(a => new {
+                    a.Id,
+                    a.AppointmentDate,
+                    a.CenterName,
+                    a.CenterAddress,
+                    a.Status,
+                    type = "Whole Blood",
+                    volume = "450 ml"
+                })
+                .ToListAsync();
+
+            var stats = new
+            {
+                totalDonations = history.Count,
+                totalVolume = (history.Count * 450) + " ml",
+                livesImpacted = history.Count * 3
+            };
+
+            return Ok(new { history, stats });
         }
     }
 }

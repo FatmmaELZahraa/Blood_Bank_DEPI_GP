@@ -10,8 +10,16 @@
         public Reward? Reward { get; set; }
         public ICollection<Appointment> ?Appointments { get; set; }  
         public ICollection<Notification> ?Notifications { get; set; }
+        public string CurrentLevel => Points switch
+        {
+            >= 5000 => "Diamond",
+            >= 3000 => "Platinum",
+            >= 2000 => "Gold",
+            >= 1000 => "Silver",
+            _ => "Bronze"
+        };
 
-        
+
 
     }
 }

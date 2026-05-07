@@ -28,11 +28,13 @@
 
 //app.Run();
 
-using System.Text;
 using Blood_Bank.Data;
+using Blood_Bank.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using Blood_Bank.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -42,6 +44,7 @@ builder.Services.AddControllers();
 // ربط قاعدة البيانات SQL Server
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
 
 // 2. إعداد المصادقة باستخدام JWT
 var jwtSettings = builder.Configuration.GetSection("Jwt");
@@ -74,7 +77,7 @@ builder.Services.AddCors(options =>
                         .AllowAnyMethod()
                         .AllowAnyHeader());
 });
-
+builder.Services.AddScoped<IEmailService, EmailService>();
 var app = builder.Build();
 
 // 4. إعداد Pipeline التشغيل
