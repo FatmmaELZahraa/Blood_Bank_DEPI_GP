@@ -80,12 +80,14 @@ console.log("تم الحفظ بنجاح في LocalStorage!");
         <input
           type="password"
           placeholder="Enter your password"
-          className="w-full mb-6 p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#c20000] font-serif"
+          className="w-full mb-3 p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#c20000] font-serif"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
         />
-
+<Link href="/forgot-password" className="text-sm text-[#c20000] hover:underline font-serif mb-6">
+          Forgot Password?
+        </Link>
         <button
           type="submit"
           className="w-full bg-[#c20000] text-white p-3 rounded-lg hover:bg-[#c20000] transition font-serif"
