@@ -799,7 +799,6 @@ interface SmartDonorResult {
   probability: number;
 }
 
-// ✅ Explicit default export for Next.js App Router page
 export default function IntegratedBloodServicesDashboard() {
   const [mounted, setMounted] = useState(false);
 
@@ -979,29 +978,7 @@ export default function IntegratedBloodServicesDashboard() {
           </CardContent>
         </Card>
 
-        {/* SECTION 2: BASIC ELIGIBILITY */}
-        {/* <Card className="shadow-lg border-t-4 border-blue-500">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2"><User className="text-blue-500"/> Basic Donor Screening</CardTitle>
-            <CardDescription>Physical condition baseline check</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="grid grid-cols-2 gap-3">
-              <div className="space-y-1"><Label>Age</Label><Input type="number" value={donorData.age} onChange={(e)=>setDonorData({...donorData, age: e.target.value})}/></div>
-              <div className="space-y-1"><Label>Weight (kg)</Label><Input type="number" value={donorData.weight} onChange={(e)=>setDonorData({...donorData, weight: e.target.value})}/></div>
-            </div>
-            <div className="flex items-center gap-2 p-3 bg-slate-50 rounded-lg border">
-              <input type="checkbox" id="chronic" checked={donorData.chronic} onChange={()=>setDonorData({...donorData, chronic: !donorData.chronic})} className="w-4 h-4 accent-blue-600" />
-              <Label htmlFor="chronic" className="text-sm cursor-pointer">Any Chronic Diseases?</Label>
-            </div>
-            <Button onClick={checkEligibility} variant="outline" className="w-full border-blue-600 text-blue-600 hover:bg-blue-50">Verify Donor</Button>
-            {eligibilityResult && (
-              <div className={`p-3 rounded-lg text-center font-bold text-sm ${eligibilityResult.status === "Accepted" ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"}`}>
-                {eligibilityResult.message}
-              </div>
-            )}
-          </CardContent>
-        </Card> */}
+     
 
         {/* SECTION 3: SMART AI DONOR MATCH */}
         <Card className="shadow-lg border-t-4 border-green-500">
@@ -1102,6 +1079,35 @@ export default function IntegratedBloodServicesDashboard() {
                   {prediction === 1 ? "⚠️ CRITICAL SHORTAGE" : "✅ STABLE SUPPLY"}
                </div>
              )}
+
+             <button onClick={()=>setPrediction(null)} className="w-full mt-2 bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 rounded-lg transition duration-200">Send Emails to Top Donors</button>
+          
+          </CardContent>
+        </Card>
+           {/* SECTION 4: Save Best Donors to Send Emails within Shortage Period */}
+        <Card className="shadow-lg border-t-4 border-blue-500">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2"><User className="text-blue-500"/>Top Donors Registration</CardTitle>
+            <CardDescription>After Check AI Donor Match</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="grid grid-cols-2 gap-3">
+              <div className="space-y-1"><Label>Name</Label><Input type="text" value={donorData.age} onChange={(e)=>setDonorData({...donorData, age: e.target.value})}/></div>
+              <div className="space-y-1"><Label>Email</Label><Input type="number" value={donorData.weight} onChange={(e)=>setDonorData({...donorData, weight: e.target.value})}/></div>
+              <div className="space-y-1"><Label>Blood Type</Label><Input type="text" value={donorData.age} onChange={(e)=>setDonorData({...donorData, age: e.target.value})}/></div>
+              <div className="space-y-1"><Label>Address</Label><Input type="number" value={donorData.weight} onChange={(e)=>setDonorData({...donorData, weight: e.target.value})}/></div>
+              <div className="space-y-1"><Label>Phone</Label><Input type="number" value={donorData.weight} onChange={(e)=>setDonorData({...donorData, weight: e.target.value})}/></div>
+              <div className="space-y-1"><Label>Last Donation</Label><Input type="number" value={donorData.weight} onChange={(e)=>setDonorData({...donorData, weight: e.target.value})}/></div>
+
+
+            </div>
+           
+            <Button onClick={checkEligibility} variant="outline" className="w-full border-blue-600 text-blue-600 hover:bg-blue-500">Save Donor</Button>
+            {eligibilityResult && (
+              <div className={`p-3 rounded-lg text-center font-bold text-sm ${eligibilityResult.status === "Accepted" ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"}`}>
+                {eligibilityResult.message}
+              </div>
+            )}
           </CardContent>
         </Card>
 

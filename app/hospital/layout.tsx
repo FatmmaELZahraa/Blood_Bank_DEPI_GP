@@ -170,8 +170,8 @@ export default function HospitalLayout({
           {/* Desktop Header */}
           <div className="mb-6 hidden items-center justify-between lg:flex">
             <div>
-              <h1 className="text-2xl font-bold text-foreground">Hospital Dashboard</h1>
-              <p className="text-muted-foreground">Manage blood inventory and requests</p>
+              <h1 className="text-2xl font-bold text-foreground font-serif">Check Eligibility Dashboard</h1>
+              <p className="text-muted-foreground font-serif">Manage blood inventory and requests</p>
             </div>
             <div className="flex items-center gap-4">
               
