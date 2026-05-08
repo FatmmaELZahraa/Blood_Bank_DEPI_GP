@@ -34,19 +34,16 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using Blood_Bank.Services;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
-// 1. إضافة الخدمات الأساسية
 builder.Services.AddControllers();
 
-// ربط قاعدة البيانات SQL Server
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 
-// 2. إعداد المصادقة باستخدام JWT
 var jwtSettings = builder.Configuration.GetSection("Jwt");
 var key = Encoding.UTF8.GetBytes(jwtSettings["Key"]);
 
@@ -69,11 +66,10 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
-// 3. تحديث خدمة CORS (تحديد الرابط بدقة بدلاً من AnyOrigin)
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowNextJS",
-        policy => policy.WithOrigins("http://localhost:3000") // حددي رابط تطبيقك هنا
+        policy => policy.WithOrigins("http://localhost:3000") 
                         .AllowAnyMethod()
                         .AllowAnyHeader());
 });

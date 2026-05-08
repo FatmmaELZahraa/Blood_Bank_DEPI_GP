@@ -4,7 +4,6 @@ using Blood_Bank.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 
@@ -20,7 +19,6 @@ namespace Blood_Bank.Controllers
         {
             _context = context;
         }
-        // 1. Get all upcoming appointments for the logged-in Donor
         [HttpGet("my-appointments")]
         public async Task<ActionResult<IEnumerable<Appointment>>> GetMyAppointments()
         {
@@ -36,12 +34,42 @@ namespace Blood_Bank.Controllers
         }
 
         // 2. Book a new appointment
+        //[HttpPost("book")]
+        //public async Task<ActionResult> BookAppointment(BookAppointmentDto dto)
+        //{
+        //    var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+
+        //    var donor = await _context.Donors.FindAsync(userId);
+        //    if (donor == null) return BadRequest("Only Donors can book appointments.");
+
+        //    bool alreadyBooked = await _context.Appointments
+        //        .AnyAsync(a => a.DonorId == userId && a.AppointmentDate.Date == dto.AppointmentDate.Date && a.Status == "Confirmed");
+
+        //    if (alreadyBooked)
+        //        return BadRequest("You already have a confirmed appointment on this date.");
+
+        //    var newAppointment = new Appointment
+        //    {
+        //        DonorId = userId,
+        //        Location = dto.Location,
+        //        CenterName = dto.CenterName,
+        //        CenterAddress = dto.CenterAddress,
+        //        AppointmentDate = dto.AppointmentDate,
+        //        TimeSlot = dto.TimeSlot,
+        //        Status = "Confirmed"
+        //    };
+
+        //    _context.Appointments.Add(newAppointment);
+        //    await _context.SaveChangesAsync();
+
+        //    return Ok(new { message = "Appointment booked successfully!", appointmentId = newAppointment.Id });
+        //}
         [HttpPost("book")]
         public async Task<ActionResult> BookAppointment(BookAppointmentDto dto)
         {
             var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
-
             var donor = await _context.Donors.FindAsync(userId);
+
             if (donor == null) return BadRequest("Only Donors can book appointments.");
 
             bool alreadyBooked = await _context.Appointments
@@ -58,13 +86,17 @@ namespace Blood_Bank.Controllers
                 CenterAddress = dto.CenterAddress,
                 AppointmentDate = dto.AppointmentDate,
                 TimeSlot = dto.TimeSlot,
-                Status = "Confirmed"
+                Status = "Completed" 
             };
+
+            donor.Points += 1000;
+            donor.TotalDonations += 1;
+            donor.LastDonationDate = dto.AppointmentDate;
 
             _context.Appointments.Add(newAppointment);
             await _context.SaveChangesAsync();
 
-            return Ok(new { message = "Appointment booked successfully!", appointmentId = newAppointment.Id });
+            return Ok(new { message = "Appointment booked and 1000 points granted!", points = donor.Points });
         }
 
         // 3. Cancel an appointment
@@ -87,10 +119,28 @@ namespace Blood_Bank.Controllers
         public async Task<ActionResult> GetDonationHistory()
         {
             var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+            var donor = await _context.Donors.FindAsync(userId);
+
+            // 1. العثور على المواعيد التي مر تاريخها ولم يتم تحديثها بعد
+            var pastConfirmedAppointments = await _context.Appointments
+                .Where(a => a.DonorId == userId && a.Status == "Confirmed" && a.AppointmentDate < DateTime.Now)
+                .ToListAsync();
+
+            // 2. تحديث النقاط تلقائياً لكل موعد مر تاريخه
+            if (pastConfirmedAppointments.Any() && donor != null)
+            {
+                foreach (var apt in pastConfirmedAppointments)
+                {
+                    apt.Status = "Completed";
+                    donor.Points += 1000;
+                    donor.TotalDonations += 1;
+                }
+                await _context.SaveChangesAsync();
+            }
 
             var history = await _context.Appointments
-                .Where(a => a.DonorId == userId && (a.Status == "Completed" || a.AppointmentDate < DateTime.Now))
-                .OrderByDescending(a => a.AppointmentDate) 
+                .Where(a => a.DonorId == userId && a.Status == "Completed")
+                .OrderByDescending(a => a.AppointmentDate)
                 .Select(a => new {
                     a.Id,
                     a.AppointmentDate,
@@ -104,12 +154,41 @@ namespace Blood_Bank.Controllers
 
             var stats = new
             {
-                totalDonations = history.Count,
+                totalDonations = donor?.TotalDonations ?? 0,
                 totalVolume = (history.Count * 450) + " ml",
-                livesImpacted = history.Count * 3
+                livesImpacted = (donor?.TotalDonations ?? 0) * 3
             };
 
             return Ok(new { history, stats });
         }
+        //[HttpGet("donation-history")]
+        //[Authorize]
+        //public async Task<ActionResult> GetDonationHistory()
+        //{
+        //    var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+
+        //    var history = await _context.Appointments
+        //        .Where(a => a.DonorId == userId && (a.Status == "Completed" || a.AppointmentDate < DateTime.Now))
+        //        .OrderByDescending(a => a.AppointmentDate) 
+        //        .Select(a => new {
+        //            a.Id,
+        //            a.AppointmentDate,
+        //            a.CenterName,
+        //            a.CenterAddress,
+        //            a.Status,
+        //            type = "Whole Blood",
+        //            volume = "450 ml"
+        //        })
+        //        .ToListAsync();
+
+        //    var stats = new
+        //    {
+        //        totalDonations = history.Count,
+        //        totalVolume = (history.Count * 450) + " ml",
+        //        livesImpacted = history.Count * 3
+        //    };
+
+        //    return Ok(new { history, stats });
+        //}
     }
 }
