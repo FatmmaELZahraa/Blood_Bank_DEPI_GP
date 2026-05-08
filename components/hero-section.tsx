@@ -40,7 +40,7 @@ export function HeroSection() {
   size="lg"
   className="gap-2 bg-red-600 hover:bg-red-700 text-white shadow-md transition-all duration-300 hover:scale-105"
 >
-  <Link href="/donor">
+  <Link href="/login">
     <Droplet className="h-5 w-5" />
     Become a Donor
   </Link>

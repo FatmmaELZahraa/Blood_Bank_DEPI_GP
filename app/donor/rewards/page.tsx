@@ -278,7 +278,7 @@ export default function RewardsPage() {
   }
 
   // CONNECTION LOGIC
-  const handleRedeem = async (rewardId: number, cost: number) => {
+ const handleRedeem = async (rewardId: number, cost: number) => {
     const token = localStorage.getItem("token")
     
     if (userPointsData.totalPoints < cost) {
@@ -288,7 +288,7 @@ export default function RewardsPage() {
 
     if (!confirm("Are you sure you want to redeem this reward?")) return;
 
-    setIsRedeeming(rewardId) // Start loading spinner on button
+    setIsRedeeming(rewardId) 
 
     try {
       const response = await fetch(`http://localhost:5004/api/Rewards/redeem/${rewardId}`, {
@@ -297,20 +297,22 @@ export default function RewardsPage() {
           "Content-Type": "application/json",
           "Authorization": `Bearer ${token}` 
         },
-        body: JSON.stringify(cost) // Sending cost to backend for verification
+        body: JSON.stringify(cost) // يرسل التكلفة كـ Number داخل الـ Body
       })
 
+      const result = await response.json(); // محاولة قراءة الرد كـ JSON
+
       if (response.ok) {
-        alert("Reward Redeemed Successfully!")
-        await fetchUserPoints() // Refresh points and progress bar
+        alert(result.message || "Reward Redeemed Successfully!")
+        await fetchUserPoints() 
       } else {
-        const error = await response.text()
-        alert(error || "Failed to redeem reward")
+        // عرض رسالة الخطأ القادمة من الـ Backend (مثل "Insufficient points")
+        alert(result.message || result || "Failed to redeem reward")
       }
     } catch (err) {
       alert("Server error. Please check if backend is running.")
     } finally {
-      setIsRedeeming(null) // Stop loading
+      setIsRedeeming(null)
     }
   }
 
