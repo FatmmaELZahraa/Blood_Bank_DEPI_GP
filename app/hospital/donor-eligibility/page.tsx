@@ -844,7 +844,7 @@ export default function IntegratedBloodServicesDashboard() {
     const formData = new FormData(); 
     formData.append('image', selectedFile);
     try {
-      const res = await fetch('http://127.0.0.1:7000/analyze-blood', { method: 'POST', body: formData });
+      const res = await fetch('http://127.0.0.1:7860/analyze-blood', { method: 'POST', body: formData });
       if (!res.ok) throw new Error("Failed to fetch");
       const data = await res.json();
       setAnalysisResult(data);

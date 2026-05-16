@@ -7,11 +7,3 @@ numpy==2.4.4
 pillow==12.2.0
 requests==2.33.1
 psutil==7.2.2
-/////////////////////////Backend///////////////////////
-BCrypt.Net-Next
-MailKit
-Microsoft.ASPNetCore.Authentication.JwtBearer
-EntityFrameworkCore
-EntityFrameworkCore.SqlServer
-EntityFrameworkCore.Tools
-EntityFrameworkCore.Design
