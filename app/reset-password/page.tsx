@@ -9,7 +9,7 @@ import { ShieldCheck, Loader2 } from "lucide-react"
 
 export default function ResetPassword() {
   const searchParams = useSearchParams();
- const token = searchParams?.get("token") ?? "";
+  const token = searchParams?.get("token") ?? "";
  if (!token) {
   alert("Invalid reset link");
   return;
