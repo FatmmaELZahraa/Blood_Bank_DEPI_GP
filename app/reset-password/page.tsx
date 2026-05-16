@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect  } from "react"
 import { useSearchParams, useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -9,7 +9,11 @@ import { ShieldCheck, Loader2 } from "lucide-react"
 
 export default function ResetPassword() {
   const searchParams = useSearchParams();
-  const token = searchParams.get("token");
+ const token = searchParams?.get("token") ?? "";
+ if (!token) {
+  alert("Invalid reset link");
+  return;
+}
   const router = useRouter();
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
