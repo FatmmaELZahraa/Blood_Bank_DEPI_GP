@@ -903,35 +903,51 @@ export default function IntegratedBloodServicesDashboard() {
   };
 
   // --- Functions: 4. Shortage Prediction ---
-  const handlePredictShortage = async () => {
-    setPredictionLoading(true);
-    const payload = new Array(18).fill(0);
-    payload[1] = new Date().getMonth() + 1; // Current month
-    payload[3] = Number(shortageData.availableUnits);
-    payload[4] = Number(shortageData.prevDayStock);
-    payload[5] = Number(shortageData.donatedUnits);
-    payload[6] = Number(shortageData.requestedUnits);
-    payload[7] = Number(shortageData.donorCount);
-    payload[8] = Number(shortageData.hospitalRequests);
-    payload[9] = Number(shortageData.emergencyCases);
-    payload[10] = Number(shortageData.isHoliday);
-    payload[11] = Number(shortageData.specialEvent);
+ const handlePredictShortage = async () => {
+  setPredictionLoading(true);
 
-    try {
-      const res = await fetch("http://127.0.0.1:4000/predict", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ data: payload }),
-      });
-      if (!res.ok) throw new Error("Failed to fetch");
-      const result = await res.json();
-      setPrediction(result.prediction);
-    } catch { 
-      console.error("Prediction failed. Is port 6000 running?"); 
-    } finally { 
-      setPredictionLoading(false); 
-    }
-  };
+  // 1. تجهيز الـ 8 خانات لفصائل الدم (بناءً على الفصيلة المختارة، الافتراضي هنا A+)
+  // الترتيب الأبجدي الافتراضي لـ get_dummies هو: A+, A-, AB+, AB-, B+, B-, O+, O-
+  const bloodTypeArray = [0, 0, 0, 0, 0, 0, 0, 0];
+  if (shortageData.bloodType === "A+")   bloodTypeArray[0] = 1;
+  if (shortageData.bloodType === "A-")   bloodTypeArray[1] = 1;
+  if (shortageData.bloodType === "AB+")  bloodTypeArray[2] = 1;
+  if (shortageData.bloodType === "AB-")  bloodTypeArray[3] = 1;
+  if (shortageData.bloodType === "B+")   bloodTypeArray[4] = 1;
+  if (shortageData.bloodType === "B-")   bloodTypeArray[5] = 1;
+  if (shortageData.bloodType === "O+")   bloodTypeArray[6] = 1;
+  if (shortageData.bloodType === "O-")   bloodTypeArray[7] = 1;
+
+  // 2. بناء الـ payload بالترتيب الدقيق اللي الموديل مستنيه
+  const payload = [
+    new Date().getMonth() + 1,                     // 1. month
+    Number(shortageData.availableUnits) || 0,      // 2. available_units
+    Number(shortageData.prevDayStock) || 0,        // 3. previous_day_stock
+    Number(shortageData.donatedUnits) || 0,        // 4. donated_units
+    Number(shortageData.requestedUnits) || 0,      // 5. requested_units
+    Number(shortageData.donorCount) || 0,          // 6. donor_count
+    Number(shortageData.hospitalRequests) || 3,    // 7. hospital_requests (حطينا 3 كقيمة افتراضية)
+    Number(shortageData.emergencyCases) || 0,      // 8. emergency_cases
+    Number(shortageData.isHoliday) || 0,           // 9. is_holiday
+    Number(shortageData.specialEvent) || 0,        // 10. special_event
+    ...bloodTypeArray                              // من 11 لـ 18: فصائل الدم
+  ];
+
+  try {
+    const res = await fetch("https://maalaak-blood-shortage-api.hf.space/predict", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ data: payload }),
+    });
+    if (!res.ok) throw new Error("Failed to fetch");
+    const result = await res.json();
+    setPrediction(result.prediction);
+  } catch { 
+    console.error("Prediction failed. Is Hugging Face Space running?"); 
+  } finally { 
+    setPredictionLoading(false); 
+  }
+};
 
   // Prevents hydration mismatches
   if (!mounted) return null;
@@ -1047,6 +1063,7 @@ export default function IntegratedBloodServicesDashboard() {
         </Card>
 
         {/* SECTION 4: SHORTAGE PREDICTION */}
+        {/* SECTION 4: SHORTAGE PREDICTION */}
         <Card className="shadow-lg border-t-4 border-black">
           <CardHeader>
             <CardTitle className="flex items-center gap-2"><TrendingUp /> Shortage Forecast</CardTitle>
@@ -1061,19 +1078,38 @@ export default function IntegratedBloodServicesDashboard() {
                 <Input placeholder="Donor Count" type="number" onChange={(e)=>setShortageData({...shortageData, donorCount: e.target.value})} />
                 <Input placeholder="Emergency Cases" type="number" onChange={(e)=>setShortageData({...shortageData, emergencyCases: e.target.value})} />
              </div>
-             <div className="grid grid-cols-2 gap-2">
+             
+             {/* تم تغيير التقسيم هنا لـ grid-cols-3 لإضافة قائمة فصائل الدم بشكل متناسق */}
+             <div className="grid grid-cols-3 gap-2">
+               <Select value={shortageData.bloodType} onValueChange={(v)=>setShortageData({...shortageData, bloodType: v})}>
+                 <SelectTrigger className="text-sm"><SelectValue placeholder="Blood Type" /></SelectTrigger>
+                 <SelectContent>
+                   <SelectItem value="A+">A+</SelectItem>
+                   <SelectItem value="A-">A-</SelectItem>
+                   <SelectItem value="AB+">AB+</SelectItem>
+                   <SelectItem value="AB-">AB-</SelectItem>
+                   <SelectItem value="B+">B+</SelectItem>
+                   <SelectItem value="B-">B-</SelectItem>
+                   <SelectItem value="O+">O+</SelectItem>
+                   <SelectItem value="O-">O-</SelectItem>
+                 </SelectContent>
+               </Select>
+
                <Select value={shortageData.isHoliday} onValueChange={(v)=>setShortageData({...shortageData, isHoliday: v})}>
                  <SelectTrigger className="text-sm"><SelectValue placeholder="Holiday?" /></SelectTrigger>
                  <SelectContent><SelectItem value="0">Work Day</SelectItem><SelectItem value="1">Holiday</SelectItem></SelectContent>
                </Select>
+
                <Select value={shortageData.specialEvent} onValueChange={(v)=>setShortageData({...shortageData, specialEvent: v})}>
                  <SelectTrigger className="text-sm"><SelectValue placeholder="Event?" /></SelectTrigger>
                  <SelectContent><SelectItem value="0">Normal</SelectItem><SelectItem value="1">Special Event</SelectItem></SelectContent>
                </Select>
              </div>
+
              <Button onClick={handlePredictShortage} disabled={predictionLoading} className="w-full bg-black text-white hover:bg-gray-800">
                 {predictionLoading ? "Predicting..." : "Predict Shortage Risk"}
              </Button>
+
              {prediction !== null && (
                <div className={`p-4 rounded-xl border-2 text-center font-black animate-bounce mt-2 ${prediction === 1 ? "bg-red-600 text-white border-red-800" : "bg-green-600 text-white border-green-800"}`}>
                   {prediction === 1 ? "⚠️ CRITICAL SHORTAGE" : "✅ STABLE SUPPLY"}
