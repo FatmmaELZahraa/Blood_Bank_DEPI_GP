@@ -18,7 +18,7 @@ export default function SignUpPage() {
 
     try {
       // Ensure the port (e.g., 5004) matches your running .NET API
-      const response = await fetch("http://bloodlinknetwork2.runasp.net/api/Auth/register", {
+      const response = await fetch("http://localhost:5004/api/Auth/register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
