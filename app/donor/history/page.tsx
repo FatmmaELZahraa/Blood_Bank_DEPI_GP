@@ -22,7 +22,7 @@ export default function DonationHistoryPage() {
   const fetchHistory = async () => {
     const token = localStorage.getItem("token");
     try {
-      const response = await fetch("https://bloodnetwork.runasp.net/api/Appointments/donation-history", {
+      const response = await fetch("https://bloodlinknetwork2.runasp.net/api/Appointments/donation-history", {
         headers: { "Authorization": `Bearer ${token}` }
       });
       if (response.ok) {

@@ -15,7 +15,7 @@ export default function LoginPage() {
     setError(""); 
 
     try {
-      const response = await fetch("https://bloodnetwork.runasp.net/api/auth/login", { 
+      const response = await fetch("https://bloodlinknetwork2.runasp.net/api/auth/login", { 
         method: "POST",
         headers: {
           "Content-Type": "application/json",
