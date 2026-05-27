@@ -263,7 +263,7 @@ export default function RewardsPage() {
   const fetchUserPoints = async () => {
     const token = localStorage.getItem("token")
     try {
-      const response = await fetch("http://bloodlinknetwork2.runasp.net/api/Rewards/user-points", {
+      const response = await fetch("http://localhost:5004/api/Rewards/user-points", {
         headers: { "Authorization": `Bearer ${token}` }
       })
       if (response.ok) {
@@ -291,7 +291,7 @@ export default function RewardsPage() {
     setIsRedeeming(rewardId) 
 
     try {
-      const response = await fetch(`http://bloodlinknetwork2.runasp.net/api/Rewards/redeem/${rewardId}`, {
+      const response = await fetch(`http://localhost:5004/api/Rewards/redeem/${rewardId}`, {
         method: "POST",
         headers: { 
           "Content-Type": "application/json",
