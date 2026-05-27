@@ -14,7 +14,7 @@ export default function ForgotPassword() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    const res = await fetch("https://bloodlinknetwork2.runasp.net/api/Auth/forgot-password", {
+    const res = await fetch("https://bloodnetwork.runasp.net/api/Auth/forgot-password", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email })

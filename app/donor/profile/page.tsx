@@ -25,7 +25,7 @@ export default function ProfilePage() {
           return;
         }
 
-        const response = await fetch("https://bloodlinknetwork2.runasp.net/api/Auth/profile", {
+        const response = await fetch("https://bloodnetwork.runasp.net/api/Auth/profile", {
           headers: {
             "Authorization": `Bearer ${token}` // Send JWT to secure endpoint
           }

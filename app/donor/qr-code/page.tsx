@@ -299,7 +299,7 @@ export default function QRCodePage() {
       }
 
       try {
-        const response = await fetch("https://bloodlinknetwork2.runasp.net/api/Auth/profile", {
+        const response = await fetch("https://bloodnetwork.runasp.net/api/Auth/profile", {
           headers: {
             "Authorization": `Bearer ${token}`
           }
