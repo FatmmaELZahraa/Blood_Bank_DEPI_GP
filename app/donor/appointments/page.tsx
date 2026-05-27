@@ -292,7 +292,7 @@ export default function AppointmentsPage() {
   const fetchAppointments = async () => {
     const token = localStorage.getItem("token")
     try {
-      const response = await fetch("http://localhost:5004/api/Appointments/my-appointments", {
+      const response = await fetch("http://bloodlinknetwork2.runasp.net/api/Appointments/my-appointments", {
         headers: { "Authorization": `Bearer ${token}` }
       })
       if (response.ok) {
@@ -313,7 +313,7 @@ export default function AppointmentsPage() {
     if (!center || !selectedDate || !selectedTime) return
 
     try {
-      const response = await fetch("http://localhost:5004/api/Appointments/book", {
+      const response = await fetch("http://bloodlinknetwork2.runasp.net/api/Appointments/book", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -346,7 +346,7 @@ export default function AppointmentsPage() {
     if (!confirm("Are you sure you want to cancel?")) return
 
     try {
-      const response = await fetch(`http://localhost:5004/api/Appointments/cancel/${id}`, {
+      const response = await fetch(`http://bloodlinknetwork2.runasp.net/api/Appointments/cancel/${id}`, {
         method: "DELETE",
         headers: { "Authorization": `Bearer ${token}` }
       })

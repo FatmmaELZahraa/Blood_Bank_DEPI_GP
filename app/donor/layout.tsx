@@ -276,7 +276,7 @@ export default function DonorLayout({
       }
 
       try {
-        const response = await fetch("http://localhost:5004/api/Auth/profile", {
+        const response = await fetch("http://bloodlinknetwork2.runasp.net/api/Auth/profile", {
           headers: {
             "Authorization": `Bearer ${token}` //
           }

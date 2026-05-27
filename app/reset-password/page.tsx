@@ -24,7 +24,7 @@ export default function ResetPassword() {
     if (password !== confirmPassword) return alert("Passwords do not match");
 
     setLoading(true);
-    const res = await fetch("http://localhost:5004/api/Auth/reset-password", {
+    const res = await fetch("http://bloodlinknetwork2.runasp.net/api/Auth/reset-password", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ token, newPassword: password })
