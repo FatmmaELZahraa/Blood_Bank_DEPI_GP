@@ -1,31 +1,30 @@
 ﻿namespace Blood_Bank.Data;
 
 
-using Blood_Bank.Models;
-using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Numerics;
 using System.Reflection.Emit;
 using System.Text;
+using Blood_Bank.Models;
+using Microsoft.EntityFrameworkCore;
 
 
     public class AppDbContext:DbContext
     {
     public DbSet<User> User { get; set; }
-    public DbSet<Admin> Admin { get; set; }
+    public DbSet<Admin> Admins { get; set; }
     public DbSet<Donor> Donors { get; set; }
     public DbSet<Appointment> Appointments { get; set; }
     public DbSet<Reward> Rewards { get; set; }
     public DbSet<Notification> Notifications { get; set; }
     public DbSet<Hospital> Hospitals { get; set; }
     public DbSet<BloodRequest> BloodRequests { get; set; }
+    public DbSet<SosRequest> SosRequests { get; set; }
     public DbSet<BloodBank> BloodBank { get; set; }
     public DbSet<Inventory> inventories { get; set; }
     public DbSet<BloodUnit> BloodUnits { get; set; }
-
-
-
-
+    public object Admin { get; internal set; }
 
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
@@ -56,12 +55,12 @@ using System.Text;
         modelBuilder.Entity<Donor>(entity =>
         {
             //entity.HasKey(e => e.UserID);
-            
+
             entity.Property(e => e.BloodType).IsRequired().HasMaxLength(3);
             entity.Property(e => e.MedicalHistory).IsRequired();
             entity.Property(e => e.LastDonationDate).IsRequired();
             entity.Property(e => e.TotalDonations).IsRequired();
-           
+
         });
 
 
@@ -103,28 +102,46 @@ using System.Text;
 
         modelBuilder.Entity<Hospital>(entity =>
         {
-            entity.Property(e => e.HospitalName).IsRequired().HasMaxLength(150);
-            entity.Property(e => e.address).IsRequired().HasMaxLength(250);
+
+            entity.Property(e => e.Name)
+                .IsRequired()
+                .HasMaxLength(150);
+
+            entity.Property(e => e.Address)
+                .IsRequired()
+                .HasMaxLength(250);
+
+
+            entity.Property(e => e.phone)
+                .HasMaxLength(20);
+
+            entity.Property(e => e.CreatedAt)
+                .HasDefaultValueSql("GETUTCDATE()");
         });
 
         modelBuilder.Entity<BloodRequest>(entity =>
         {
             entity.HasKey(e => e.RequestId);
+            entity.Property(e => e.BloodType).IsRequired().HasMaxLength(5);
+            entity.Property(e => e.Quantity).IsRequired();
+            entity.Property(e => e.Notes)
+                .HasMaxLength(500);
+            entity.Property(e => e.priority)
+                .IsRequired();
 
-            entity.Property(e => e.BloodType).IsRequired().HasMaxLength(3);
+            entity.Property(e => e.Status)
+                .IsRequired();
+            entity.Property(e => e.RequestDate)
+                .IsRequired();
 
-            entity.Property(e => e.Quantity).IsRequired().HasColumnType("decimal(18,2)");
+            entity.HasOne(e => e.Hospital)
+                .WithMany(h => h.BloodRequests)
+                .HasForeignKey(e => e.UserID)
+               .OnDelete(DeleteBehavior.NoAction);
 
-            entity.Property(e => e.Status).IsRequired().HasDefaultValue("Pending").HasMaxLength(20);
 
-            entity.Property(e => e.RequestDate).IsRequired().HasDefaultValueSql("GETDATE()");
-
-            entity.HasMany(r => r.Hospital)
-                  .WithMany(h => h.BloodRequests);
-
-            entity.HasMany(r => r.BloodBank)
-                  .WithMany(b => b.BloodRequests);
         });
+
 
         modelBuilder.Entity<BloodBank>(entity =>
         {
@@ -141,8 +158,8 @@ using System.Text;
         {
             entity.HasKey(e => e.InventoryId);
 
-            entity.HasMany(i => i.bloodUnits)
-                  .WithOne(u => u.inventory)
+            entity.HasMany(i => i.BloodUnits)
+                  .WithOne(u => u.Inventory)
                   .HasForeignKey(u => u.InventoryId)
                   .OnDelete(DeleteBehavior.Cascade);
         });
@@ -154,7 +171,24 @@ using System.Text;
             entity.Property(e => e.Quantity).IsRequired().HasColumnType("decimal(18,2)");
             entity.Property(e => e.ExpiryDate).IsRequired();
         });
+        modelBuilder.Entity<SosRequest>(entity =>
+        {
+            entity.HasKey(e => e.SOSId);
+            entity.Property(e => e.BloodType).IsRequired().HasMaxLength(5);
+            entity.Property(e => e.Description)
+                .HasMaxLength(500);
+            entity.Property(e => e.Priority)
+                .IsRequired();
+            entity.Property(e => e.Units)
+                .IsRequired();
+            entity.Property(e => e.RequestDate)
+                .IsRequired();
+            entity.HasOne(e => e.Hospital)
+                .WithMany(h => h.SosRequests)
+                .HasForeignKey(e => e.HospitalId)
+                .OnDelete(DeleteBehavior.Cascade);
 
+        });
     }
 }
 

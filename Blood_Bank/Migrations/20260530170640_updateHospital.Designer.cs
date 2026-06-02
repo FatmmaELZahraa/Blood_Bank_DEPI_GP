@@ -4,6 +4,7 @@ using Blood_Bank.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Blood_Bank.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260530170640_updateHospital")]
+    partial class updateHospital
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -104,6 +107,9 @@ namespace Blood_Bank.Migrations
                     b.Property<string>("DoctorName")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("HospitalId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Notes")
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
@@ -118,9 +124,6 @@ namespace Blood_Bank.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("UserID")
-                        .HasColumnType("int");
-
                     b.Property<string>("patientName")
                         .HasColumnType("nvarchar(max)");
 
@@ -130,7 +133,7 @@ namespace Blood_Bank.Migrations
 
                     b.HasKey("RequestId");
 
-                    b.HasIndex("UserID");
+                    b.HasIndex("HospitalId");
 
                     b.ToTable("BloodRequests");
                 });
@@ -151,7 +154,7 @@ namespace Blood_Bank.Migrations
                     b.Property<DateTime>("ExpiryDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("HospitalUserID")
+                    b.Property<int?>("HospitalId")
                         .HasColumnType("int");
 
                     b.Property<int>("InventoryId")
@@ -162,11 +165,56 @@ namespace Blood_Bank.Migrations
 
                     b.HasKey("UnitId");
 
-                    b.HasIndex("HospitalUserID");
+                    b.HasIndex("HospitalId");
 
                     b.HasIndex("InventoryId");
 
                     b.ToTable("BloodUnits");
+                });
+
+            modelBuilder.Entity("Blood_Bank.Models.Hospital", b =>
+                {
+                    b.Property<int>("HospitalId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("HospitalId"));
+
+                    b.Property<string>("Address")
+                        .IsRequired()
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETUTCDATE()");
+
+                    b.Property<int>("CurrentUnits")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Email")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("HospitalName")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
+
+                    b.Property<string>("PasswordHash")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Phone")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<int>("TotalCapacity")
+                        .HasColumnType("int");
+
+                    b.HasKey("HospitalId");
+
+                    b.ToTable("Hospitals");
                 });
 
             modelBuilder.Entity("Blood_Bank.Models.Inventory", b =>
@@ -208,7 +256,7 @@ namespace Blood_Bank.Migrations
                     b.Property<int>("DonorId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("HospitalUserID")
+                    b.Property<int?>("HospitalId")
                         .HasColumnType("int");
 
                     b.Property<string>("Message")
@@ -222,7 +270,7 @@ namespace Blood_Bank.Migrations
 
                     b.HasIndex("DonorId");
 
-                    b.HasIndex("HospitalUserID");
+                    b.HasIndex("HospitalId");
 
                     b.ToTable("Notifications");
                 });
@@ -269,12 +317,11 @@ namespace Blood_Bank.Migrations
                     b.Property<int>("HospitalId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("HospitalUserID")
+                    b.Property<int?>("HospitalId1")
                         .HasColumnType("int");
 
-                    b.Property<string>("Priority")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("Priority")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("RequestDate")
                         .HasColumnType("datetime2");
@@ -286,7 +333,7 @@ namespace Blood_Bank.Migrations
 
                     b.HasIndex("HospitalId");
 
-                    b.HasIndex("HospitalUserID");
+                    b.HasIndex("HospitalId1");
 
                     b.ToTable("SosRequests");
                 });
@@ -311,8 +358,8 @@ namespace Blood_Bank.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(150)
-                        .HasColumnType("nvarchar(150)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("Password")
                         .IsRequired()
@@ -326,7 +373,6 @@ namespace Blood_Bank.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<int>("phone")
-                        .HasMaxLength(20)
                         .HasColumnType("int");
 
                     b.HasKey("UserID");
@@ -394,29 +440,6 @@ namespace Blood_Bank.Migrations
                     b.HasDiscriminator().HasValue("Donor");
                 });
 
-            modelBuilder.Entity("Blood_Bank.Models.Hospital", b =>
-                {
-                    b.HasBaseType("Blood_Bank.Models.User");
-
-                    b.Property<string>("Address")
-                        .IsRequired()
-                        .HasMaxLength(250)
-                        .HasColumnType("nvarchar(250)");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("GETUTCDATE()");
-
-                    b.Property<int>("CurrentUnits")
-                        .HasColumnType("int");
-
-                    b.Property<int>("TotalCapacity")
-                        .HasColumnType("int");
-
-                    b.HasDiscriminator().HasValue("Hospital");
-                });
-
             modelBuilder.Entity("BloodBankBloodRequest", b =>
                 {
                     b.HasOne("Blood_Bank.Models.BloodBank", null)
@@ -447,8 +470,8 @@ namespace Blood_Bank.Migrations
                 {
                     b.HasOne("Blood_Bank.Models.Hospital", "Hospital")
                         .WithMany("BloodRequests")
-                        .HasForeignKey("UserID")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .HasForeignKey("HospitalId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Hospital");
@@ -458,7 +481,7 @@ namespace Blood_Bank.Migrations
                 {
                     b.HasOne("Blood_Bank.Models.Hospital", null)
                         .WithMany("BloodUnits")
-                        .HasForeignKey("HospitalUserID");
+                        .HasForeignKey("HospitalId");
 
                     b.HasOne("Blood_Bank.Models.Inventory", "Inventory")
                         .WithMany("BloodUnits")
@@ -483,7 +506,7 @@ namespace Blood_Bank.Migrations
 
                     b.HasOne("Blood_Bank.Models.Hospital", null)
                         .WithMany("Notifications")
-                        .HasForeignKey("HospitalUserID");
+                        .HasForeignKey("HospitalId");
 
                     b.Navigation("BloodBank");
 
@@ -511,7 +534,7 @@ namespace Blood_Bank.Migrations
 
                     b.HasOne("Blood_Bank.Models.Hospital", null)
                         .WithMany("SOSRequests")
-                        .HasForeignKey("HospitalUserID");
+                        .HasForeignKey("HospitalId1");
 
                     b.Navigation("Hospital");
                 });
@@ -525,6 +548,19 @@ namespace Blood_Bank.Migrations
                         .IsRequired();
 
                     b.Navigation("Inventory");
+                });
+
+            modelBuilder.Entity("Blood_Bank.Models.Hospital", b =>
+                {
+                    b.Navigation("BloodRequests");
+
+                    b.Navigation("BloodUnits");
+
+                    b.Navigation("Notifications");
+
+                    b.Navigation("SOSRequests");
+
+                    b.Navigation("SosRequests");
                 });
 
             modelBuilder.Entity("Blood_Bank.Models.Inventory", b =>
@@ -546,19 +582,6 @@ namespace Blood_Bank.Migrations
                     b.Navigation("Notifications");
 
                     b.Navigation("Reward");
-                });
-
-            modelBuilder.Entity("Blood_Bank.Models.Hospital", b =>
-                {
-                    b.Navigation("BloodRequests");
-
-                    b.Navigation("BloodUnits");
-
-                    b.Navigation("Notifications");
-
-                    b.Navigation("SOSRequests");
-
-                    b.Navigation("SosRequests");
                 });
 #pragma warning restore 612, 618
         }

@@ -283,6 +283,19 @@ namespace Blood_Bank.Controllers
                 });
             }
 
+            // ✅ أضف الحالة دي
+            if (user is Hospital hospital)
+            {
+                return Ok(new
+                {
+                    name = hospital.Name,
+                    email = hospital.Email,
+                    phone = hospital.phone,
+                    role = "Hospital"
+                    // باقي الـ fields هتضيفيها لما تعمل Hospital actions
+                });
+            }
+
             return Ok(new { name = user.Name, email = user.Email, phone = user.phone, role = "Admin" });
         }
 
@@ -298,8 +311,26 @@ namespace Blood_Bank.Controllers
             User newUser;
             if (dto.Role.ToLower() == "admin")
             {
-                newUser = new Admin { Name = dto.Name, Email = dto.Email, Password = hashedPassword, phone = dto.Phone };
-                _context.Admin.Add((Admin)newUser);
+                newUser = new Admin
+                {
+                    Name = dto.Name,
+                    Email = dto.Email,
+                    Password = hashedPassword,
+                    phone = dto.Phone 
+                };
+                _context.Admins.Add((Admin)newUser);
+            }
+            else if (dto.Role.ToLower() == "hospital")
+            {
+                newUser = new Hospital
+                {
+                    Name = dto.Name,
+                    Email = dto.Email,
+                    Password = hashedPassword,
+                    phone = dto.Phone
+                };
+                _context.Hospitals.Add((Hospital)newUser);
+            
             }
             else
             {
@@ -315,26 +346,25 @@ namespace Blood_Bank.Controllers
                 Token = GenerateJwtToken(newUser, dto.Role)
             });
         }
+       [HttpPost("login")]
+public async Task<ActionResult> Login(LoginDto dto)
+{
+    var user = await _context.User.FirstOrDefaultAsync(u => u.Email == dto.Email);
 
-        [HttpPost("login")]
-        public async Task<ActionResult<AuthResponseDto>> Login(LoginDto dto)
-        {
-            var user = await _context.User.FirstOrDefaultAsync(u => u.Email == dto.Email);
+    if (user == null || !BCrypt.Net.BCrypt.Verify(dto.Password, user.Password))
+        return Unauthorized("Invalid login credentials.");
 
-            // التحقق من كلمة المرور المشفرة (BCrypt)
-            if (user == null || !BCrypt.Net.BCrypt.Verify(dto.Password, user.Password))
-                return Unauthorized("Invalid login credentials.");
+    string role = user is Admin ? "Admin" : user is Hospital ? "Hospital" : "Donor";
 
-            string role = user is Admin ? "Admin" : "Donor";
-
-            return Ok(new AuthResponseDto
-            {
-                Name = user.Name,
-                Role = role,
-                Token = GenerateJwtToken(user, role)
-            });
-        }
-
+    return Ok(new
+    {
+        name    = user.Name,
+        role    = role,
+        userId  = user.UserID,   
+        token   = GenerateJwtToken(user, role)
+    });
+}
+        
         [HttpPost("logout")]
         public IActionResult Logout() => Ok(new { message = "Logged out successfully" });
 

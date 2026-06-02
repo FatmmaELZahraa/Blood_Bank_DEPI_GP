@@ -13,9 +13,4 @@
         public DateTime? ResetTokenExpires { get; set; }
 
     }
-
-    public class  Admin:User
-    {
-        
-    }
 }

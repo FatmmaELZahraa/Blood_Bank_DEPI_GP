@@ -1,423 +1,352 @@
 "use client"
 
-import { useState } from "react"
-import { 
-  FileText, 
-  Plus,
-  Clock,
-  CheckCircle,
-  XCircle,
-  Filter,
-  Search
-} from "lucide-react"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { useState, useEffect } from "react"
+import { Plus, Loader2, AlertCircle, CheckCircle, Trash2 } from "lucide-react"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Textarea } from "@/components/ui/textarea"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import {
   Dialog,
   DialogContent,
   DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
-import { Label } from "@/components/ui/label"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
-import { Textarea } from "@/components/ui/textarea"
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "@/components/ui/tabs"
 
-// Mock requests data
-const requests = [
-  {
-    id: 1,
-    patient: "John Smith",
-    patientId: "PT-2026-001",
-    bloodType: "O+",
-    units: 2,
-    priority: "urgent",
-    department: "Emergency",
-    doctor: "Dr. Johnson",
-    status: "pending",
-    createdAt: "2026-03-16T10:30:00",
-    notes: "Emergency surgery scheduled"
-  },
-  {
-    id: 2,
-    patient: "Mary Johnson",
-    patientId: "PT-2026-002",
-    bloodType: "A+",
-    units: 3,
-    priority: "high",
-    department: "ICU",
-    doctor: "Dr. Williams",
-    status: "pending",
-    createdAt: "2026-03-16T09:15:00",
-    notes: "Post-operative care"
-  },
-  {
-    id: 3,
-    patient: "Robert Davis",
-    patientId: "PT-2026-003",
-    bloodType: "B+",
-    units: 4,
-    priority: "normal",
-    department: "Surgery",
-    doctor: "Dr. Brown",
-    status: "fulfilled",
-    createdAt: "2026-03-15T14:00:00",
-    fulfilledAt: "2026-03-15T15:30:00",
-    notes: "Scheduled transfusion"
-  },
-  {
-    id: 4,
-    patient: "Sarah Wilson",
-    patientId: "PT-2026-004",
-    bloodType: "AB-",
-    units: 2,
-    priority: "high",
-    department: "Oncology",
-    doctor: "Dr. Garcia",
-    status: "cancelled",
-    createdAt: "2026-03-14T11:00:00",
-    notes: "Surgery postponed"
-  }
-]
-
+const BASE = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5004"
 const bloodTypes = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"]
 
-function getPriorityBadge(priority: string) {
-  switch (priority) {
-    case "urgent":
-      return <Badge className="bg-destructive text-destructive-foreground">Urgent</Badge>
-    case "high":
-      return <Badge className="bg-amber-500 text-white">High</Badge>
-    default:
-      return <Badge variant="secondary">Normal</Badge>
-  }
+function getToken() {
+  return typeof window !== "undefined" ? localStorage.getItem("token") : null
 }
 
-function getStatusBadge(status: string) {
-  switch (status) {
-    case "pending":
-      return (
-        <Badge variant="outline" className="border-amber-500 text-amber-600">
-          <Clock className="mr-1 h-3 w-3" />
-          Pending
-        </Badge>
-      )
-    case "fulfilled":
-      return (
-        <Badge variant="outline" className="border-green-500 text-green-600">
-          <CheckCircle className="mr-1 h-3 w-3" />
-          Fulfilled
-        </Badge>
-      )
-    case "cancelled":
-      return (
-        <Badge variant="outline" className="border-muted-foreground text-muted-foreground">
-          <XCircle className="mr-1 h-3 w-3" />
-          Cancelled
-        </Badge>
-      )
-    default:
-      return null
-  }
+// ✅ FIX: reads "userId" (lowercase d) — matches what login page saves
+function getUserId(): number | null {
+  if (typeof window === "undefined") return null
+  const raw = localStorage.getItem("userId")
+  const id = Number(raw)
+  return id > 0 ? id : null
 }
 
-export default function RequestsPage() {
-  const [searchTerm, setSearchTerm] = useState("")
-  const [newRequest, setNewRequest] = useState({
-    patient: "",
-    patientId: "",
-    bloodType: "",
-    units: "",
-    priority: "",
-    department: "",
-    doctor: "",
-    notes: ""
+async function apiFetch(path: string, options: RequestInit = {}) {
+  const token = getToken()
+  const res = await fetch(`${BASE}${path}`, {
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      ...options.headers,
+    },
   })
+  if (res.status === 401) { window.location.href = "/login"; return }
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}))
+    console.error("API Error:", res.status, err)
+    throw new Error(err.error || "Request failed")
+  }
+  return res.status === 204 ? null : res.json()
+}
 
-  const pendingRequests = requests.filter(r => r.status === "pending")
-  const completedRequests = requests.filter(r => r.status !== "pending")
+interface BloodRequest {
+  requestId: number
+  bloodType: string
+  quantity: number
+  priority: string
+  status: string
+  requestDate: string
+  notes?: string
+  userID: number
+  hospital?: { userID: number; name: string }
+}
 
-  const filteredPending = pendingRequests.filter(r =>
-    r.patient.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    r.patientId.toLowerCase().includes(searchTerm.toLowerCase())
-  )
+export default function BloodRequestsPage() {
+  const [requests, setRequests]       = useState<BloodRequest[]>([])
+  const [loading, setLoading]         = useState(true)
+  const [error, setError]             = useState("")
+  const [open, setOpen]               = useState(false)
+  const [submitted, setSubmitted]     = useState(false)
+  const [submitting, setSubmitting]   = useState(false)
+  const [submitError, setSubmitError] = useState("")
 
-  const filteredCompleted = completedRequests.filter(r =>
-    r.patient.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    r.patientId.toLowerCase().includes(searchTerm.toLowerCase())
-  )
+  // Filter state — "all" بدل "" عشان SelectItem مش بيقبل empty string
+  const [filterStatus, setFilterStatus]       = useState("Pending")
+  const [filterBloodType, setFilterBloodType] = useState("all")
+  const [mounted, setMounted]                 = useState(false)
+
+  // Form state
+  const [bloodType, setBloodType]   = useState("")
+  const [quantity, setQuantity]     = useState("")
+  const [priority, setPriority]     = useState("")
+  const [notes, setNotes]           = useState("")
+
+  // Fix hydration: wait until client is mounted before reading localStorage
+  useEffect(() => { setMounted(true) }, [])
+  useEffect(() => { if (mounted) fetchRequests() }, [mounted, filterStatus, filterBloodType])
+
+  async function fetchRequests() {
+    try {
+      setLoading(true)
+      setError("")
+      const userId = getUserId()
+      if (!userId) { window.location.href = "/login"; return }
+
+      const params = new URLSearchParams({ UserID: String(userId) })
+      if (filterStatus !== "all")    params.set("status", filterStatus)
+      if (filterBloodType !== "all") params.set("bloodType", filterBloodType)
+
+      const data = await apiFetch(`/api/blood-requests?${params}`)
+      setRequests(data ?? [])
+    } catch (e: any) {
+      setError(e.message)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  async function handleSubmit() {
+    if (!bloodType || !quantity || !priority) {
+      setSubmitError("Blood type, quantity and priority are required.")
+      return
+    }
+
+    // ✅ FIX: use getUserId() which reads "userId" correctly
+    const userID = getUserId()
+    if (!userID) {
+      window.location.href = "/login"
+      return
+    }
+
+    try {
+      setSubmitting(true)
+      setSubmitError("")
+      await apiFetch("/api/blood-requests", {
+        method: "POST",
+        body: JSON.stringify({
+          bloodType,
+          quantity: Number(quantity),
+          priority,
+          userID,
+          notes,
+        }),
+      })
+      setSubmitted(true)
+      setBloodType("")
+      setQuantity("")
+      setPriority("")
+      setNotes("")
+      setTimeout(() => {
+        setSubmitted(false)
+        setOpen(false)
+      }, 2000)
+      fetchRequests()
+    } catch (e: any) {
+      setSubmitError(e.message)
+    } finally {
+      setSubmitting(false)
+    }
+  }
+
+  async function handleDelete(id: number) {
+    if (!confirm("Delete this blood request?")) return
+    try {
+      await apiFetch(`/api/blood-requests/${id}`, { method: "DELETE" })
+      setRequests(prev => prev.filter(r => r.requestId !== id))
+    } catch (e: any) {
+      alert(e.message || "Failed to delete request.")
+    }
+  }
+
+  const statusColor: Record<string, string> = {
+    Pending:   "bg-amber-100 text-amber-800",
+    Approved:  "bg-blue-100 text-blue-800",
+    Fulfilled: "bg-green-100 text-green-800",
+    Rejected:  "bg-red-100 text-red-800",
+  }
+
+  const pendingCount = requests.filter(r => r.status === "Pending").length
+
+  if (!mounted) return null
 
   return (
     <div className="space-y-6">
-      {/* Stats */}
-      <div className="grid gap-4 sm:grid-cols-3">
-        <Card>
-          <CardContent className="pt-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">Pending</p>
-                <p className="text-3xl font-bold text-amber-600">{pendingRequests.length}</p>
-              </div>
-              <Clock className="h-8 w-8 text-amber-500" />
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="pt-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">Fulfilled Today</p>
-                <p className="text-3xl font-bold text-green-600">
-                  {requests.filter(r => r.status === "fulfilled").length}
-                </p>
-              </div>
-              <CheckCircle className="h-8 w-8 text-green-500" />
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="pt-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">Total This Week</p>
-                <p className="text-3xl font-bold text-foreground">{requests.length}</p>
-              </div>
-              <FileText className="h-8 w-8 text-primary" />
-            </div>
-          </CardContent>
-        </Card>
-      </div>
 
-      {/* Requests List */}
-      <Card>
-        <CardHeader>
-          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-            <div>
-              <CardTitle>Blood Requests</CardTitle>
-              <CardDescription>Manage and track blood requests</CardDescription>
-            </div>
-            <Dialog>
-              <DialogTrigger asChild>
-                <Button>
-                  <Plus className="mr-2 h-4 w-4" />
-                  New Request
-                </Button>
-              </DialogTrigger>
-              <DialogContent className="max-w-md">
-                <DialogHeader>
-                  <DialogTitle>Create Blood Request</DialogTitle>
-                  <DialogDescription>
-                    Submit a new blood request for a patient
-                  </DialogDescription>
-                </DialogHeader>
-                <div className="grid gap-4 py-4">
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label>Patient Name</Label>
-                      <Input 
-                        placeholder="Full name"
-                        value={newRequest.patient}
-                        onChange={(e) => setNewRequest({...newRequest, patient: e.target.value})}
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label>Patient ID</Label>
-                      <Input 
-                        placeholder="PT-XXXX-XXX"
-                        value={newRequest.patientId}
-                        onChange={(e) => setNewRequest({...newRequest, patientId: e.target.value})}
-                      />
-                    </div>
-                  </div>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label>Blood Type</Label>
-                      <Select 
-                        value={newRequest.bloodType}
-                        onValueChange={(value) => setNewRequest({...newRequest, bloodType: value})}
-                      >
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {bloodTypes.map((type) => (
-                            <SelectItem key={type} value={type}>{type}</SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
-                    <div className="space-y-2">
-                      <Label>Units Needed</Label>
-                      <Input 
-                        type="number"
-                        placeholder="0"
-                        min="1"
-                        value={newRequest.units}
-                        onChange={(e) => setNewRequest({...newRequest, units: e.target.value})}
-                      />
-                    </div>
-                  </div>
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-bold">Blood Requests</h1>
+          <p className="text-muted-foreground">Manage and track blood requests</p>
+        </div>
+        <Dialog open={open} onOpenChange={o => { setOpen(o); if (!o) { setSubmitted(false); setSubmitError("") } }}>
+          <DialogTrigger asChild>
+            <Button className="bg-destructive hover:bg-destructive/90">
+              <Plus className="mr-2 h-4 w-4" /> New Request
+            </Button>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Create Blood Request</DialogTitle>
+              <DialogDescription>Submit a new blood request</DialogDescription>
+            </DialogHeader>
+
+            {submitted ? (
+              <div className="py-8 text-center">
+                <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-green-100">
+                  <CheckCircle className="h-8 w-8 text-green-600" />
+                </div>
+                <h3 className="text-lg font-semibold">Request Submitted!</h3>
+              </div>
+            ) : (
+              <div className="space-y-4 pt-2">
+                <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label>Priority</Label>
-                    <Select 
-                      value={newRequest.priority}
-                      onValueChange={(value) => setNewRequest({...newRequest, priority: value})}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select priority" />
-                      </SelectTrigger>
+                    <Label>Blood Type</Label>
+                    <Select value={bloodType} onValueChange={setBloodType}>
+                      <SelectTrigger><SelectValue placeholder="Select" /></SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="urgent">Urgent</SelectItem>
-                        <SelectItem value="high">High</SelectItem>
-                        <SelectItem value="normal">Normal</SelectItem>
+                        {bloodTypes.map(t => <SelectItem key={t} value={t}>{t}</SelectItem>)}
                       </SelectContent>
                     </Select>
                   </div>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label>Department</Label>
-                      <Input 
-                        placeholder="e.g., ICU"
-                        value={newRequest.department}
-                        onChange={(e) => setNewRequest({...newRequest, department: e.target.value})}
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label>Requesting Doctor</Label>
-                      <Input 
-                        placeholder="Dr. Name"
-                        value={newRequest.doctor}
-                        onChange={(e) => setNewRequest({...newRequest, doctor: e.target.value})}
-                      />
-                    </div>
-                  </div>
                   <div className="space-y-2">
-                    <Label>Notes</Label>
-                    <Textarea 
-                      placeholder="Additional information..."
-                      value={newRequest.notes}
-                      onChange={(e) => setNewRequest({...newRequest, notes: e.target.value})}
-                    />
+                    <Label>Units Needed</Label>
+                    <Input type="number" value={quantity}
+                      onChange={e => setQuantity(e.target.value)} placeholder="e.g. 3" min="1" />
                   </div>
                 </div>
-                <DialogFooter>
-                  <Button>Submit Request</Button>
-                </DialogFooter>
-              </DialogContent>
-            </Dialog>
-          </div>
+
+                <div className="space-y-2">
+                  <Label>Priority</Label>
+                  <Select value={priority} onValueChange={setPriority}>
+                    <SelectTrigger><SelectValue placeholder="Select priority" /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Low">Low</SelectItem>
+                      <SelectItem value="Medium">Medium</SelectItem>
+                      <SelectItem value="High">High</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="space-y-2">
+                  <Label>Notes</Label>
+                  <Textarea value={notes}
+                    onChange={e => setNotes(e.target.value)} placeholder="Optional notes..." />
+                </div>
+
+                {submitError && (
+                  <div className="flex items-center gap-2 text-sm text-destructive">
+                    <AlertCircle className="h-4 w-4" />{submitError}
+                  </div>
+                )}
+
+                <Button className="w-full bg-destructive hover:bg-destructive/90"
+                  onClick={handleSubmit}
+                  disabled={submitting || !bloodType || !quantity || !priority}>
+                  {submitting
+                    ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" />Submitting...</>
+                    : "Submit Request"}
+                </Button>
+              </div>
+            )}
+          </DialogContent>
+        </Dialog>
+      </div>
+
+      {/* Stats */}
+      <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+        {["Pending", "Approved", "Fulfilled", "Rejected"].map(s => (
+          <Card key={s} className="cursor-pointer" onClick={() => setFilterStatus(s)}>
+            <CardContent className="pt-4">
+              <p className="text-sm text-muted-foreground">{s}</p>
+              <p className="text-2xl font-bold">
+                {requests.filter(r => r.status === s).length}
+              </p>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+
+      {/* Filters */}
+      <div className="flex flex-wrap gap-3">
+        <Select value={filterStatus} onValueChange={setFilterStatus}>
+          <SelectTrigger className="w-36"><SelectValue placeholder="Status" /></SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All</SelectItem>
+            <SelectItem value="Pending">Pending</SelectItem>
+            <SelectItem value="Approved">Approved</SelectItem>
+            <SelectItem value="Fulfilled">Fulfilled</SelectItem>
+            <SelectItem value="Rejected">Rejected</SelectItem>
+          </SelectContent>
+        </Select>
+
+        <Select value={filterBloodType} onValueChange={setFilterBloodType}>
+          <SelectTrigger className="w-36"><SelectValue placeholder="Blood Type" /></SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All types</SelectItem>
+            {bloodTypes.map(t => <SelectItem key={t} value={t}>{t}</SelectItem>)}
+          </SelectContent>
+        </Select>
+      </div>
+
+      {/* List */}
+      <Card>
+        <CardHeader>
+          <CardTitle>
+            {filterStatus === "all" ? "All" : filterStatus} Requests
+            {pendingCount > 0 && filterStatus === "Pending" && (
+              <Badge className="ml-2 bg-amber-500 text-white">{pendingCount}</Badge>
+            )}
+          </CardTitle>
         </CardHeader>
         <CardContent>
-          {/* Search */}
-          <div className="mb-6">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-              <Input
-                placeholder="Search by patient name or ID..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10"
-              />
+          {loading && (
+            <div className="flex justify-center py-8">
+              <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
             </div>
-          </div>
-
-          {/* Tabs */}
-          <Tabs defaultValue="pending">
-            <TabsList className="mb-4">
-              <TabsTrigger value="pending">
-                Pending ({pendingRequests.length})
-              </TabsTrigger>
-              <TabsTrigger value="completed">
-                Completed ({completedRequests.length})
-              </TabsTrigger>
-            </TabsList>
-
-            <TabsContent value="pending" className="space-y-4">
-              {filteredPending.length === 0 ? (
-                <div className="py-8 text-center text-muted-foreground">
-                  No pending requests
-                </div>
-              ) : (
-                filteredPending.map((request) => (
-                  <div
-                    key={request.id}
-                    className="flex flex-col gap-4 rounded-lg border border-border p-4 lg:flex-row lg:items-center lg:justify-between"
-                  >
-                    <div className="flex items-start gap-4">
-                      <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-primary/10">
-                        <span className="text-sm font-bold text-primary">{request.bloodType}</span>
-                      </div>
-                      <div>
-                        <div className="flex flex-wrap items-center gap-2">
-                          <p className="font-semibold text-foreground">{request.patient}</p>
-                          <span className="text-sm text-muted-foreground">({request.patientId})</span>
-                          {getPriorityBadge(request.priority)}
-                        </div>
-                        <p className="text-sm text-muted-foreground">
-                          {request.units} units - {request.department} - {request.doctor}
-                        </p>
-                        <p className="text-xs text-muted-foreground">{request.notes}</p>
-                      </div>
-                    </div>
+          )}
+          {!loading && error && (
+            <div className="flex flex-col items-center gap-3 py-8 text-center">
+              <AlertCircle className="h-8 w-8 text-destructive" />
+              <p className="text-sm text-muted-foreground">{error}</p>
+              <Button variant="outline" size="sm" onClick={fetchRequests}>Retry</Button>
+            </div>
+          )}
+          {!loading && !error && requests.length === 0 && (
+            <div className="py-8 text-center text-muted-foreground">No requests found</div>
+          )}
+          {!loading && !error && requests.length > 0 && (
+            <div className="space-y-3">
+              {requests.map(r => (
+                <div key={r.requestId} className="flex items-start justify-between rounded-lg border p-4">
+                  <div className="space-y-1">
                     <div className="flex items-center gap-2">
-                      {getStatusBadge(request.status)}
-                      <Button size="sm">Fulfill</Button>
-                      <Button variant="ghost" size="sm">Cancel</Button>
+                      <span className="font-bold text-lg">{r.bloodType}</span>
+                      <Badge className={statusColor[r.status] ?? "bg-gray-100 text-gray-800"}>
+                        {r.status}
+                      </Badge>
+                      <Badge variant="outline">{r.priority}</Badge>
                     </div>
+                    <p className="text-sm text-muted-foreground">{r.quantity} units</p>
+                    {r.notes && <p className="text-xs text-muted-foreground">{r.notes}</p>}
+                    <p className="text-xs text-muted-foreground">
+                      {new Date(r.requestDate).toLocaleDateString()}
+                    </p>
                   </div>
-                ))
-              )}
-            </TabsContent>
-
-            <TabsContent value="completed" className="space-y-4">
-              {filteredCompleted.length === 0 ? (
-                <div className="py-8 text-center text-muted-foreground">
-                  No completed requests
+                  {r.status === "Pending" && (
+                    <Button variant="ghost" size="sm"
+                      className="text-destructive hover:text-destructive"
+                      onClick={() => handleDelete(r.requestId)}>
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  )}
                 </div>
-              ) : (
-                filteredCompleted.map((request) => (
-                  <div
-                    key={request.id}
-                    className="flex flex-col gap-4 rounded-lg border border-border p-4 lg:flex-row lg:items-center lg:justify-between"
-                  >
-                    <div className="flex items-start gap-4">
-                      <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-muted">
-                        <span className="text-sm font-bold text-muted-foreground">{request.bloodType}</span>
-                      </div>
-                      <div>
-                        <div className="flex flex-wrap items-center gap-2">
-                          <p className="font-semibold text-foreground">{request.patient}</p>
-                          <span className="text-sm text-muted-foreground">({request.patientId})</span>
-                        </div>
-                        <p className="text-sm text-muted-foreground">
-                          {request.units} units - {request.department} - {request.doctor}
-                        </p>
-                      </div>
-                    </div>
-                    <div>
-                      {getStatusBadge(request.status)}
-                    </div>
-                  </div>
-                ))
-              )}
-            </TabsContent>
-          </Tabs>
+              ))}
+            </div>
+          )}
         </CardContent>
       </Card>
     </div>

@@ -8,7 +8,7 @@ namespace Blood_Bank.Models
         public decimal Quantity { get; set; }
         public DateTime ExpiryDate { get; set; }
         public int InventoryId { get; set; }
-        public Inventory? inventory { get; set; }
+        public Inventory? Inventory { get; set; }
 
     }
 }

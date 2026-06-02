@@ -93,13 +93,14 @@ export default function SignUpPage() {
             <label className="block text-sm text-gray-600 mb-1">
               User Role:
             </label>
-            <select
+           <select
               value={role}
               onChange={(e) => setRole(e.target.value)}
               className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#c20000] bg-white cursor-pointer font-serif"
-            >
+               >
               <option value="Donor">Donor</option>
               <option value="Admin">Admin</option>
+              <option value="Hospital">Hospital</option>
             </select>
           </div>
 

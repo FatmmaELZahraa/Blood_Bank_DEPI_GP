@@ -1,71 +1,34 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "D:\\Yarb\\Blood_Bank\\",
+  "WorkspaceRootPath": "C:\\Users\\LENOVO\\Blood_Bank_DEPI_GP\\Blood_Bank\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{89D8885F-5408-1F16-C4FF-99FCB6145FFC}|Blood_Bank.csproj|d:\\yarb\\blood_bank\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{89D8885F-5408-1F16-C4FF-99FCB6145FFC}|Blood_Bank.csproj|solutionrelative:program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\LENOVO\\Blood_Bank_DEPI_GP\\Blood_Bank\\Migrations\\20260601131819_UpdateModels1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:Migrations\\20260601131819_UpdateModels1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{89D8885F-5408-1F16-C4FF-99FCB6145FFC}|Blood_Bank.csproj|d:\\yarb\\blood_bank\\controllers\\authcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{89D8885F-5408-1F16-C4FF-99FCB6145FFC}|Blood_Bank.csproj|c:\\users\\lenovo\\blood_bank_depi_gp\\blood_bank\\models\\hospital.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{89D8885F-5408-1F16-C4FF-99FCB6145FFC}|Blood_Bank.csproj|solutionrelative:models\\hospital.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{89D8885F-5408-1F16-C4FF-99FCB6145FFC}|Blood_Bank.csproj|c:\\users\\lenovo\\blood_bank_depi_gp\\blood_bank\\controllers\\authcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{89D8885F-5408-1F16-C4FF-99FCB6145FFC}|Blood_Bank.csproj|solutionrelative:controllers\\authcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{89D8885F-5408-1F16-C4FF-99FCB6145FFC}|Blood_Bank.csproj|d:\\yarb\\blood_bank\\dto\\authenticationdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{89D8885F-5408-1F16-C4FF-99FCB6145FFC}|Blood_Bank.csproj|solutionrelative:dto\\authenticationdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{89D8885F-5408-1F16-C4FF-99FCB6145FFC}|Blood_Bank.csproj|c:\\users\\lenovo\\blood_bank_depi_gp\\blood_bank\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{89D8885F-5408-1F16-C4FF-99FCB6145FFC}|Blood_Bank.csproj|solutionrelative:program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{89D8885F-5408-1F16-C4FF-99FCB6145FFC}|Blood_Bank.csproj|d:\\yarb\\blood_bank\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
-      "RelativeMoniker": "D:0:0:{89D8885F-5408-1F16-C4FF-99FCB6145FFC}|Blood_Bank.csproj|solutionrelative:appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+      "AbsoluteMoniker": "D:0:0:{89D8885F-5408-1F16-C4FF-99FCB6145FFC}|Blood_Bank.csproj|c:\\users\\lenovo\\blood_bank_depi_gp\\blood_bank\\controllers\\inventorycontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{89D8885F-5408-1F16-C4FF-99FCB6145FFC}|Blood_Bank.csproj|solutionrelative:controllers\\inventorycontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{89D8885F-5408-1F16-C4FF-99FCB6145FFC}|Blood_Bank.csproj|d:\\yarb\\blood_bank\\models\\bloodrequest.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{89D8885F-5408-1F16-C4FF-99FCB6145FFC}|Blood_Bank.csproj|solutionrelative:models\\bloodrequest.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{89D8885F-5408-1F16-C4FF-99FCB6145FFC}|Blood_Bank.csproj|c:\\users\\lenovo\\blood_bank_depi_gp\\blood_bank\\controllers\\sosrequestscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{89D8885F-5408-1F16-C4FF-99FCB6145FFC}|Blood_Bank.csproj|solutionrelative:controllers\\sosrequestscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{89D8885F-5408-1F16-C4FF-99FCB6145FFC}|Blood_Bank.csproj|d:\\yarb\\blood_bank\\models\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{89D8885F-5408-1F16-C4FF-99FCB6145FFC}|Blood_Bank.csproj|solutionrelative:models\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{89D8885F-5408-1F16-C4FF-99FCB6145FFC}|Blood_Bank.csproj|d:\\yarb\\blood_bank\\controllers\\admincontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{89D8885F-5408-1F16-C4FF-99FCB6145FFC}|Blood_Bank.csproj|solutionrelative:controllers\\admincontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{89D8885F-5408-1F16-C4FF-99FCB6145FFC}|Blood_Bank.csproj|d:\\yarb\\blood_bank\\data\\appdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{89D8885F-5408-1F16-C4FF-99FCB6145FFC}|Blood_Bank.csproj|solutionrelative:data\\appdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{89D8885F-5408-1F16-C4FF-99FCB6145FFC}|Blood_Bank.csproj|d:\\yarb\\blood_bank\\blood_bank.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
-      "RelativeMoniker": "D:0:0:{89D8885F-5408-1F16-C4FF-99FCB6145FFC}|Blood_Bank.csproj|solutionrelative:blood_bank.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{89D8885F-5408-1F16-C4FF-99FCB6145FFC}|Blood_Bank.csproj|d:\\yarb\\blood_bank\\blood_bank.http||{5703B403-55E7-4C63-8C88-A8F52C7A45C5}",
-      "RelativeMoniker": "D:0:0:{89D8885F-5408-1F16-C4FF-99FCB6145FFC}|Blood_Bank.csproj|solutionrelative:blood_bank.http||{5703B403-55E7-4C63-8C88-A8F52C7A45C5}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{89D8885F-5408-1F16-C4FF-99FCB6145FFC}|Blood_Bank.csproj|d:\\yarb\\blood_bank\\models\\inventory.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{89D8885F-5408-1F16-C4FF-99FCB6145FFC}|Blood_Bank.csproj|solutionrelative:models\\inventory.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\Blood_Bank\\Blood_Bank\\Blood_Bank.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\Blood_Bank\\Blood_Bank\\Migrations\\20260421170135_FirstMigration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\Blood_Bank\\Blood_Bank\\Models\\Donor.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\Blood_Bank\\Blood_Bank\\Models\\User.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\Blood_Bank\\Blood_Bank\\Models\\Appointment.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\Blood_Bank\\Blood_Bank\\Data\\AppDbContext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\Blood_Bank\\Blood_Bank\\Program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{89D8885F-5408-1F16-C4FF-99FCB6145FFC}|Blood_Bank.csproj|c:\\users\\lenovo\\blood_bank_depi_gp\\blood_bank\\models\\sosrequest.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{89D8885F-5408-1F16-C4FF-99FCB6145FFC}|Blood_Bank.csproj|solutionrelative:models\\sosrequest.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -75,8 +38,12 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 5,
+          "SelectedChildIndex": 6,
           "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:1:0:{d212f56b-c48a-434c-a121-1c5d80b59b9f}"
+            },
             {
               "$type": "Bookmark",
               "Name": "ST:0:0:{aa2115a1-9712-457b-9047-dbb71ca2cdd2}"
@@ -86,228 +53,107 @@
               "Name": "ST:0:0:{eefa5220-e298-11d0-8f78-00a0c9110057}"
             },
             {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{3ae79031-e1bc-11d0-8f78-00a0c9110057}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{d78612c7-9962-4b83-95d9-268046dad23a}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
+            },
+            {
               "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "AuthController.cs",
-              "DocumentMoniker": "D:\\Yarb\\Blood_Bank\\Controllers\\AuthController.cs",
-              "RelativeDocumentMoniker": "Controllers\\AuthController.cs",
-              "ToolTip": "D:\\Yarb\\Blood_Bank\\Controllers\\AuthController.cs",
-              "RelativeToolTip": "Controllers\\AuthController.cs",
-              "ViewState": "AgIAABkAAABAZmZmZuY3wGIAAAAAAAAAAAAAAA==",
+              "DocumentIndex": 0,
+              "Title": "20260601131819_UpdateModels1.cs",
+              "DocumentMoniker": "C:\\Users\\LENOVO\\Blood_Bank_DEPI_GP\\Blood_Bank\\Migrations\\20260601131819_UpdateModels1.cs",
+              "RelativeDocumentMoniker": "Migrations\\20260601131819_UpdateModels1.cs",
+              "ToolTip": "C:\\Users\\LENOVO\\Blood_Bank_DEPI_GP\\Blood_Bank\\Migrations\\20260601131819_UpdateModels1.cs",
+              "RelativeToolTip": "Migrations\\20260601131819_UpdateModels1.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-04T19:07:19.085Z",
+              "WhenOpened": "2026-06-01T13:18:20.155Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "Authenticationdto.cs",
-              "DocumentMoniker": "D:\\Yarb\\Blood_Bank\\DTO\\Authenticationdto.cs",
-              "RelativeDocumentMoniker": "DTO\\Authenticationdto.cs",
-              "ToolTip": "D:\\Yarb\\Blood_Bank\\DTO\\Authenticationdto.cs",
-              "RelativeToolTip": "DTO\\Authenticationdto.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAAIAAAAAAAAAA==",
+              "DocumentIndex": 1,
+              "Title": "Hospital.cs",
+              "DocumentMoniker": "C:\\Users\\LENOVO\\Blood_Bank_DEPI_GP\\Blood_Bank\\Models\\Hospital.cs",
+              "RelativeDocumentMoniker": "Models\\Hospital.cs",
+              "ToolTip": "C:\\Users\\LENOVO\\Blood_Bank_DEPI_GP\\Blood_Bank\\Models\\Hospital.cs",
+              "RelativeToolTip": "Models\\Hospital.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-04T19:05:56.868Z",
+              "WhenOpened": "2026-06-01T13:16:58.237Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 3,
-              "Title": "appsettings.json",
-              "DocumentMoniker": "D:\\Yarb\\Blood_Bank\\appsettings.json",
-              "RelativeDocumentMoniker": "appsettings.json",
-              "ToolTip": "D:\\Yarb\\Blood_Bank\\appsettings.json",
-              "RelativeToolTip": "appsettings.json",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABEAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2026-05-04T18:17:34.977Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
               "Title": "Program.cs",
-              "DocumentMoniker": "D:\\Yarb\\Blood_Bank\\Program.cs",
+              "DocumentMoniker": "C:\\Users\\LENOVO\\Blood_Bank_DEPI_GP\\Blood_Bank\\Program.cs",
               "RelativeDocumentMoniker": "Program.cs",
-              "ToolTip": "D:\\Yarb\\Blood_Bank\\Program.cs",
+              "ToolTip": "C:\\Users\\LENOVO\\Blood_Bank_DEPI_GP\\Blood_Bank\\Program.cs",
               "RelativeToolTip": "Program.cs",
-              "ViewState": "AgIAAEwAAAAAAAAAAAAIwGUAAAAKAAAAAAAAAA==",
+              "ViewState": "AgIAACQAAAAAAAAAAAAAACsAAAAeAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-04T18:22:09.998Z",
+              "WhenOpened": "2026-06-01T10:56:56.901Z",
               "EditorCaption": ""
-            },
-            {
-              "$type": "Bookmark",
-              "Name": "ST:0:0:{c6f34f0d-7ae5-4f3a-be61-fe0c21ae9eb8}"
             },
             {
               "$type": "Document",
               "DocumentIndex": 4,
-              "Title": "BloodRequest.cs",
-              "DocumentMoniker": "D:\\Yarb\\Blood_Bank\\Models\\BloodRequest.cs",
-              "RelativeDocumentMoniker": "Models\\BloodRequest.cs",
-              "ToolTip": "D:\\Yarb\\Blood_Bank\\Models\\BloodRequest.cs",
-              "RelativeToolTip": "Models\\BloodRequest.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Title": "InventoryController.cs",
+              "DocumentMoniker": "C:\\Users\\LENOVO\\Blood_Bank_DEPI_GP\\Blood_Bank\\Controllers\\InventoryController.cs",
+              "RelativeDocumentMoniker": "Controllers\\InventoryController.cs",
+              "ToolTip": "C:\\Users\\LENOVO\\Blood_Bank_DEPI_GP\\Blood_Bank\\Controllers\\InventoryController.cs",
+              "RelativeToolTip": "Controllers\\InventoryController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4BAAACAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-04T19:09:30.601Z",
+              "WhenOpened": "2026-06-01T10:31:47.178Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "User.cs",
-              "DocumentMoniker": "D:\\Yarb\\Blood_Bank\\Models\\User.cs",
-              "RelativeDocumentMoniker": "Models\\User.cs",
-              "ToolTip": "D:\\Yarb\\Blood_Bank\\Models\\User.cs",
-              "RelativeToolTip": "Models\\User.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABIAAAAAAAAAAAAAAA==",
+              "DocumentIndex": 2,
+              "Title": "AuthController.cs",
+              "DocumentMoniker": "C:\\Users\\LENOVO\\Blood_Bank_DEPI_GP\\Blood_Bank\\Controllers\\AuthController.cs",
+              "RelativeDocumentMoniker": "Controllers\\AuthController.cs",
+              "ToolTip": "C:\\Users\\LENOVO\\Blood_Bank_DEPI_GP\\Blood_Bank\\Controllers\\AuthController.cs",
+              "RelativeToolTip": "Controllers\\AuthController.cs",
+              "ViewState": "AgIAALEAAAAAAAAAAAAcwCkBAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-04T19:03:49.271Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 7,
-              "Title": "AppDbContext.cs",
-              "DocumentMoniker": "D:\\Yarb\\Blood_Bank\\Data\\AppDbContext.cs",
-              "RelativeDocumentMoniker": "Data\\AppDbContext.cs",
-              "ToolTip": "D:\\Yarb\\Blood_Bank\\Data\\AppDbContext.cs",
-              "RelativeToolTip": "Data\\AppDbContext.cs",
-              "ViewState": "AgIAAIgAAAAAAAAAAAAYwKAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-04T19:03:31.457Z",
+              "WhenOpened": "2026-06-01T09:29:53.079Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 6,
-              "Title": "AdminController.cs",
-              "DocumentMoniker": "D:\\Yarb\\Blood_Bank\\Controllers\\AdminController.cs",
-              "RelativeDocumentMoniker": "Controllers\\AdminController.cs",
-              "ToolTip": "D:\\Yarb\\Blood_Bank\\Controllers\\AdminController.cs",
-              "RelativeToolTip": "Controllers\\AdminController.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAAqAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-04T18:27:34.707Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 8,
-              "Title": "Blood_Bank",
-              "DocumentMoniker": "D:\\Yarb\\Blood_Bank\\Blood_Bank.csproj",
-              "RelativeDocumentMoniker": "Blood_Bank.csproj",
-              "ToolTip": "D:\\Yarb\\Blood_Bank\\Blood_Bank.csproj",
-              "RelativeToolTip": "Blood_Bank.csproj",
-              "ViewState": "AgIAAAAAAABGMzMzMzMrwAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
-              "WhenOpened": "2026-05-04T18:28:26.766Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 9,
-              "Title": "Blood_Bank.http",
-              "DocumentMoniker": "D:\\Yarb\\Blood_Bank\\Blood_Bank.http",
-              "RelativeDocumentMoniker": "Blood_Bank.http",
-              "ToolTip": "D:\\Yarb\\Blood_Bank\\Blood_Bank.http",
-              "RelativeToolTip": "Blood_Bank.http",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAaAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003502|",
-              "WhenOpened": "2026-05-04T18:28:07.251Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 10,
-              "Title": "Inventory.cs",
-              "DocumentMoniker": "D:\\Yarb\\Blood_Bank\\Models\\Inventory.cs",
-              "RelativeDocumentMoniker": "Models\\Inventory.cs",
-              "ToolTip": "D:\\Yarb\\Blood_Bank\\Models\\Inventory.cs",
-              "RelativeToolTip": "Models\\Inventory.cs",
+              "Title": "SosRequest.cs",
+              "DocumentMoniker": "C:\\Users\\LENOVO\\Blood_Bank_DEPI_GP\\Blood_Bank\\Models\\SosRequest.cs",
+              "RelativeDocumentMoniker": "Models\\SosRequest.cs",
+              "ToolTip": "C:\\Users\\LENOVO\\Blood_Bank_DEPI_GP\\Blood_Bank\\Models\\SosRequest.cs",
+              "RelativeToolTip": "Models\\SosRequest.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-04T18:16:20.744Z",
+              "WhenOpened": "2026-06-01T09:13:17.054Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 11,
-              "Title": "Blood_Bank.csproj",
-              "DocumentMoniker": "D:\\Blood_Bank\\Blood_Bank\\Blood_Bank.csproj",
-              "RelativeDocumentMoniker": "..\\..\\Blood_Bank\\Blood_Bank\\Blood_Bank.csproj",
-              "ToolTip": "D:\\Blood_Bank\\Blood_Bank\\Blood_Bank.csproj",
-              "RelativeToolTip": "..\\..\\Blood_Bank\\Blood_Bank\\Blood_Bank.csproj",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
-              "WhenOpened": "2026-04-21T16:56:53.889Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 13,
-              "Title": "Donor.cs",
-              "DocumentMoniker": "D:\\Blood_Bank\\Blood_Bank\\Models\\Donor.cs",
-              "RelativeDocumentMoniker": "..\\..\\Blood_Bank\\Blood_Bank\\Models\\Donor.cs",
-              "ToolTip": "D:\\Blood_Bank\\Blood_Bank\\Models\\Donor.cs",
-              "RelativeToolTip": "..\\..\\Blood_Bank\\Blood_Bank\\Models\\Donor.cs",
+              "DocumentIndex": 5,
+              "Title": "SOSRequestsController.cs",
+              "DocumentMoniker": "C:\\Users\\LENOVO\\Blood_Bank_DEPI_GP\\Blood_Bank\\Controllers\\SOSRequestsController.cs",
+              "RelativeDocumentMoniker": "Controllers\\SOSRequestsController.cs",
+              "ToolTip": "C:\\Users\\LENOVO\\Blood_Bank_DEPI_GP\\Blood_Bank\\Controllers\\SOSRequestsController.cs",
+              "RelativeToolTip": "Controllers\\SOSRequestsController.cs",
+              "ViewState": "AgIAAI8AAAAAAAAAAAA+wJgAAAACAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-04-18T10:43:30.194Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 14,
-              "Title": "User.cs",
-              "DocumentMoniker": "D:\\Blood_Bank\\Blood_Bank\\Models\\User.cs",
-              "RelativeDocumentMoniker": "..\\..\\Blood_Bank\\Blood_Bank\\Models\\User.cs",
-              "ToolTip": "D:\\Blood_Bank\\Blood_Bank\\Models\\User.cs",
-              "RelativeToolTip": "..\\..\\Blood_Bank\\Blood_Bank\\Models\\User.cs",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-04-18T09:28:02.66Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 15,
-              "Title": "Appointment.cs",
-              "DocumentMoniker": "D:\\Blood_Bank\\Blood_Bank\\Models\\Appointment.cs",
-              "RelativeDocumentMoniker": "..\\..\\Blood_Bank\\Blood_Bank\\Models\\Appointment.cs",
-              "ToolTip": "D:\\Blood_Bank\\Blood_Bank\\Models\\Appointment.cs",
-              "RelativeToolTip": "..\\..\\Blood_Bank\\Blood_Bank\\Models\\Appointment.cs",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-04-18T12:36:56.373Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 16,
-              "Title": "AppDbContext.cs",
-              "DocumentMoniker": "D:\\Blood_Bank\\Blood_Bank\\Data\\AppDbContext.cs",
-              "RelativeDocumentMoniker": "..\\..\\Blood_Bank\\Blood_Bank\\Data\\AppDbContext.cs",
-              "ToolTip": "D:\\Blood_Bank\\Blood_Bank\\Data\\AppDbContext.cs",
-              "RelativeToolTip": "..\\..\\Blood_Bank\\Blood_Bank\\Data\\AppDbContext.cs",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-04-18T09:26:16.709Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 12,
-              "Title": "20260421170135_FirstMigration.cs",
-              "DocumentMoniker": "D:\\Blood_Bank\\Blood_Bank\\Migrations\\20260421170135_FirstMigration.cs",
-              "RelativeDocumentMoniker": "..\\..\\Blood_Bank\\Blood_Bank\\Migrations\\20260421170135_FirstMigration.cs",
-              "ToolTip": "D:\\Blood_Bank\\Blood_Bank\\Migrations\\20260421170135_FirstMigration.cs",
-              "RelativeToolTip": "..\\..\\Blood_Bank\\Blood_Bank\\Migrations\\20260421170135_FirstMigration.cs",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-04-21T17:01:37.137Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 17,
-              "Title": "Program.cs",
-              "DocumentMoniker": "D:\\Blood_Bank\\Blood_Bank\\Program.cs",
-              "RelativeDocumentMoniker": "..\\..\\Blood_Bank\\Blood_Bank\\Program.cs",
-              "ToolTip": "D:\\Blood_Bank\\Blood_Bank\\Program.cs",
-              "RelativeToolTip": "..\\..\\Blood_Bank\\Blood_Bank\\Program.cs",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-04-18T09:44:29.235Z"
+              "WhenOpened": "2026-06-01T09:03:44.353Z",
+              "EditorCaption": ""
             }
           ]
         }

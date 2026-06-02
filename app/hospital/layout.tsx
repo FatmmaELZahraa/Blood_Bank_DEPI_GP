@@ -1,6 +1,5 @@
 "use client"
-
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { 
@@ -11,8 +10,7 @@ import {
   Menu,
   X,
   Droplets,
- 
-  Settings,
+ CircleUser,
   LogOut,
   Building2
 } from "lucide-react"
@@ -31,15 +29,27 @@ import { cn } from "@/lib/utils"
 const sidebarItems = [
   { href: "/hospital", icon: LayoutDashboard, label: "Dashboard" },
   { href: "/hospital/inventory", icon: Package, label: "Inventory" },
-  { href: "/hospital/sos", icon: AlertTriangle, label: "SOS Requests", badge: 2 },
+  { href: "/hospital/sos", icon: AlertTriangle, label: "SOS Requests"},
   { href: "/hospital/requests", icon: FileText, label: "Blood Requests" },
 ]
 
-export default function HospitalLayout({
-  children,
-}: {
-  children: React.ReactNode
-}) {
+export default function HospitalLayout({ children }: { children: React.ReactNode }) {
+  const pathname = usePathname()
+  const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [hospitalName, setHospitalName] = useState("Hospital")
+  const [initials, setInitials] = useState("H")
+
+  useEffect(() => {
+    const name = localStorage.getItem("userName") ?? "Hospital"
+    setHospitalName(name)
+    // عمل الـ initials من أول حرفين في الاسم
+    const parts = name.trim().split(" ")
+    const ini = parts.length >= 2
+      ? parts[0][0] + parts[1][0]
+      : parts[0].slice(0, 2)
+    setInitials(ini.toUpperCase())
+  }, [])
+{
   const pathname = usePathname()
   const [sidebarOpen, setSidebarOpen] = useState(false)
 
@@ -62,17 +72,12 @@ export default function HospitalLayout({
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" size="icon" className="rounded-full">
               <Avatar className="h-8 w-8">
-                <AvatarImage src="/hospital-avatar.jpg" />
-                <AvatarFallback className="bg-accent text-accent-foreground">CH</AvatarFallback>
-              </Avatar>
+               <AvatarFallback className="bg-accent text-accent-foreground">{initials}</AvatarFallback>
+<span className="hidden xl:inline">{hospitalName}</span>
+              </Avatar> 
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuItem>
-              <Settings className="mr-2 h-4 w-4" />
-              Settings
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
             <DropdownMenuItem asChild>
               <Link href="/">
                 <LogOut className="mr-2 h-4 w-4" />
@@ -133,11 +138,7 @@ export default function HospitalLayout({
                         <item.icon className="h-5 w-5" />
                         {item.label}
                       </span>
-                      {item.badge && (
-                        <Badge className="bg-destructive text-destructive-foreground">
-                          {item.badge}
-                        </Badge>
-                      )}
+                      
                     </Link>
                   </li>
                 )
@@ -186,9 +187,11 @@ export default function HospitalLayout({
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
-                  <DropdownMenuItem>
-                    <Settings className="mr-2 h-4 w-4" />
-                    Settings
+                 <DropdownMenuItem asChild>
+                    <Link href="/hospital/profile">
+                      <CircleUser className="mr-2 h-4 w-4" />
+                      Profile
+                    </Link>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem asChild>
@@ -206,4 +209,5 @@ export default function HospitalLayout({
       </div>
     </div>
   )
+}
 }
