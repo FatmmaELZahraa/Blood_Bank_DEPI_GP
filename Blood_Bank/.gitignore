@@ -1,0 +1,15 @@
+# Visual Studio
+.vs/
+*.user
+*.suo
+
+# Build files
+bin/
+obj/
+
+# Node / Next.js
+node_modules/
+.next/
+
+# Logs
+*.log
