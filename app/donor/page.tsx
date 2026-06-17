@@ -1,10 +1,8 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { 
-  Droplets, Heart, Calendar, Clock, AlertCircle, CheckCircle, TrendingUp, MapPin, Loader2 
-} from "lucide-react"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Droplets, Heart, Calendar, Clock, AlertCircle, CheckCircle, TrendingUp, MapPin, Loader2 } from "lucide-react"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Progress } from "@/components/ui/progress"
@@ -15,7 +13,7 @@ interface DonorProfile {
   name: string;
   bloodType: string;
   totalDonations: number;
-  lastDonationDate: string; // Must match Backend exactly
+  lastDonationDate: string;
   points: number;
   medicalHistory: string;
 }
@@ -35,17 +33,26 @@ export default function DonorProfilePage() {
 
       try {
         const response = await fetch("http://localhost:5004/api/Auth/profile", {
-          headers: { "Authorization": `Bearer ${token}` }
+          headers: { 
+            "Authorization": `Bearer ${token}`,
+            "Content-Type": "application/json"
+          }
         });
 
         if (response.ok) {
           const data = await response.json();
+          
+          if (!data.bloodType || data.bloodType.trim() === "" || data.bloodType === "N/A") {
+            router.push("/donor/complete-profile");
+            return;
+          }
+          
           setDonor(data);
         } else {
           router.push("/login");
         }
       } catch (err) {
-        console.error("Failed to connect to backend", err);
+        console.error("Connection error", err);
       } finally {
         setLoading(false);
       }
@@ -54,9 +61,7 @@ export default function DonorProfilePage() {
     fetchProfile();
   }, [router]);
 
-  // Logic to calculate eligibility based on the 56-day rule
   const calculateEligibility = (lastDonationDate: string | null) => {
-    // Check if a valid date exists (1-1-0001 is the default C# min date)
     if (!lastDonationDate || lastDonationDate.startsWith("0001")) {
       return { daysLeft: 0, nextDate: new Date(), progress: 100, isEligible: true, hasDonatedBefore: false };
     }
@@ -94,7 +99,6 @@ export default function DonorProfilePage() {
 
   return (
     <div className="space-y-6">
-      {/* Eligibility Alert */}
       {status.isEligible ? (
         <div className="flex items-center gap-3 rounded-xl border border-green-200 bg-green-50 p-5 shadow-sm">
           <CheckCircle className="h-6 w-6 text-green-600" />
@@ -116,14 +120,13 @@ export default function DonorProfilePage() {
         </div>
       )}
 
-      {/* Stats Cards */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <Card className="border-l-4 border-l-primary shadow-sm">
           <CardContent className="pt-6">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-xs font-medium text-muted-foreground uppercase">Blood Type</p>
-                <p className="text-3xl font-black text-primary">{donor.bloodType || "N/A"}</p>
+                <p className="text-3xl font-black text-primary">{donor.bloodType}</p>
               </div>
               <Droplets className="h-8 w-8 text-primary opacity-20" />
             </div>
@@ -182,7 +185,6 @@ export default function DonorProfilePage() {
               </div>
               <Progress value={status.progress} className="h-3" />
             </div>
-
             <div className="grid grid-cols-2 gap-4">
               <div className="rounded-xl bg-slate-50 p-4 border border-slate-100">
                 <p className="text-xs text-slate-500 mb-1">Last Donation</p>
@@ -212,74 +214,40 @@ export default function DonorProfilePage() {
             <Button variant="outline" className="w-full h-11">Update Health Data</Button>
           </CardContent>
         </Card>
-
       </div>
-               {/* Quick Actions */}
 
       <Card className="shadow-sm">
-
         <CardHeader>
-
           <CardTitle>Quick Actions</CardTitle>
-
         </CardHeader>
-
         <CardContent>
-
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-
-            <Button asChild variant="outline" className="h-24 flex-col gap-2  transition-all">
-
+            <Button asChild variant="outline" className="h-24 flex-col gap-2 transition-all">
               <Link href="/donor/appointments">
-
                 <Calendar className="h-6 w-6 text-primary" />
-
                 <span>Book Appointment</span>
-
               </Link>
-
             </Button>
-
             <Button asChild variant="outline" className="h-24 flex-col gap-2 transition-all">
-
               <Link href="/donor/qr-code">
-
                 <Droplets className="h-6 w-6 text-primary" />
-
                 <span>Digital ID</span>
-
               </Link>
-
             </Button>
-
             <Button asChild variant="outline" className="h-24 flex-col gap-2 transition-all">
-
               <Link href="/donor/rewards">
-
                 <TrendingUp className="h-6 w-6 text-primary" />
-
                 <span>Check Rewards</span>
-
               </Link>
-
             </Button>
-
             <Button asChild variant="outline" className="h-24 flex-col gap-2 transition-all">
-
               <Link href="/donor/history">
-
                 <MapPin className="h-6 w-6 text-primary" />
-
                 <span>Find Centers</span>
-
               </Link>
-
             </Button>
-
           </div>
-
         </CardContent>
-
       </Card>
     </div>
   )

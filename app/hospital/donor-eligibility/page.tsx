@@ -786,6 +786,7 @@ interface AnalysisResult {
 }
 
 interface SmartDonorData {
+  userId: string;
   Is_Compatible: string;
   Age: string;
   Distance_KM: string;
@@ -795,8 +796,9 @@ interface SmartDonorData {
 }
 
 interface SmartDonorResult {
-  prediction: number;
+  prediction: number | boolean; 
   probability: number;
+  status?: string;  
 }
 
 export default function IntegratedBloodServicesDashboard() {
@@ -808,12 +810,14 @@ export default function IntegratedBloodServicesDashboard() {
   const [analysisResult, setAnalysisResult] = useState<AnalysisResult | null>(null);
   const [analysisError, setAnalysisError] = useState<string | null>(null);
 
-  // --- States: 2. Basic Donor Eligibility ---
-  const [donorData, setDonorData] = useState({ age: "", weight: "", chronic: false });
-  const [eligibilityResult, setEligibilityResult] = useState<{ status: string; message: string } | null>(null);
+  // --- States for the Top Donor Promotion form (Right Side) ---
+  const [topDonorUserId, setTopDonorUserId] = useState(""); 
+  const [upgradeLoading, setUpgradeLoading] = useState(false); 
+  const [upgradeStatus, setUpgradeStatus] = useState<{ success: boolean; message: string } | null>(null); 
 
   // --- States: 3. Smart AI Donor Match ---
   const [smartDonorData, setSmartDonorData] = useState<SmartDonorData>({
+    userId: "",
     Is_Compatible: "1",
     Age: "",
     Distance_KM: "",
@@ -833,6 +837,8 @@ export default function IntegratedBloodServicesDashboard() {
   });
   const [prediction, setPrediction] = useState<number | null>(null);
   const [predictionLoading, setPredictionLoading] = useState(false);
+  const [emailLoading, setEmailLoading] = useState(false);
+  const [emailStatus, setEmailStatus] = useState<{ success: boolean; message: string } | null>(null);
 
   useEffect(() => { setMounted(true); }, []);
 
@@ -848,33 +854,69 @@ export default function IntegratedBloodServicesDashboard() {
       if (!res.ok) throw new Error("Failed to fetch");
       const data = await res.json();
       setAnalysisResult(data);
-    } catch { 
-      setAnalysisError("Server connection failed. Is port 7000 running?"); 
+    } catch (err: any) { 
+      setAnalysisError("Server connection failed. Is port 7860 running?"); 
     } finally { 
       setAnalysisLoading(false); 
     }
   };
 
-  // --- Functions: 2. Basic Eligibility ---
-  const checkEligibility = () => {
-    const { age, weight, chronic } = donorData;
-    if (!age || !weight) return setEligibilityResult({ status: "Rejected", message: "Fill all fields." });
-    if (parseInt(age) < 18 || parseInt(weight) < 50 || chronic) {
-      return setEligibilityResult({ status: "Rejected", message: "Criteria not met (Age/Weight/Chronic)." });
+  // --- Functions: Promote an existing user to Top Donor status ---
+  const handleMarkAsTopDonor = async () => {
+    if (!topDonorUserId) {
+      setUpgradeStatus({ success: false, message: "Error: Please enter a User ID." });
+      return;
     }
-    setEligibilityResult({ status: "Accepted", message: "Eligible to donate! ✅" });
-  };
 
-  // --- Functions: 3. Smart AI Donor Match ---
+    setUpgradeLoading(true);
+    setUpgradeStatus(null);
+
+    try {
+      const url = `http://localhost:5004/api/donor/mark-top/${topDonorUserId}`;
+      const res = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" }
+      });
+
+      const messageText = await res.text();
+
+      if (res.ok) {
+        setUpgradeStatus({ 
+          success: true, 
+          message: `Success: User ID ${topDonorUserId} is now ${messageText || "Top Donor"}!` 
+        });
+        setTopDonorUserId(""); 
+      } else {
+        setUpgradeStatus({ success: false, message: `Failed: ${messageText || "Unknown error."}` });
+      }
+    } catch (error) {
+      console.error("API Connection Error:", error);
+      setUpgradeStatus({ success: false, message: "Error: Could not connect to the backend server." });
+    } finally {
+      setUpgradeLoading(false);
+    }
+  };
+  
+  // --- Functions: 3. Smart AI Donor Match Input Handler ---
   const handleSmartDonorChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    setSmartDonorData({ ...smartDonorData, [e.target.name]: e.target.value });
+    setSmartDonorData({ 
+      ...smartDonorData, 
+      [e.target.name]: e.target.value 
+    });
   };
 
+  // --- Functions: Submit Data to Flask AI and Auto-fill the Promotion Card ---
   const handleSmartDonorSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setSmartDonorLoading(true);
     setSmartDonorError(null);
     setSmartDonorResult(null);
+
+    if (!smartDonorData.userId) {
+      setSmartDonorError("Error: Please enter a User ID before running the AI model.");
+      setSmartDonorLoading(false);
+      return;
+    }
 
     const requestData = {
       Is_Compatible: parseInt(smartDonorData.Is_Compatible),
@@ -893,8 +935,14 @@ export default function IntegratedBloodServicesDashboard() {
       });
 
       if (!response.ok) throw new Error("Failed to fetch prediction from the server.");
+      
       const data: SmartDonorResult = await response.json();
       setSmartDonorResult(data);
+
+      if (data && (data.prediction === true || data.prediction === 1 || data.status === "Eligible")) {
+        setTopDonorUserId(smartDonorData.userId); 
+      }
+
     } catch (err: any) {
       setSmartDonorError(err.message || "An error occurred. Is Flask running on port 5000?");
     } finally {
@@ -903,53 +951,78 @@ export default function IntegratedBloodServicesDashboard() {
   };
 
   // --- Functions: 4. Shortage Prediction ---
- const handlePredictShortage = async () => {
-  setPredictionLoading(true);
+  const handlePredictShortage = async () => {
+    setPredictionLoading(true);
 
-  // 1. تجهيز الـ 8 خانات لفصائل الدم (بناءً على الفصيلة المختارة، الافتراضي هنا A+)
-  // الترتيب الأبجدي الافتراضي لـ get_dummies هو: A+, A-, AB+, AB-, B+, B-, O+, O-
-  const bloodTypeArray = [0, 0, 0, 0, 0, 0, 0, 0];
-  if (shortageData.bloodType === "A+")   bloodTypeArray[0] = 1;
-  if (shortageData.bloodType === "A-")   bloodTypeArray[1] = 1;
-  if (shortageData.bloodType === "AB+")  bloodTypeArray[2] = 1;
-  if (shortageData.bloodType === "AB-")  bloodTypeArray[3] = 1;
-  if (shortageData.bloodType === "B+")   bloodTypeArray[4] = 1;
-  if (shortageData.bloodType === "B-")   bloodTypeArray[5] = 1;
-  if (shortageData.bloodType === "O+")   bloodTypeArray[6] = 1;
-  if (shortageData.bloodType === "O-")   bloodTypeArray[7] = 1;
+    const bloodTypeArray = [0, 0, 0, 0, 0, 0, 0, 0];
+    if (shortageData.bloodType === "A+")   bloodTypeArray[0] = 1;
+    if (shortageData.bloodType === "A-")   bloodTypeArray[1] = 1;
+    if (shortageData.bloodType === "AB+")  bloodTypeArray[2] = 1;
+    if (shortageData.bloodType === "AB-")  bloodTypeArray[3] = 1;
+    if (shortageData.bloodType === "B+")   bloodTypeArray[4] = 1;
+    if (shortageData.bloodType === "B-")   bloodTypeArray[5] = 1;
+    if (shortageData.bloodType === "O+")   bloodTypeArray[6] = 1;
+    if (shortageData.bloodType === "O-")   bloodTypeArray[7] = 1;
 
-  // 2. بناء الـ payload بالترتيب الدقيق اللي الموديل مستنيه
-  const payload = [
-    new Date().getMonth() + 1,                     // 1. month
-    Number(shortageData.availableUnits) || 0,      // 2. available_units
-    Number(shortageData.prevDayStock) || 0,        // 3. previous_day_stock
-    Number(shortageData.donatedUnits) || 0,        // 4. donated_units
-    Number(shortageData.requestedUnits) || 0,      // 5. requested_units
-    Number(shortageData.donorCount) || 0,          // 6. donor_count
-    Number(shortageData.hospitalRequests) || 3,    // 7. hospital_requests (حطينا 3 كقيمة افتراضية)
-    Number(shortageData.emergencyCases) || 0,      // 8. emergency_cases
-    Number(shortageData.isHoliday) || 0,           // 9. is_holiday
-    Number(shortageData.specialEvent) || 0,        // 10. special_event
-    ...bloodTypeArray                              // من 11 لـ 18: فصائل الدم
-  ];
+    const payload = [
+      new Date().getMonth() + 1,                     
+      Number(shortageData.availableUnits) || 0,      
+      Number(shortageData.prevDayStock) || 0,        
+      Number(shortageData.donatedUnits) || 0,        
+      Number(shortageData.requestedUnits) || 0,      
+      Number(shortageData.donorCount) || 0,          
+      Number(shortageData.hospitalRequests) || 3,    
+      Number(shortageData.emergencyCases) || 0,      
+      Number(shortageData.isHoliday) || 0,           
+      Number(shortageData.specialEvent) || 0,        
+      ...bloodTypeArray                              
+    ];
 
-  try {
-    const res = await fetch("https://maalaak-blood-shortage-api.hf.space/predict", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ data: payload }),
-    });
-    if (!res.ok) throw new Error("Failed to fetch");
-    const result = await res.json();
-    setPrediction(result.prediction);
-  } catch { 
-    console.error("Prediction failed. Is Hugging Face Space running?"); 
-  } finally { 
-    setPredictionLoading(false); 
-  }
-};
+    try {
+      const res = await fetch("https://maalaak-blood-shortage-api.hf.space/predict", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ data: payload }),
+      });
+      if (!res.ok) throw new Error("Failed to fetch");
+      const result = await res.json();
+      setPrediction(result.prediction);
+    } catch { 
+      console.error("Prediction failed. Is Hugging Face Space running?"); 
+    } finally { 
+      setPredictionLoading(false); 
+    }
+  };
 
-  // Prevents hydration mismatches
+  // --- Functions: 5. Send Shortage Alert Emails ---
+  const handleSendEmails = async () => {
+    setEmailLoading(true);
+    setEmailStatus(null);
+
+    try {
+      const bloodTypeParam = encodeURIComponent(shortageData.bloodType);
+      const url = `http://localhost:5004/api/notification/send-shortage-alert?bloodType=${bloodTypeParam}`;
+
+      const res = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" }
+      });
+
+      const messageText = await res.text();
+
+      if (res.ok) {
+        setEmailStatus({ success: true, message: `Success: ${messageText}` });
+      } else {
+        setEmailStatus({ success: false, message: `Failed: ${messageText}` });
+      }
+    } catch (error) {
+      console.error("Email API Error:", error);
+      setEmailStatus({ success: false, message: "Error: Connection failed. Is backend running on port 5004?" });
+    } finally {
+      setEmailLoading(false);
+    }
+  };
+
   if (!mounted) return null;
 
   return (
@@ -961,7 +1034,7 @@ export default function IntegratedBloodServicesDashboard() {
         <p className="text-muted-foreground uppercase tracking-widest text-sm font-bold">Integrated Healthcare Management System</p>
       </header>
 
-      {/* 2x2 Grid Layout for the 4 features */}
+      {/* 2x2 Grid Layout */}
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
         
         {/* SECTION 1: IMAGE ANALYSIS */}
@@ -994,9 +1067,7 @@ export default function IntegratedBloodServicesDashboard() {
           </CardContent>
         </Card>
 
-     
-
-        {/* SECTION 3: SMART AI DONOR MATCH */}
+        {/* SECTION 3: SMART AI DONOR MATCH - الأخضر القديم */}
         <Card className="shadow-lg border-t-4 border-green-500">
           <CardHeader>
             <CardTitle className="flex items-center gap-2"><HeartPulse className="text-green-500"/> AI Donor Match</CardTitle>
@@ -1004,6 +1075,23 @@ export default function IntegratedBloodServicesDashboard() {
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSmartDonorSubmit} className="space-y-4">
+              
+              {/* Target Donor User ID */}
+              <div className="space-y-1">
+                <Label htmlFor="smart-user-id" className="text-sm font-semibold text-gray-700">Target Donor User ID</Label>
+                <Input 
+                  id="smart-user-id"
+                  name="userId"
+                  type="number" 
+                  placeholder="Enter ID to test (e.g., 5)" 
+                  value={smartDonorData.userId} 
+                  onChange={handleSmartDonorChange}
+                  className="w-full border-gray-300 focus:border-green-500 focus:ring-green-500"
+                  required
+                />
+              </div>
+
+              {/* Grid System for AI Features */}
               <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-1">
                   <Label>Is Compatible?</Label>
@@ -1033,8 +1121,8 @@ export default function IntegratedBloodServicesDashboard() {
                   <Input type="number" step="0.1" name="Blood_Quality_Score" value={smartDonorData.Blood_Quality_Score} onChange={handleSmartDonorChange} placeholder="e.g., 9.2" required />
                 </div>
               </div>
-
-              <Button type="submit" disabled={smartDonorLoading} className="w-full bg-green-600 hover:bg-green-700 text-white">
+              
+              <Button type="submit" disabled={smartDonorLoading} className="w-full bg-green-600 hover:bg-green-700 text-white font-bold">
                 {smartDonorLoading ? "Predicting..." : "Predict Match"}
               </Button>
             </form>
@@ -1047,10 +1135,10 @@ export default function IntegratedBloodServicesDashboard() {
               <div className="mt-4 p-4 bg-green-50 border border-green-200 rounded-lg text-sm text-gray-800">
                 <p className="mb-1">
                   <strong>Match:</strong>{" "}
-                  {smartDonorResult.prediction === 1 ? (
-                    <span className="text-green-600 font-bold">Likely to Donate (1)</span>
+                  {smartDonorResult.prediction === 1 || smartDonorResult.prediction === true ? (
+                    <span className="text-green-600 font-bold">Likely to Donate</span>
                   ) : (
-                    <span className="text-red-600 font-bold">Unlikely to Donate (0)</span>
+                    <span className="text-red-600 font-bold">Unlikely to Donate</span>
                   )}
                 </p>
                 <p>
@@ -1062,7 +1150,6 @@ export default function IntegratedBloodServicesDashboard() {
           </CardContent>
         </Card>
 
-        {/* SECTION 4: SHORTAGE PREDICTION */}
         {/* SECTION 4: SHORTAGE PREDICTION */}
         <Card className="shadow-lg border-t-4 border-black">
           <CardHeader>
@@ -1079,7 +1166,6 @@ export default function IntegratedBloodServicesDashboard() {
                 <Input placeholder="Emergency Cases" type="number" onChange={(e)=>setShortageData({...shortageData, emergencyCases: e.target.value})} />
              </div>
              
-             {/* تم تغيير التقسيم هنا لـ grid-cols-3 لإضافة قائمة فصائل الدم بشكل متناسق */}
              <div className="grid grid-cols-3 gap-2">
                <Select value={shortageData.bloodType} onValueChange={(v)=>setShortageData({...shortageData, bloodType: v})}>
                  <SelectTrigger className="text-sm"><SelectValue placeholder="Blood Type" /></SelectTrigger>
@@ -1116,34 +1202,95 @@ export default function IntegratedBloodServicesDashboard() {
                </div>
              )}
 
-             <button onClick={()=>setPrediction(null)} className="w-full mt-2 bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 rounded-lg transition duration-200">Send Emails to Top Donors</button>
-          
+            {/* ⚪️ PREMIUM INTERACTIVE WHITE BUTTON WITH EXTREME BLOOD DROPLETS EFFECT ⚪️ */}
+<Button 
+  onClick={handleSendEmails} 
+  disabled={emailLoading}
+  className="group relative w-full mt-2 h-11 bg-white hover:bg-slate-50 disabled:bg-slate-100 disabled:text-slate-400 text-slate-900 font-black tracking-wider flex items-center justify-center gap-2 border-2 border-black shadow-sm transition-all active:scale-[0.98] overflow-hidden"
+>
+  {/* قطرات الدم الخلفية - بتظهر وتطير وتتحرك وقت الـ Hover */}
+  <div className="absolute inset-0 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+    <Droplets size={24} className="absolute left-4 top-1 text-red-600/80 animate-bounce" />
+    <Droplets size={14} className="absolute left-16 bottom-2 text-red-500 animate-pulse" />
+    <Droplets size={18} className="absolute left-28 top-2 text-red-600" />
+    <Droplets size={12} className="absolute right-24 bottom-1 text-red-500 animate-bounce" />
+    <Droplets size={20} className="absolute right-12 top-2 text-red-600 animate-pulse" />
+    <Droplets size={16} className="absolute right-4 bottom-2 text-red-500" />
+  </div>
+
+  {/* النص والـ Content الأساسي بيفضل واضح وفي النص فوق الأيقونات الخلفية */}
+  <span className="relative z-10 flex items-center gap-2 group-hover:scale-105 transition-transform duration-300">
+    <Droplets size={18} className="text-red-600 animate-pulse" />
+    {emailLoading ? "Sending Emails..." : `Send Emails to Top Donors (${shortageData.bloodType})`}
+    <Droplets size={18} className="text-red-600 animate-pulse" />
+  </span>
+</Button>
+
+
+
+              {emailStatus && (
+                <div className={`p-3 rounded-lg text-center font-bold text-xs mt-2 border ${emailStatus.success ? "bg-green-50 text-green-700 border-green-200" : "bg-red-50 text-red-700 border-red-200"}`}>
+                  {emailStatus.message}
+                </div>
+              )}
           </CardContent>
         </Card>
-           {/* SECTION 4: Save Best Donors to Send Emails within Shortage Period */}
-        <Card className="shadow-lg border-t-4 border-blue-500">
+
+        {/* SECTION 5: REGISTRATION AND PROMOTION (Right Card) */}
+        <Card className="shadow-lg border-t-4 border-red-700">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2"><User className="text-blue-500"/>Top Donors Registration</CardTitle>
-            <CardDescription>After Check AI Donor Match</CardDescription>
+            <CardTitle className="flex items-center gap-2 text-red-700"><User className="text-red-700"/> Promotion Panel</CardTitle>
+            <CardDescription>After Checking AI Donor Match</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="grid grid-cols-2 gap-3">
-              <div className="space-y-1"><Label>Name</Label><Input type="text" value={donorData.age} onChange={(e)=>setDonorData({...donorData, age: e.target.value})}/></div>
-              <div className="space-y-1"><Label>Email</Label><Input type="number" value={donorData.weight} onChange={(e)=>setDonorData({...donorData, weight: e.target.value})}/></div>
-              <div className="space-y-1"><Label>Blood Type</Label><Input type="text" value={donorData.age} onChange={(e)=>setDonorData({...donorData, age: e.target.value})}/></div>
-              <div className="space-y-1"><Label>Address</Label><Input type="number" value={donorData.weight} onChange={(e)=>setDonorData({...donorData, weight: e.target.value})}/></div>
-              <div className="space-y-1"><Label>Phone</Label><Input type="number" value={donorData.weight} onChange={(e)=>setDonorData({...donorData, weight: e.target.value})}/></div>
-              <div className="space-y-1"><Label>Last Donation</Label><Input type="number" value={donorData.weight} onChange={(e)=>setDonorData({...donorData, weight: e.target.value})}/></div>
-
-
+            <div className="space-y-2">
+              <Label htmlFor="top-donor-id" className="text-sm font-semibold text-gray-700">Promotion Control</Label>
+              <Input 
+                id="top-donor-id"
+                type="number" 
+                placeholder="Enter Donor User ID (e.g. 5)" 
+                value={topDonorUserId} 
+                onChange={(e) => setTopDonorUserId(e.target.value)}
+                className="w-full border-gray-300 focus:border-red-700 focus:ring-red-700"
+              />
+              <p className="text-[10px] text-gray-400 uppercase tracking-tighter">
+                Enter the ID of the donor predicted by the AI model to grant them "Top Donor" priority.
+              </p>
             </div>
            
-            <Button onClick={checkEligibility} variant="outline" className="w-full border-blue-600 text-blue-600 hover:bg-blue-500">Save Donor</Button>
-            {eligibilityResult && (
-              <div className={`p-3 rounded-lg text-center font-bold text-sm ${eligibilityResult.status === "Accepted" ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"}`}>
-                {eligibilityResult.message}
+            <Button 
+              onClick={handleMarkAsTopDonor} 
+              disabled={upgradeLoading}
+              className="w-full bg-red-700 hover:bg-red-800 text-white font-bold transition-all shadow-md active:scale-95"
+            >
+              {upgradeLoading ? "Processing..." : "Promote to Top Donor"}
+            </Button>
+
+            {upgradeStatus && (
+              <div className={`p-3 rounded-lg text-center font-bold text-xs mt-2 border-2 ${upgradeStatus.success ? "bg-green-50 text-green-700 border-green-200" : "bg-red-50 text-red-700 border-red-200"}`}>
+                {upgradeStatus.message}
               </div>
             )}
+
+            <div className="mt-6 pt-4 border-t border-gray-100 space-y-3 text-left">
+              <span className="text-[11px] font-bold text-red-700 uppercase tracking-wider block">
+                Admin Quick Guide
+              </span>
+              <ul className="space-y-2 text-xs text-gray-500">
+                <li className="flex items-start gap-2">
+                  <span className="text-red-700 font-bold">1.</span>
+                  <span>Run the <strong>Smart AI Donor Match</strong> model in the center card first.</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-red-700 font-bold">2.</span>
+                  <span>If the prediction returns <strong>True</strong>, the system will automatically copy the donor's ID.</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-red-700 font-bold">3.</span>
+                  <span>Click promote above to ensure they receive emergency notifications from the .NET system.</span>
+                </li>
+              </ul>
+            </div>
           </CardContent>
         </Card>
 

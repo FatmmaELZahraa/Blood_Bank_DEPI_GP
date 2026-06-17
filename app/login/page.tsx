@@ -1,125 +1,91 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
-import Image from "next/image";
-import { authConfig } from "./auth.config"; 
+import { useRouter } from "next/navigation";
 
-type Role = keyof typeof authConfig;
-
-export default function LoginPage({ role = "donor" }: { role?: Role }) {
+export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
 
- const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
-  e.preventDefault();
-  setError("");
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError("");
+    setLoading(true);
 
-  const config = authConfig[role];
+    try {
+      const response = await fetch("http://localhost:5004/api/Auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
 
-  try {
-    const response = await fetch(config.endpoint, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ email, password }),
-    });
+      if (response.ok) {
+        const data = await response.json();
+        
+        localStorage.clear();
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("userId", String(data.userId));
+        localStorage.setItem("userRole", data.role);
+        localStorage.setItem("userName", data.name);
 
-    if (response.ok) {
-  const data = await response.json();
-
-  // ✅ امسح الداتا القديمة الأول
-  localStorage.clear();
-
-  localStorage.setItem("token", data.token);
-  localStorage.setItem("userRole", data.role);
-  localStorage.setItem("userName", data.name);
-  localStorage.setItem("userId",   String(data.userId));
-  const redirectPath =
-  config.redirect[data.role as keyof typeof config.redirect] || "/";
-      router.push(redirectPath);
-}
- else {
-      const errorMsg = await response.text();
-      setError(errorMsg || "Invalid email or password.");
+        // التوجيه للداشبورد مباشرة بناءً على الدور (Role)
+        // الداشبورد هي المسؤولة عن التحقق إذا كان البروفايل يحتاج إكمال أم لا
+        router.push(`/${data.role.toLowerCase()}`);
+      } else {
+        setError("Invalid email or password.");
+      }
+    } catch (err) {
+      setError("Server connection failed. Please ensure Backend is running.");
+    } finally {
+      setLoading(false);
     }
-  } catch (err) {
-    setError("Unable to connect to the server. Please ensure the Backend is running.");
-  }
-};
+  };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <form
-        onSubmit={handleLogin}
-        className="bg-white p-8 rounded-2xl shadow-md w-[350px]"
-      >
-        <h2 className="text-2xl font-bold mb-6 text-center text-gray-700 font-serif">
-          Login
-        </h2>
+    <div className="flex items-center justify-center min-h-screen bg-gray-100 p-4">
+      <form onSubmit={handleLogin} className="bg-white p-8 rounded-2xl shadow-md w-full max-w-[400px]">
+        <h2 className="text-2xl font-bold mb-6 text-center text-gray-700 font-serif">Login</h2>
+        
+        {error && <p className="text-red-500 text-sm mb-4 text-center font-bold font-serif">{error}</p>}
 
-        <Image
-          src="/icon.svg"
-          alt="BloodLink Logo"
-          width={28}
-          height={28}
-          className="mx-auto mb-4"
-        />
-
-        {error && (
-          <p className="text-red-500 text-sm mb-4 text-center font-serif">
-            {error}
-          </p>
-        )}
-
-        <input
-          type="email"
-          placeholder="Enter your email"
-          className="w-full mb-4 p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#c20000] font-serif"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        />
-
-        <input
-          type="password"
-          placeholder="Enter your password"
-          className="w-full mb-3 p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#c20000] font-serif"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
-
-        <Link
-          href="/forgot-password"
-          className="text-sm text-[#c20000] hover:underline font-serif mb-6"
-        >
-          Forgot Password?
-        </Link>
+        <div className="space-y-4">
+          <input
+            type="email"
+            placeholder="Email"
+            className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-[#c20000] outline-none font-serif"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+          <input
+            type="password"
+            placeholder="Password"
+            className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-[#c20000] outline-none font-serif"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+        </div>
 
         <button
           type="submit"
-          className="w-full bg-[#c20000] text-white p-3 rounded-lg hover:bg-[#c20000] transition font-serif"
+          disabled={loading}
+          className="w-full mt-6 bg-[#c20000] text-white p-3 rounded-lg hover:bg-black transition font-bold font-serif"
         >
-          Login
+          {loading ? "Logging in..." : "Login"}
         </button>
 
         <p className="text-sm text-center mt-4 text-gray-500 font-serif">
           Don't have an account?{" "}
-          <Link
-            href="/signup"
-            className="text-[#c20000] hover:underline font-serif"
-          >
+          <Link href="/signup" className="text-[#c20000] hover:underline">
             Sign Up
           </Link>
         </p>
       </form>
     </div>
-    
   );
 }

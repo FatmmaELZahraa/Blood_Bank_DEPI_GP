@@ -279,7 +279,9 @@ namespace Blood_Bank.Controllers
                     bloodType = donor.BloodType,
                     lastDonationDate = donor.LastDonationDate,
                     points = donor.Points,
-                    medicalHistory = donor.MedicalHistory
+                    medicalHistory = donor.MedicalHistory,
+                    isProfileCompleted = !string.IsNullOrEmpty(donor.BloodType) && donor.BloodType != "N/A"
+
                 });
             }
 
@@ -341,6 +343,7 @@ namespace Blood_Bank.Controllers
             await _context.SaveChangesAsync();
             return Ok(new AuthResponseDto
             {
+                UserId = newUser.UserID,
                 Name = newUser.Name,
                 Role = dto.Role,
                 Token = GenerateJwtToken(newUser, dto.Role)
