@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -49,7 +50,13 @@ export default function LoginPage() {
     <div className="flex items-center justify-center min-h-screen bg-gray-100 p-4">
       <form onSubmit={handleLogin} className="bg-white p-8 rounded-2xl shadow-md w-full max-w-[400px]">
         <h2 className="text-2xl font-bold mb-6 text-center text-gray-700 font-serif">Login</h2>
-        
+         <Image
+          src="/icon.svg"
+          alt="BloodLink Logo"
+          width={28}
+          height={28}
+          className="mx-auto mb-4"
+        />
         {error && <p className="text-red-500 text-sm mb-4 text-center font-bold font-serif">{error}</p>}
 
         <div className="space-y-4">
