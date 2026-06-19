@@ -934,7 +934,7 @@ export default function IntegratedBloodServicesDashboard() {
         body: JSON.stringify(requestData),
       });
 
-      if (!response.ok) throw new Error("Failed to fetch prediction from the server.");
+      if (!response.ok) throw new Error("Failed to fetch prediction from Samya Model.");
       
       const data: SmartDonorResult = await response.json();
       setSmartDonorResult(data);
