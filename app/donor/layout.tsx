@@ -3,11 +3,11 @@
 // import { useState } from "react"
 // import Link from "next/link"
 // import { usePathname } from "next/navigation"
-// import { 
-//   User, 
-//   Calendar, 
-//   QrCode, 
-//   Award, 
+// import {
+//   User,
+//   Calendar,
+//   QrCode,
+//   Award,
 //   History,
 //   Menu,
 //   X,
@@ -185,26 +185,26 @@
 //                     <span className="hidden xl:inline font-serif">John Doe</span>
 //                   </Button>
 //                 </DropdownMenuTrigger>
-              //   <DropdownMenuContent align="end">
-              //     <DropdownMenuItem>
-              //       <Link href="/donor/profile" className="flex items-center gap-2">
-              //         <User className="h-4 w-4" />
-              //         Profile
-              //       </Link>
-              //     </DropdownMenuItem>
-              //     <DropdownMenuItem>
-              //       <Settings className="mr-2 h-4 w-4" />
-              //       Settings
-              //     </DropdownMenuItem>
-              //     <DropdownMenuSeparator />
-              //     <DropdownMenuItem asChild>
-              //       <Link href="/login">
-              //         <LogOut className="mr-2 h-4 w-4" />
-              //         Sign Out
-              //       </Link>
-              //     </DropdownMenuItem>
-              //   </DropdownMenuContent>
-              // </DropdownMenu>
+//   <DropdownMenuContent align="end">
+//     <DropdownMenuItem>
+//       <Link href="/donor/profile" className="flex items-center gap-2">
+//         <User className="h-4 w-4" />
+//         Profile
+//       </Link>
+//     </DropdownMenuItem>
+//     <DropdownMenuItem>
+//       <Settings className="mr-2 h-4 w-4" />
+//       Settings
+//     </DropdownMenuItem>
+//     <DropdownMenuSeparator />
+//     <DropdownMenuItem asChild>
+//       <Link href="/login">
+//         <LogOut className="mr-2 h-4 w-4" />
+//         Sign Out
+//       </Link>
+//     </DropdownMenuItem>
+//   </DropdownMenuContent>
+// </DropdownMenu>
 //             </div>
 //           </div>
 //           {children}
@@ -219,18 +219,44 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { User, Calendar, QrCode, Award, History, Menu, X, Droplets, Bell, Settings, LogOut } from "lucide-react";
+import {
+  User,
+  Calendar,
+  QrCode,
+  Award,
+  History,
+  Menu,
+  X,
+  Droplets,
+  Bell,
+  Settings,
+  LogOut,
+  Home,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
 
-export default function DonorLayout({ children }: { children: React.ReactNode }) {
+export default function DonorLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const pathname = usePathname();
   const router = useRouter();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
-  const [userData, setUserData] = useState<{ name: string; bloodType?: string; points?: number; } | null>(null);
+  const [userData, setUserData] = useState<{
+    name: string;
+    bloodType?: string;
+    points?: number;
+  } | null>(null);
 
   const isCompleteProfile = pathname === "/donor/complete-profile";
 
@@ -244,7 +270,7 @@ export default function DonorLayout({ children }: { children: React.ReactNode })
       }
       try {
         const response = await fetch("http://localhost:5004/api/Auth/profile", {
-          headers: { "Authorization": `Bearer ${token}` }
+          headers: { Authorization: `Bearer ${token}` },
         });
         if (response.ok) {
           const data = await response.json();
@@ -264,13 +290,24 @@ export default function DonorLayout({ children }: { children: React.ReactNode })
     router.push("/login");
   };
 
-  const initials = userData?.name ? userData.name.split(' ').map(n => n[0]).join('').toUpperCase() : "??";
+  const initials = userData?.name
+    ? userData.name
+        .split(" ")
+        .map((n) => n[0])
+        .join("")
+        .toUpperCase()
+    : "??";
 
   // دالة ذكية لإظهار عناصر القائمة
   const getSidebarItems = () => {
     let items = [
-      { href: "/donor", icon: User, label: "Profile" },
-      { href: "/donor/complete-profile", icon: Settings, label: "Complete Profile" },
+      { href: "/donor", icon: Home, label: "Dashboard" },
+      { href: "/donor/profile", icon: User, label: "Profile" },
+      {
+        href: "/donor/complete-profile",
+        icon: Settings,
+        label: "Complete Profile",
+      },
       { href: "/donor/appointments", icon: Calendar, label: "Appointments" },
       { href: "/donor/qr-code", icon: QrCode, label: "Digital ID" },
       { href: "/donor/rewards", icon: Award, label: "Rewards" },
@@ -278,8 +315,12 @@ export default function DonorLayout({ children }: { children: React.ReactNode })
     ];
 
     // إذا كانت البيانات مكتملة، نقوم بفلترة خيار "Complete Profile"
-    if (userData?.bloodType && userData.bloodType !== "N/A" && userData.bloodType.trim() !== "") {
-      return items.filter(item => item.label !== "Complete Profile");
+    if (
+      userData?.bloodType &&
+      userData.bloodType !== "N/A" &&
+      userData.bloodType.trim() !== ""
+    ) {
+      return items.filter((item) => item.label !== "Complete Profile");
     }
     return items;
   };
@@ -290,40 +331,62 @@ export default function DonorLayout({ children }: { children: React.ReactNode })
     <div className="min-h-screen bg-background">
       {!isCompleteProfile && (
         <header className="sticky top-0 z-50 flex items-center justify-between border-b border-border bg-card px-4 py-3 lg:hidden">
-          <Button variant="ghost" size="icon" onClick={() => setSidebarOpen(!sidebarOpen)}>
-            {sidebarOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => setSidebarOpen(!sidebarOpen)}
+          >
+            {sidebarOpen ? (
+              <X className="h-5 w-5" />
+            ) : (
+              <Menu className="h-5 w-5" />
+            )}
           </Button>
           <Link href="/" className="flex items-center gap-2">
             <Droplets className="h-6 w-6 text-primary" />
-            <span className="font-bold text-foreground font-serif">BloodLink</span>
+            <span className="font-bold text-foreground font-serif">
+              BloodLink
+            </span>
           </Link>
           <Avatar className="h-8 w-8">
-             <AvatarFallback className="bg-primary text-primary-foreground">{initials}</AvatarFallback>
+            <AvatarFallback className="bg-primary text-primary-foreground">
+              {initials}
+            </AvatarFallback>
           </Avatar>
         </header>
       )}
 
       <div className="flex">
         {!isCompleteProfile && (
-          <aside className={cn(
-            "fixed inset-y-0 left-0 z-40 w-64 transform border-r border-border bg-card transition-transform duration-200 lg:static lg:translate-x-0",
-            sidebarOpen ? "translate-x-0" : "-translate-x-full"
-          )}>
+          <aside
+            className={cn(
+              "fixed inset-y-0 left-0 z-40 w-64 transform border-r border-border bg-card transition-transform duration-200 lg:static lg:translate-x-0",
+              sidebarOpen ? "translate-x-0" : "-translate-x-full",
+            )}
+          >
             <div className="hidden items-center gap-2 border-b border-border px-6 py-4 lg:flex">
               <Link href="/" className="flex items-center gap-2">
                 <Droplets className="h-7 w-7 text-primary" />
-                <span className="text-xl font-bold text-foreground font-serif">BloodLink</span>
+                <span className="text-xl font-bold text-foreground font-serif">
+                  BloodLink
+                </span>
               </Link>
             </div>
-            
+
             <div className="border-b border-border p-4">
               <div className="flex items-center gap-3">
                 <Avatar className="h-12 w-12">
-                  <AvatarFallback className="bg-primary text-primary-foreground text-lg">{initials}</AvatarFallback>
+                  <AvatarFallback className="bg-primary text-primary-foreground text-lg">
+                    {initials}
+                  </AvatarFallback>
                 </Avatar>
                 <div>
-                  <p className="font-semibold text-foreground font-serif truncate w-32">{userData?.name || "Loading..."}</p>
-                  <p className="text-sm text-muted-foreground font-serif">Blood Type: {userData?.bloodType || "N/A"}</p>
+                  <p className="font-semibold text-foreground font-serif truncate w-32">
+                    {userData?.name || "Loading..."}
+                  </p>
+                  <p className="text-sm text-muted-foreground font-serif">
+                    Blood Type: {userData?.bloodType || "N/A"}
+                  </p>
                 </div>
               </div>
             </div>
@@ -334,10 +397,16 @@ export default function DonorLayout({ children }: { children: React.ReactNode })
                   const isActive = pathname === item.href;
                   return (
                     <li key={item.href}>
-                      <Link href={item.href} onClick={() => setSidebarOpen(false)} className={cn(
-                        "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors",
-                        isActive ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:bg-muted hover:text-foreground"
-                      )}>
+                      <Link
+                        href={item.href}
+                        onClick={() => setSidebarOpen(false)}
+                        className={cn(
+                          "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors",
+                          isActive
+                            ? "bg-primary text-primary-foreground"
+                            : "text-muted-foreground hover:bg-muted hover:text-foreground",
+                        )}
+                      >
                         <item.icon className="h-5 w-5" />
                         {item.label}
                       </Link>
@@ -346,22 +415,24 @@ export default function DonorLayout({ children }: { children: React.ReactNode })
                 })}
               </ul>
             </nav>
-            
+
             <div className="absolute bottom-0 left-0 right-0 border-t border-border p-4">
               <div className="rounded-lg bg-primary/10 p-3">
                 <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium text-foreground font-serif">Total Points</span>
+                  <span className="text-sm font-medium text-foreground font-serif">
+                    Total Points
+                  </span>
                   <Award className="h-5 w-5 text-primary" />
                 </div>
-                <p className="mt-1 text-2xl font-bold text-primary font-serif">{userData?.points?.toLocaleString() || "0"}</p>
+                <p className="mt-1 text-2xl font-bold text-primary font-serif">
+                  {userData?.points?.toLocaleString() || "0"}
+                </p>
               </div>
             </div>
           </aside>
         )}
 
-        <main className="flex-1 p-4 lg:p-8">
-          {children}
-        </main>
+        <main className="flex-1 p-4 lg:p-8">{children}</main>
       </div>
     </div>
   );
