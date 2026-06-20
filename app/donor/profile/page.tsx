@@ -75,7 +75,7 @@ export default function ProfilePage() {
         return;
       }
 
-      const response = await apiFetch("/api/edit-profile");
+      const response = await apiFetch("/api/EditProfile");
       if (response?.success && response?.data) {
         setUserData(response.data);
         setFormData({
@@ -103,23 +103,23 @@ export default function ProfilePage() {
       setError(null);
       setSuccess(null);
 
-      // Only send fields that have values
+      // Build payload matching EditProfileDto structure
       const updateData: any = {
-        name: formData.name || undefined,
-        email: formData.email || undefined,
-        phone: formData.phone || undefined,
+        name: formData.name,
+        email: formData.email,
+        phone: String(formData.phone),
       };
 
       if (userData?.role === "Donor") {
-        updateData.bloodType = formData.bloodType || undefined;
-        updateData.medicalHistory = formData.medicalHistory || undefined;
+        updateData.bloodType = formData.bloodType;
+        updateData.medicalHistory = formData.medicalHistory || "";
       }
 
       if (userData?.role === "Hospital") {
-        updateData.address = formData.address || undefined;
+        updateData.address = formData.address || "";
       }
 
-      const response = await apiFetch("/api/edit-profile", {
+      const response = await apiFetch("/api/EditProfile", {
         method: "PUT",
         body: JSON.stringify(updateData),
       });
