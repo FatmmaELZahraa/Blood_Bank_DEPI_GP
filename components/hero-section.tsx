@@ -48,7 +48,7 @@ export function HeroSection() {
 
   {/* Request Blood */}
   <Button asChild variant="outline" size="lg" className="gap-2">
-    <Link href="/hospital/requests">
+    <Link href="/login">
       Request Blood
       <ArrowRight className="h-4 w-4" />
     </Link>

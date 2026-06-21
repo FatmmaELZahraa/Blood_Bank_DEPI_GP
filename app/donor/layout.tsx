@@ -312,6 +312,7 @@ export default function DonorLayout({
       { href: "/donor/qr-code", icon: QrCode, label: "Digital ID" },
       { href: "/donor/rewards", icon: Award, label: "Rewards" },
       { href: "/donor/history", icon: History, label: "Donation History" },
+      {href:"/donor/request-blood", icon: Droplets, label: "Request Blood"}
     ];
 
     // إذا كانت البيانات مكتملة، نقوم بفلترة خيار "Complete Profile"
