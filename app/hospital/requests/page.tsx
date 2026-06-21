@@ -114,7 +114,6 @@ export default function BloodRequestsPage() {
       return
     }
 
-    // ✅ FIX: use getUserId() which reads "userId" correctly
     const userID = getUserId()
     if (!userID) {
       window.location.href = "/login"

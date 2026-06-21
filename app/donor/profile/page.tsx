@@ -205,7 +205,7 @@ export default function ProfilePage() {
             </div>
 
             {/* Info Grid */}
-            <div className="mt-8 grid grid-cols-2 gap-4">
+            <div className="mt-8 grid grid-cols-1 gap-4">
               {userData.role === "Donor" && (
                 <>
                   <div className="p-3 bg-red-50 rounded-xl border border-red-100 text-center">

@@ -19,51 +19,69 @@ namespace Blood_Bank.Controllers
         {
             _context = context;
         }
-        [HttpGet("my-appointments")]
-        public async Task<ActionResult<IEnumerable<Appointment>>> GetMyAppointments()
-        {
-                
-            var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
-
-            var appointments = await _context.Appointments
-                .Where(a => a.DonorId == userId && a.AppointmentDate >= DateTime.Today)
-                .OrderBy(a => a.AppointmentDate)
-                .ToListAsync();
-
-            return Ok(appointments);
-        }
-
-        // 2. Book a new appointment
-        //[HttpPost("book")]
-        //public async Task<ActionResult> BookAppointment(BookAppointmentDto dto)
+        //[HttpGet("my-appointments")]
+        //public async Task<ActionResult<IEnumerable<Appointment>>> GetMyAppointments()
         //{
+
         //    var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
 
-        //    var donor = await _context.Donors.FindAsync(userId);
-        //    if (donor == null) return BadRequest("Only Donors can book appointments.");
+        //    var appointments = await _context.Appointments
+        //        .Where(a => a.DonorId == userId && a.AppointmentDate >= DateTime.Today)
+        //        .OrderBy(a => a.AppointmentDate)
+        //        .ToListAsync();
 
-        //    bool alreadyBooked = await _context.Appointments
-        //        .AnyAsync(a => a.DonorId == userId && a.AppointmentDate.Date == dto.AppointmentDate.Date && a.Status == "Confirmed");
-
-        //    if (alreadyBooked)
-        //        return BadRequest("You already have a confirmed appointment on this date.");
-
-        //    var newAppointment = new Appointment
-        //    {
-        //        DonorId = userId,
-        //        Location = dto.Location,
-        //        CenterName = dto.CenterName,
-        //        CenterAddress = dto.CenterAddress,
-        //        AppointmentDate = dto.AppointmentDate,
-        //        TimeSlot = dto.TimeSlot,
-        //        Status = "Confirmed"
-        //    };
-
-        //    _context.Appointments.Add(newAppointment);
-        //    await _context.SaveChangesAsync();
-
-        //    return Ok(new { message = "Appointment booked successfully!", appointmentId = newAppointment.Id });
+        //    return Ok(appointments);
         //}
+        [HttpGet("my-appointments")]
+        [Authorize] // تأكد من وجود هذه الخاصية لحماية المسار وإجبار السيرفر على قراءة التوكن
+        public async Task<ActionResult<IEnumerable<Appointment>>> GetMyAppointments()
+        {
+            try
+            {
+                // 1. جلب معرف المستخدم بأكثر من طريقة شائعة لضمان عدم رجوع القيمة بـ null
+                var claimValue = User.FindFirstValue(ClaimTypes.NameIdentifier)
+                                 ?? User.FindFirstValue("uid")
+                                 ?? User.FindFirstValue("id")
+                                 ?? User.FindFirst(System.IdentityModel.Tokens.Jwt.JwtRegisteredClaimNames.Sub)?.Value;
+
+                if (string.IsNullOrEmpty(claimValue))
+                {
+                    return Unauthorized(new { error = "لم يتم العثور على معرف المستخدم داخل التوكن (Token Claims)." });
+                }
+
+                if (!int.TryParse(claimValue, out int userId))
+                {
+                    return BadRequest(new { error = "صيغة معرف المستخدم داخل التوكن غير صحيحة." });
+                }
+
+                // 2. جلب المواعيد من قاعدة البيانات مع التأكد من عدم وجود مشاكل في التاريخ
+                var today = DateTime.Today;
+                var appointments = await _context.Appointments
+                    .Where(a => a.DonorId == userId && a.AppointmentDate >= today)
+                    .OrderBy(a => a.AppointmentDate)
+                    .ToListAsync();
+
+                return Ok(appointments);
+            }
+            catch (Exception ex)
+            {
+                // 3. طباعة الخطأ الحقيقي في الـ Terminal الخاص بـ Visual Studio / VS Code
+                Console.WriteLine($"[ERROR IN APPOINTMENTS]: {ex.Message}");
+                if (ex.InnerException != null)
+                {
+                    Console.WriteLine($"[INNER EXCEPTION]: {ex.InnerException.Message}");
+                }
+
+                // إرجاع تفاصيل الخطأ للـ Frontend لتسهيل المعاينة
+                return StatusCode(500, new
+                {
+                    error = "حدث خطأ داخلي في السيرفر أثناء جلب المواعيد.",
+                    details = ex.Message,
+                    innerError = ex.InnerException?.Message
+                });
+            }
+        }
+
         [HttpPost("book")]
         public async Task<ActionResult> BookAppointment(BookAppointmentDto dto)
         {
@@ -159,34 +177,6 @@ namespace Blood_Bank.Controllers
 
             return Ok(new { history, stats });
         }
-        //[HttpGet("donation-history")]
-        //[Authorize]
-        //public async Task<ActionResult> GetDonationHistory()
-        //{
-        //    var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
-
-        //    var history = await _context.Appointments
-        //        .Where(a => a.DonorId == userId && (a.Status == "Completed" || a.AppointmentDate < DateTime.Now))
-        //        .OrderByDescending(a => a.AppointmentDate) 
-        //        .Select(a => new {
-        //            a.Id,
-        //            a.AppointmentDate,
-        //            a.CenterName,
-        //            a.CenterAddress,
-        //            a.Status,
-        //            type = "Whole Blood",
-        //            volume = "450 ml"
-        //        })
-        //        .ToListAsync();
-
-        //    var stats = new
-        //    {
-        //        totalDonations = history.Count,
-        //        totalVolume = (history.Count * 450) + " ml",
-        //        livesImpacted = history.Count * 3
-        //    };
-
-        //    return Ok(new { history, stats });
-        //}
+   
     }
 }

@@ -85,8 +85,8 @@ export default function DonationHistoryPage() {
         <CardHeader>
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <CardTitle className="flex items-center gap-2">
-                <Calendar className="h-5 w-5 text-primary font-serif" />
+              <CardTitle className="flex items-center gap-2 font-serif">
+                <Calendar className="h-5 w-5 text-primary" />
                 Donation History
               </CardTitle>
               <CardDescription className="font-serif">
