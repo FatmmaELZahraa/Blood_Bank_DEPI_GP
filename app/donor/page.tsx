@@ -211,7 +211,9 @@ export default function DonorProfilePage() {
               <span className="text-slate-600">History</span>
               <Badge variant="outline" className="bg-white">{donor.medicalHistory || "Healthy"}</Badge>
             </div>
-            <Button variant="outline" className="w-full h-11">Update Health Data</Button>
+            <Link href="/donor/profile" className="w-full">
+              <Button variant="outline" className="w-full h-11">Update Health Data</Button>
+            </Link>
           </CardContent>
         </Card>
       </div>

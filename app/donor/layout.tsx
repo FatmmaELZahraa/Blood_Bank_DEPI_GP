@@ -303,11 +303,11 @@ export default function DonorLayout({
     let items = [
       { href: "/donor", icon: Home, label: "Dashboard" },
       { href: "/donor/profile", icon: User, label: "Profile" },
-      {
-        href: "/donor/complete-profile",
-        icon: Settings,
-        label: "Complete Profile",
-      },
+      // {
+      //   href: "/donor/complete-profile",
+      //   icon: Settings,
+      //   label: "Complete Profile",
+      // },
       { href: "/donor/appointments", icon: Calendar, label: "Appointments" },
       { href: "/donor/qr-code", icon: QrCode, label: "Digital ID" },
       { href: "/donor/rewards", icon: Award, label: "Rewards" },
@@ -416,19 +416,20 @@ export default function DonorLayout({
               </ul>
             </nav>
 
-            <div className="absolute bottom-0 left-0 right-0 border-t border-border p-4">
-              <div className="rounded-lg bg-primary/10 p-3">
-                <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium text-foreground font-serif">
-                    Total Points
-                  </span>
-                  <Award className="h-5 w-5 text-primary" />
-                </div>
-                <p className="mt-1 text-2xl font-bold text-primary font-serif">
-                  {userData?.points?.toLocaleString() || "0"}
-                </p>
-              </div>
-            </div>
+           {/* Total Points Section - mt-auto تدفع هذا الصندوق ليبقى في الأسفل بشكل ديناميكي */}
+  <div className="mt-auto border-t border-border p-4">
+    <div className="rounded-lg bg-primary/10 p-3">
+      <div className="flex items-center justify-between">
+        <span className="text-sm font-medium text-foreground font-serif">
+          Total Points
+        </span>
+        <Award className="h-5 w-5 text-primary" />
+      </div>
+      <p className="mt-1 text-2xl font-bold text-primary font-serif">
+         {userData?.points?.toLocaleString() || "0"}
+      </p>
+    </div>
+  </div>
           </aside>
         )}
 
