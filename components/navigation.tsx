@@ -17,9 +17,9 @@ import { useState } from "react"
 
 const navItems = [
   { href: "/", label: "Home", icon: Droplet },
-  { href: "/donor", label: "Donor Portal", icon: User },
-  { href: "/hospital/login", label: "Hospital Dashboard", icon: Building2 },
-  { href: "/admin", label: "Admin Panel", icon: LayoutDashboard },
+  // { href: "/donor", label: "Donor Portal", icon: User },
+  // { href: "/hospital/login", label: "Hospital Dashboard", icon: Building2 },
+  // { href: "/admin", label: "Admin Panel", icon: LayoutDashboard },
 
 ]
 
