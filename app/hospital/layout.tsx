@@ -31,6 +31,7 @@ const sidebarItems = [
   { href: "/hospital/inventory", icon: Package, label: "Inventory" },
   { href: "/hospital/sos", icon: AlertTriangle, label: "SOS Requests"},
   { href: "/hospital/requests", icon: FileText, label: "Blood Requests" },
+  { href: "/hospital/donor-eligibility", icon: CircleUser, label: "Check Eligibility" }
 ]
 
 export default function HospitalLayout({ children }: { children: React.ReactNode }) {

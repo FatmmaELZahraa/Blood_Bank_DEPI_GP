@@ -121,12 +121,10 @@ namespace Blood_Bank.Controllers
             var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
             var donor = await _context.Donors.FindAsync(userId);
 
-            // 1. العثور على المواعيد التي مر تاريخها ولم يتم تحديثها بعد
             var pastConfirmedAppointments = await _context.Appointments
                 .Where(a => a.DonorId == userId && a.Status == "Confirmed" && a.AppointmentDate < DateTime.Now)
                 .ToListAsync();
 
-            // 2. تحديث النقاط تلقائياً لكل موعد مر تاريخه
             if (pastConfirmedAppointments.Any() && donor != null)
             {
                 foreach (var apt in pastConfirmedAppointments)

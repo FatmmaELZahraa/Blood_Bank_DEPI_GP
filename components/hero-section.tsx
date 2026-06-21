@@ -59,10 +59,10 @@ export function HeroSection() {
     size="lg"
     className="gap-2 bg-red-600 hover:bg-red-700 text-white shadow-md transition-all duration-300 hover:scale-105"
   >
-    <Link href="/hospital/donor-eligibility">
+    {/* <Link href="/hospital/donor-eligibility">
       <Heart className="h-5 w-5" />
       Check Eligibility
-    </Link>
+    </Link> */}
   </Button>
 
 </div>

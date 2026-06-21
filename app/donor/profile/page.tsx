@@ -216,14 +216,14 @@ export default function ProfilePage() {
                       {userData.bloodType || "N/A"}
                     </p>
                   </div>
-                  <div className="p-3 bg-blue-50 rounded-xl border border-blue-100 text-center">
+                  {/* <div className="p-3 bg-blue-50 rounded-xl border border-blue-100 text-center">
                     <p className="text-xs text-blue-400 uppercase font-bold tracking-wider font-serif">
                       City
                     </p>
                     <p className="text-lg font-semibold text-blue-700">
                       {userData.city || "N/A"}
                     </p>
-                  </div>
+                  </div> */}
                 </>
               )}
               {userData.role === "Hospital" && (
