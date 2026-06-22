@@ -206,7 +206,6 @@ namespace Blood_Bank.Controllers
         private readonly IConfiguration _config;
         private readonly IEmailService _emailService;
 
-        // تم دمج الـ Constructor ليكون واحداً فقط (ضروري جداً لعمل الـ API)
         public AuthController(AppDbContext context, IConfiguration config, IEmailService emailService)
         {
             _context = context;
@@ -220,7 +219,6 @@ namespace Blood_Bank.Controllers
             var user = await _context.User.FirstOrDefaultAsync(u => u.Email == dto.Email);
             if (user == null) return BadRequest("If that email exists in our system, a reset link has been sent.");
 
-            // 1. إنشاء توكن آمن
             user.PasswordResetToken = Convert.ToHexString(RandomNumberGenerator.GetBytes(64));
             user.ResetTokenExpires = DateTime.Now.AddHours(1);
 
@@ -235,7 +233,7 @@ namespace Blood_Bank.Controllers
                     <p style='font-size: 0.8em; color: #666;'>This link expires in 1 hour.</p>
                 </div>";
 
-            await _emailService.SendEmailAsync(user.Email, "Reset Your Password", emailBody);
+            await _emailService.SendEmailAsync(user.Email??" ", "Reset Your Password", emailBody);
 
             return Ok(new { message = "Reset link sent to your email." });
         }
@@ -248,7 +246,6 @@ namespace Blood_Bank.Controllers
 
             if (user == null) return BadRequest("Invalid or expired token.");
 
-            // 3. تشفير كلمة المرور الجديدة باستخدام BCrypt
             user.Password = BCrypt.Net.BCrypt.HashPassword(dto.NewPassword);
             user.PasswordResetToken = null;
             user.ResetTokenExpires = null;
@@ -299,15 +296,64 @@ namespace Blood_Bank.Controllers
 
             return Ok(new { name = user.Name, email = user.Email, phone = user.phone, role = "Admin" });
         }
+        //before Add Confirmation Email
+        //[HttpPost("register")]
+        //public async Task<ActionResult<AuthResponseDto>> Register(RegisterDto dto)
+        //{
+        //    if (await _context.User.AnyAsync(u => u.Email == dto.Email))
+        //        return BadRequest("Email Already Exists Please Login");
 
+        //    string hashedPassword = BCrypt.Net.BCrypt.HashPassword(dto.Password);
+
+        //    User newUser;
+        //    if (dto.Role.ToLower() == "admin")
+        //    {
+        //        newUser = new Admin
+        //        {
+        //            Name = dto.Name,
+        //            Email = dto.Email,
+        //            Password = hashedPassword,
+        //            phone = dto.Phone 
+        //        };
+        //        _context.Admins.Add((Admin)newUser);
+        //    }
+        //    else if (dto.Role.ToLower() == "hospital")
+        //    {
+        //        newUser = new Hospital
+        //        {
+        //            Name = dto.Name,
+        //            Email = dto.Email,
+        //            Password = hashedPassword,
+        //            phone = dto.Phone
+        //        };
+        //        _context.Hospitals.Add((Hospital)newUser);
+
+        //    }
+        //    else
+        //    {
+        //        newUser = new Donor { Name = dto.Name, Email = dto.Email, Password = hashedPassword, phone = dto.Phone };
+        //        _context.Donors.Add((Donor)newUser);
+        //    }
+
+        //    await _context.SaveChangesAsync();
+        //    return Ok(new AuthResponseDto
+        //    {
+        //        UserId = newUser.UserID,
+        //        Name = newUser.Name,
+        //        Role = dto.Role,
+        //        Token = GenerateJwtToken(newUser, dto.Role)
+        //    });
+        //}
         [HttpPost("register")]
         public async Task<ActionResult<AuthResponseDto>> Register(RegisterDto dto)
         {
             if (await _context.User.AnyAsync(u => u.Email == dto.Email))
                 return BadRequest("Email Already Exists Please Login");
 
-            // تشفير كلمة المرور عند التسجيل لضمان الأمان
             string hashedPassword = BCrypt.Net.BCrypt.HashPassword(dto.Password);
+
+            string verificationToken = Convert.ToHexString(System.Security.Cryptography.RandomNumberGenerator.GetBytes(64));
+            DateTime tokenExpires = DateTime.UtcNow.AddHours(24);
 
             User newUser;
             if (dto.Role.ToLower() == "admin")
@@ -317,7 +363,10 @@ namespace Blood_Bank.Controllers
                     Name = dto.Name,
                     Email = dto.Email,
                     Password = hashedPassword,
-                    phone = dto.Phone 
+                    phone = dto.Phone,
+                    IsVerified = false,
+                    VerificationToken = verificationToken,
+                    VerificationTokenExpires = tokenExpires
                 };
                 _context.Admins.Add((Admin)newUser);
             }
@@ -328,27 +377,79 @@ namespace Blood_Bank.Controllers
                     Name = dto.Name,
                     Email = dto.Email,
                     Password = hashedPassword,
-                    phone = dto.Phone
+                    phone = dto.Phone,
+                    IsVerified = false,
+                    VerificationToken = verificationToken,
+                    VerificationTokenExpires = tokenExpires
                 };
                 _context.Hospitals.Add((Hospital)newUser);
-            
             }
             else
             {
-                newUser = new Donor { Name = dto.Name, Email = dto.Email, Password = hashedPassword, phone = dto.Phone };
+                newUser = new Donor
+                {
+                    Name = dto.Name,
+                    Email = dto.Email,
+                    Password = hashedPassword,
+                    phone = dto.Phone,
+                    IsVerified = false,
+                    VerificationToken = verificationToken,
+                    VerificationTokenExpires = tokenExpires
+                };
                 _context.Donors.Add((Donor)newUser);
             }
 
             await _context.SaveChangesAsync();
-            return Ok(new AuthResponseDto
+
+            //string confirmationLink = $"http://localhost:3000/verify-email?token={verificationToken}";
+            string confirmationLink = $"http://localhost:3000/verify-email?token={verificationToken}";
+
+            string emailBody = $@"
+    <div style='font-family: sans-serif; border: 1px solid #eee; padding: 20px; text-align: center; max-width: 500px; margin: 0 auto; border-radius: 10px;'>
+        <h2 style='color: #c20000;'>Welcome to BloodLink!</h2>
+        <p style='color: #333; font-size: 1.1em;'>Thank you for registering. Please confirm your email address to activate your account:</p>
+        
+        <a href='{confirmationLink}' style='background: #c20000; color: white; padding: 12px 25px; text-decoration: none; border-radius: 5px; display: inline-block; margin: 20px 0; font-weight: bold;'>
+            Verify Account
+        </a>
+        
+        <p style='font-size: 0.85em; color: #666;'>This link will expire in 24 hours.</p>
+        <hr style='border: none; border-top: 1px solid #eee; margin: 20px 0;' />
+        <p style='font-size: 0.8em; color: #999;'>If you didn't create an account, you can safely ignore this email.</p>
+    </div>";
+
+            await _emailService.SendEmailAsync(newUser.Email, "Confirm your email - BloodLink", emailBody);
+            //await _emailService.SendEmailAsync(newUser.Email, "Confirm your email", $"Please click here: {confirmationLink}");
+
+            return Ok(new
             {
+                Message = "Registration successful! Please check your email to verify your account.",
                 UserId = newUser.UserID,
-                Name = newUser.Name,
-                Role = dto.Role,
-                Token = GenerateJwtToken(newUser, dto.Role)
+                Email = newUser.Email
             });
         }
-       [HttpPost("login")]
+
+
+        [HttpGet("verify-email")]
+        public async Task<IActionResult> VerifyEmail([FromQuery] string token)
+        {
+            if (string.IsNullOrEmpty(token))
+                return BadRequest("Token is required.");
+
+            var user = await _context.User.FirstOrDefaultAsync(u => u.VerificationToken == token);
+
+            if (user == null)
+                return BadRequest("Invalid verification token.");
+
+            user.IsVerified = true;
+            user.VerificationToken = null;
+            user.VerificationTokenExpires = null;
+
+            await _context.SaveChangesAsync();
+
+            return Ok("Email verified successfully.");
+        }
+        [HttpPost("login")]
 public async Task<ActionResult> Login(LoginDto dto)
 {
     var user = await _context.User.FirstOrDefaultAsync(u => u.Email == dto.Email);
@@ -374,11 +475,11 @@ public async Task<ActionResult> Login(LoginDto dto)
         {
             var claims = new[] {
                 new Claim(ClaimTypes.NameIdentifier, user.UserID.ToString()),
-                new Claim(ClaimTypes.Email, user.Email),
+                new Claim(ClaimTypes.Email, user.Email?? " "),
                 new Claim(ClaimTypes.Role, role)
             };
 
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]?? " "));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
             var token = new JwtSecurityToken(
