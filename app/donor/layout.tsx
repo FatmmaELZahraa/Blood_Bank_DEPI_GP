@@ -283,7 +283,7 @@ export default function DonorLayout({
       }
     };
     fetchDonorData();
-  }, [router]);
+  }, [router, pathname]);
 
   const handleSignOut = () => {
     localStorage.clear();
@@ -300,22 +300,19 @@ export default function DonorLayout({
 
   // دالة ذكية لإظهار عناصر القائمة
   const getSidebarItems = () => {
+    // 1. ضفنا العنصر للقائمة (شيلنا التعليق)
     let items = [
       { href: "/donor", icon: Home, label: "Dashboard" },
       { href: "/donor/profile", icon: User, label: "Profile" },
-      // {
-      //   href: "/donor/complete-profile",
-      //   icon: Settings,
-      //   label: "Complete Profile",
-      // },
+      { href: "/donor/complete-profile", icon: Settings, label: "Complete Profile" },
       { href: "/donor/appointments", icon: Calendar, label: "Appointments" },
       { href: "/donor/qr-code", icon: QrCode, label: "Digital ID" },
       { href: "/donor/rewards", icon: Award, label: "Rewards" },
       { href: "/donor/history", icon: History, label: "Donation History" },
-      {href:"/donor/request-blood", icon: Droplets, label: "Request Blood"}
+      { href: "/donor/request-blood", icon: Droplets, label: "Request Blood" }
     ];
 
-    // إذا كانت البيانات مكتملة، نقوم بفلترة خيار "Complete Profile"
+    // 2. الشرط: لو البيانات موجودة، رجع القائمة بدون "Complete Profile"
     if (
       userData?.bloodType &&
       userData.bloodType !== "N/A" &&
@@ -323,9 +320,10 @@ export default function DonorLayout({
     ) {
       return items.filter((item) => item.label !== "Complete Profile");
     }
-    return items;
-  };
 
+    // 3. لو البيانات مش موجودة (أو ناقصة)، رجع القائمة كاملة (بالزرار)
+    return items;
+};
   if (!isMounted) return null;
 
   return (
