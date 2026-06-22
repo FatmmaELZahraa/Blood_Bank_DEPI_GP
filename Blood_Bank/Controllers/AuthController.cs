@@ -226,7 +226,6 @@ namespace Blood_Bank.Controllers
 
             await _context.SaveChangesAsync();
 
-            // 2. تجهيز وإرسال البريد
             var resetLink = $"http://localhost:3000/reset-password?token={user.PasswordResetToken}";
             string emailBody = $@"
                 <div style='font-family: sans-serif; border: 1px solid #eee; padding: 20px; text-align: center;'>

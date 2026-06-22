@@ -30,7 +30,6 @@ namespace Blood_Bank.Controllers
             if (!donors.Any())
                 return NotFound("No Donors found in the database");
 
-            // ✅ تم تعديل اسم المجلد هنا ليتطابق مع مشروعك بالظبط
             var templatePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Emails_Templetes", "GeneralCampaign.html");
 
             if (!System.IO.File.Exists(templatePath))
@@ -70,7 +69,6 @@ namespace Blood_Bank.Controllers
             if (!topDonors.Any())
                 return NotFound("No Top Donors available");
 
-            // ✅ تم تعديل اسم المجلد هنا ليتطابق مع مشروعك بالظبط
             var templatePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Emails_Templetes", "ShortageAlert.html");
 
             if (!System.IO.File.Exists(templatePath))
