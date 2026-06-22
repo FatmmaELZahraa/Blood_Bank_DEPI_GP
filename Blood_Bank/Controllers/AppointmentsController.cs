@@ -19,26 +19,13 @@ namespace Blood_Bank.Controllers
         {
             _context = context;
         }
-        //[HttpGet("my-appointments")]
-        //public async Task<ActionResult<IEnumerable<Appointment>>> GetMyAppointments()
-        //{
-
-        //    var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
-
-        //    var appointments = await _context.Appointments
-        //        .Where(a => a.DonorId == userId && a.AppointmentDate >= DateTime.Today)
-        //        .OrderBy(a => a.AppointmentDate)
-        //        .ToListAsync();
-
-        //    return Ok(appointments);
-        //}
+       
         [HttpGet("my-appointments")]
-        [Authorize] // تأكد من وجود هذه الخاصية لحماية المسار وإجبار السيرفر على قراءة التوكن
+        [Authorize] 
         public async Task<ActionResult<IEnumerable<Appointment>>> GetMyAppointments()
         {
             try
             {
-                // 1. جلب معرف المستخدم بأكثر من طريقة شائعة لضمان عدم رجوع القيمة بـ null
                 var claimValue = User.FindFirstValue(ClaimTypes.NameIdentifier)
                                  ?? User.FindFirstValue("uid")
                                  ?? User.FindFirstValue("id")
@@ -54,7 +41,6 @@ namespace Blood_Bank.Controllers
                     return BadRequest(new { error = "صيغة معرف المستخدم داخل التوكن غير صحيحة." });
                 }
 
-                // 2. جلب المواعيد من قاعدة البيانات مع التأكد من عدم وجود مشاكل في التاريخ
                 var today = DateTime.Today;
                 var appointments = await _context.Appointments
                     .Where(a => a.DonorId == userId && a.AppointmentDate >= today)
@@ -65,14 +51,12 @@ namespace Blood_Bank.Controllers
             }
             catch (Exception ex)
             {
-                // 3. طباعة الخطأ الحقيقي في الـ Terminal الخاص بـ Visual Studio / VS Code
                 Console.WriteLine($"[ERROR IN APPOINTMENTS]: {ex.Message}");
                 if (ex.InnerException != null)
                 {
                     Console.WriteLine($"[INNER EXCEPTION]: {ex.InnerException.Message}");
                 }
 
-                // إرجاع تفاصيل الخطأ للـ Frontend لتسهيل المعاينة
                 return StatusCode(500, new
                 {
                     error = "حدث خطأ داخلي في السيرفر أثناء جلب المواعيد.",
@@ -117,7 +101,6 @@ namespace Blood_Bank.Controllers
             return Ok(new { message = "Appointment booked and 1000 points granted!", points = donor.Points });
         }
 
-        // 3. Cancel an appointment
         [HttpDelete("cancel/{id}")]
         public async Task<ActionResult> CancelAppointment(int id)
         {
