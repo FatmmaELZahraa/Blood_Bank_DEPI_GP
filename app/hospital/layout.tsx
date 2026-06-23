@@ -10,7 +10,7 @@ import {
   Menu,
   X,
   Droplets,
- CircleUser,
+  CircleUser,
   LogOut,
   Building2
 } from "lucide-react"
@@ -29,10 +29,22 @@ import { cn } from "@/lib/utils"
 const sidebarItems = [
   { href: "/hospital", icon: LayoutDashboard, label: "Dashboard" },
   { href: "/hospital/inventory", icon: Package, label: "Inventory" },
-  { href: "/hospital/sos", icon: AlertTriangle, label: "SOS Requests"},
+  { href: "/hospital/sos", icon: AlertTriangle, label: "SOS Requests" },
   { href: "/hospital/requests", icon: FileText, label: "Blood Requests" },
   { href: "/hospital/donor-eligibility", icon: CircleUser, label: "Check Eligibility" }
 ]
+
+// حساب الـ initials من أول حرف من كل كلمة في الاسم
+function getInitials(name: string): string {
+  return name
+    .trim()
+    .split(" ")
+    .filter(Boolean)
+    .map((word) => word[0])
+    .join("")
+    .toUpperCase()
+    .slice(0, 2) // أقصى حرفين عشان الأفاتار ما يتكسرش
+}
 
 export default function HospitalLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
@@ -43,16 +55,8 @@ export default function HospitalLayout({ children }: { children: React.ReactNode
   useEffect(() => {
     const name = localStorage.getItem("userName") ?? "Hospital"
     setHospitalName(name)
-    // عمل الـ initials من أول حرفين في الاسم
-    const parts = name.trim().split(" ")
-    const ini = parts.length >= 2
-      ? parts[0][0] + parts[1][0]
-      : parts[0].slice(0, 2)
-    setInitials(ini.toUpperCase())
+    setInitials(getInitials(name))
   }, [])
-{
-  const pathname = usePathname()
-  const [sidebarOpen, setSidebarOpen] = useState(false)
 
   return (
     <div className="min-h-screen bg-background">
@@ -73,9 +77,8 @@ export default function HospitalLayout({ children }: { children: React.ReactNode
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" size="icon" className="rounded-full">
               <Avatar className="h-8 w-8">
-               <AvatarFallback className="bg-accent text-accent-foreground">{initials}</AvatarFallback>
-<span className="hidden xl:inline">{hospitalName}</span>
-              </Avatar> 
+                <AvatarFallback className="bg-accent text-accent-foreground">{initials}</AvatarFallback>
+              </Avatar>
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
@@ -105,14 +108,14 @@ export default function HospitalLayout({ children }: { children: React.ReactNode
             </Link>
           </div>
 
-          {/* Hospital Info */}
+          {/* Hospital Info — اسم المستشفى من الداتابيز */}
           <div className="border-b border-border p-4">
             <div className="flex items-center gap-3">
               <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-accent/10">
                 <Building2 className="h-6 w-6 text-accent" />
               </div>
               <div>
-                <p className="font-semibold text-foreground">City Hospital</p>
+                <p className="font-semibold text-foreground">{hospitalName}</p>
                 <p className="text-sm text-muted-foreground">Blood Bank Unit</p>
               </div>
             </div>
@@ -139,7 +142,6 @@ export default function HospitalLayout({ children }: { children: React.ReactNode
                         <item.icon className="h-5 w-5" />
                         {item.label}
                       </span>
-                      
                     </Link>
                   </li>
                 )
@@ -176,19 +178,18 @@ export default function HospitalLayout({ children }: { children: React.ReactNode
               <p className="text-muted-foreground font-serif">Manage blood inventory and requests</p>
             </div>
             <div className="flex items-center gap-4">
-              
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" className="gap-2">
                     <Avatar className="h-8 w-8">
-                      <AvatarImage src="/hospital-avatar.jpg" />
-                      <AvatarFallback className="bg-accent text-accent-foreground">CH</AvatarFallback>
+                      {/* الأفاتار: أول حرف من كل كلمة في اسم المستشفى */}
+                      <AvatarFallback className="bg-accent text-accent-foreground">{initials}</AvatarFallback>
                     </Avatar>
-                    <span className="hidden xl:inline">City Hospital</span>
+                    <span className="hidden xl:inline">{hospitalName}</span>
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
-                 <DropdownMenuItem asChild>
+                  <DropdownMenuItem asChild>
                     <Link href="/hospital/profile">
                       <CircleUser className="mr-2 h-4 w-4" />
                       Profile
@@ -210,5 +211,4 @@ export default function HospitalLayout({ children }: { children: React.ReactNode
       </div>
     </div>
   )
-}
 }
