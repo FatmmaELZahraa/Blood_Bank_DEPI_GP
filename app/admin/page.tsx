@@ -460,7 +460,7 @@ export default function AdminDashboardPage() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground">Total Donors</p>
-                <p className="text-3xl font-bold text-foreground">{overview?.totalDonors ?? 0}</p>
+                <p className="text-3xl font-serif text-foreground">{overview?.totalDonors ?? 0}</p>
                 <p className="flex items-center gap-1 text-xs text-green-600">
                   <TrendingUp className="h-3 w-3" />
                   +12.5% this month
@@ -478,7 +478,7 @@ export default function AdminDashboardPage() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground">Partner Hospitals</p>
-                <p className="text-3xl font-bold text-foreground">{overview?.totalHospitals ?? 0}</p>
+                <p className="text-3xl font-serif text-foreground">{overview?.totalHospitals ?? 0}</p>
                 <p className="flex items-center gap-1 text-xs text-green-600">
                   <TrendingUp className="h-3 w-3" />
                   +5 new this month
@@ -496,7 +496,7 @@ export default function AdminDashboardPage() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground">Total Blood Units</p>
-                <p className="text-3xl font-bold text-foreground">{overview?.totalBloodUnits ?? 0}</p>
+                <p className="text-3xl font-serif text-foreground">{overview?.totalBloodUnits ?? 0}</p>
                 <p className="flex items-center gap-1 text-xs text-amber-600">
                   <TrendingDown className="h-3 w-3" />
                   -3.2% from last week
@@ -513,9 +513,9 @@ export default function AdminDashboardPage() {
           <CardContent className="pt-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground">Active SOS</p>
-                <p className="text-3xl font-bold text-destructive">{overview?.activeSOS ?? 0}</p>
-                <p className="text-xs text-muted-foreground">Live from system</p>
+                <p className="text-sm text-muted-foreground font-serif">Active SOS</p>
+                <p className="text-3xl  text-destructive font-serif">{overview?.activeSOS ?? 0}</p>
+                <p className="text-xs text-muted-foreground font-serif">Live from system</p>
               </div>
               <div className="rounded-full bg-destructive/10 p-3">
                 <AlertTriangle className="h-6 w-6 text-destructive" />
@@ -704,7 +704,7 @@ export default function AdminDashboardPage() {
                       <Heart className="h-5 w-5 text-green-600 dark:text-green-400" />
                     </div>
                     <div>
-                      <p className="font-medium text-foreground">{activity.description}</p>
+                      <p className="font-serif text-foreground">{activity.description}</p>
                     </div>
                   </div>
                   <span className="text-sm text-muted-foreground">

@@ -256,7 +256,7 @@ export default function AdminLayout({
         </Button>
         <Link href="/" className="flex items-center gap-2">
           <Droplets className="h-6 w-6 text-primary" />
-          <span className="font-bold text-foreground">Blood Bank</span>
+          <span className="font-serif text-foreground">Blood Bank</span>
         </Link>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -295,7 +295,7 @@ export default function AdminLayout({
           <div className="hidden items-center gap-2 border-b border-border px-6 py-4 lg:flex">
             <Link href="/" className="flex items-center gap-2">
               <Droplets className="h-7 w-7 text-primary" />
-              <span className="text-xl font-bold text-foreground">Blood Bank</span>
+              <span className="text-xl font-serif text-foreground">Blood Bank</span>
             </Link>
           </div>
 
@@ -306,8 +306,8 @@ export default function AdminLayout({
                 <Shield className="h-6 w-6 text-primary" />
               </div>
               <div>
-                <p className="font-semibold text-foreground">Blood Bank Panel</p>
-                <p className="text-sm text-muted-foreground">System Administrator</p>
+                <p className="font-serif text-foreground">Blood Bank Panel</p>
+                <p className="text-sm text-muted-foreground font-serif">System Administrator</p>
               </div>
             </div>
           </div>
@@ -323,7 +323,7 @@ export default function AdminLayout({
                       href={item.href}
                       onClick={() => setSidebarOpen(false)}
                       className={cn(
-                        "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors",
+                        "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-serif transition-colors",
                         isActive
                           ? "bg-primary text-primary-foreground"
                           : "text-muted-foreground hover:bg-muted hover:text-foreground"
@@ -352,8 +352,9 @@ export default function AdminLayout({
           {/* Desktop Header */}
           <div className="mb-6 hidden items-center justify-between lg:flex">
             <div>
-              <h1 className="text-2xl font-bold text-foreground">Blood Bank Dashboard</h1>
-              <p className="text-muted-foreground">System overview and management</p>
+              <h1 className="text-2xl font-serif
+               text-foreground">Blood Bank Dashboard</h1>
+              <p className="text-muted-foreground font-serif">System overview and management</p>
             </div>
             <div className="flex items-center gap-4">
               {/* <Button variant="ghost" size="icon" className="relative">
