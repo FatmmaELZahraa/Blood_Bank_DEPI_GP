@@ -12,5 +12,10 @@
         public string? PasswordResetToken { get; set; }
         public DateTime? ResetTokenExpires { get; set; }
 
+
+        public bool IsVerified { get; set; } = false; 
+        public string? VerificationToken { get; set; } 
+        public DateTime? VerificationTokenExpires { get; set; }
+
     }
 }

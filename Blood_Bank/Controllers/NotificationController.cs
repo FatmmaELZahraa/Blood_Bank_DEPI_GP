@@ -1,8 +1,8 @@
 ﻿using Blood_Bank.Data;
-using Blood_Bank.Models;
 using Blood_Bank.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.IO;
 
 namespace Blood_Bank.Controllers
 {
@@ -19,50 +19,78 @@ namespace Blood_Bank.Controllers
             _emailService = emailService;
         }
 
-        // ===============================
-        // 1) Send Emails to ALL Top Donors
-        // ===============================
-        [HttpPost("send-top-donors")]
+        // Send general blood donation campaign emails to all registered donors
+        [HttpPost("send-donors")]
         public async Task<IActionResult> SendToTopDonors()
         {
             var donors = await _context.Donors
-                .Where(d => d.IsTopDonor && d.Email != null)
+                .Where(d => d.Email != null)
                 .ToListAsync();
 
             if (!donors.Any())
-                return NotFound("No Top Donors found");
+                return NotFound("No Donors found in the database");
+
+            var templatePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Emails_Templetes", "GeneralCampaign.html");
+
+            if (!System.IO.File.Exists(templatePath))
+            {
+                templatePath = Path.Combine(Directory.GetCurrentDirectory(), "Emails_Templetes", "GeneralCampaign.html");
+            }
+
+            if (!System.IO.File.Exists(templatePath))
+                return NotFound($"General Campaign HTML template file is missing. Looked in: {templatePath}");
+
+            string baseHtml = await System.IO.File.ReadAllTextAsync(templatePath);
 
             foreach (var donor in donors)
             {
+                string finalizedHtml = baseHtml.Replace("{{DonorName}}", donor.Name);
+
                 await _emailService.SendEmailAsync(
                     donor.Email,
                     "Urgent Blood Donation Request ❤️",
-                    $"Hello {donor.Name},\nWe need your help urgently for a blood donation request."
+                    finalizedHtml
                 );
             }
 
-            return Ok($"Emails sent to {donors.Count} top donors");
+            return Ok($"Emails sent to {donors.Count} donors");
         }
 
-        // ===============================
-        // 2) Send Emails for Shortage Event (optional trigger)
-        // ===============================
+        // Send urgent shortage alerts to targeted top donors based on specific blood type
         [HttpPost("send-shortage-alert")]
-        public async Task<IActionResult> SendShortageAlert()
+        public async Task<IActionResult> SendShortageAlert(string bloodType)
         {
             var topDonors = await _context.Donors
-                .Where(d => d.IsTopDonor && d.Email != null)
+                .Where(d => d.IsTopDonor
+                         && d.Email != null
+                         && EF.Functions.Like(d.BloodType, bloodType))
                 .ToListAsync();
 
             if (!topDonors.Any())
                 return NotFound("No Top Donors available");
 
+            var templatePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Emails_Templetes", "ShortageAlert.html");
+
+            if (!System.IO.File.Exists(templatePath))
+            {
+                templatePath = Path.Combine(Directory.GetCurrentDirectory(), "Emails_Templetes", "ShortageAlert.html");
+            }
+
+            if (!System.IO.File.Exists(templatePath))
+                return NotFound($"Shortage Alert HTML template file is missing. Looked in: {templatePath}");
+
+            string baseHtml = await System.IO.File.ReadAllTextAsync(templatePath);
+
             foreach (var donor in topDonors)
             {
+                string finalizedHtml = baseHtml
+                    .Replace("{{DonorName}}", donor.Name)
+                    .Replace("{{BloodType}}", donor.BloodType);
+
                 await _emailService.SendEmailAsync(
                     donor.Email,
-                    "🚨 Blood Shortage Alert",
-                    $"Dear {donor.Name},\nThere is an urgent blood shortage. Please consider donating if possible."
+                    $"🚨 Urgent Shortage Alert: Blood Type ({bloodType}) Required Immediately",
+                    finalizedHtml
                 );
             }
 

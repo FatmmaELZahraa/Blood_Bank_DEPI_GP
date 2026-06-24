@@ -6,6 +6,7 @@ namespace Blood_Bank.Models
         public string? BankName { get; set; }    
         public string? Location { get; set; }
 
+     
         public int InventoryId { get; set; }
         public Inventory? Inventory { get; set; }
 
