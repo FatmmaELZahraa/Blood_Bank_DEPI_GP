@@ -9,10 +9,12 @@
 
         public int? Units { get; set; }
 
-        public string Priority { get; set; } 
+        public string Priority { get; set; }
 
         public string? Description { get; set; }
         public DateTime RequestDate { get; set; } = DateTime.UtcNow;
+
+        public string Status { get; set; } = "Pending";
 
     }
 }

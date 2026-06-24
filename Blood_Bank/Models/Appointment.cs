@@ -14,7 +14,7 @@
         public DateTime Time { get; set; }
         public Donor ?Donor { get; set; }
         public int DonorId { get; set; }
-        public string Status { get; set; } = "Confirmed";
+        public string Status { get; set; } = "Pending";
         public DateTime CreatedAt { get; set; } = DateTime.Now;
     }
 }

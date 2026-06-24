@@ -73,10 +73,10 @@ namespace Blood_Bank.Controllers
             if (donor == null) return BadRequest("Only Donors can book appointments.");
 
             bool alreadyBooked = await _context.Appointments
-                .AnyAsync(a => a.DonorId == userId && a.AppointmentDate.Date == dto.AppointmentDate.Date && a.Status == "Confirmed");
+                .AnyAsync(a => a.DonorId == userId && a.AppointmentDate.Date == dto.AppointmentDate.Date && a.Status == "Pending");
 
             if (alreadyBooked)
-                return BadRequest("You already have a confirmed appointment on this date.");
+                return BadRequest("You already have a pending appointment on this date.");
 
             var newAppointment = new Appointment
             {
@@ -86,17 +86,13 @@ namespace Blood_Bank.Controllers
                 CenterAddress = dto.CenterAddress,
                 AppointmentDate = dto.AppointmentDate,
                 TimeSlot = dto.TimeSlot,
-                Status = "Completed" 
+                Status = "Pending"
             };
-
-            donor.Points += 1000;
-            donor.TotalDonations += 1;
-            donor.LastDonationDate = dto.AppointmentDate;
 
             _context.Appointments.Add(newAppointment);
             await _context.SaveChangesAsync();
 
-            return Ok(new { message = "Appointment booked and 1000 points granted!", points = donor.Points });
+            return Ok(new { message = "Appointment booked! Waiting for admin approval.", appointmentId = newAppointment.Id });
         }
 
         // 3. Cancel an appointment

@@ -24,7 +24,7 @@ using Microsoft.EntityFrameworkCore;
     public DbSet<BloodBank> BloodBank { get; set; }
     public DbSet<Inventory> inventories { get; set; }
     public DbSet<BloodUnit> BloodUnits { get; set; }
-    public object Admin { get; internal set; }
+    //public object Admin { get; internal set; }
 
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
