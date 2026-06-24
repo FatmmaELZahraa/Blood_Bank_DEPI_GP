@@ -121,7 +121,7 @@ export default function SignUpPage() {
                   className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#c20000] bg-white cursor-pointer font-serif"
                 >
                   <option value="Donor">Donor</option>
-                  <option value="Admin">Admin</option>
+                  <option value="BloodBank">Blood Bank</option>
                   <option value="Hospital">Hospital</option>
                 </select>
               </div>

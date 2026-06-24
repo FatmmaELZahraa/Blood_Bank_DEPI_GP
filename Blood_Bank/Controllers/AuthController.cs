@@ -174,19 +174,29 @@ namespace Blood_Bank.Controllers
             DateTime tokenExpires = DateTime.UtcNow.AddHours(24);
 
             User newUser;
-            if (dto.Role.ToLower() == "admin")
+            // Check for BloodBank role
+            if (dto.Role.ToLower() == "bloodbank" || dto.Role.ToLower() == "blood_bank")
             {
-                newUser = new Admin
+                // 1. Create a mandatory tracking inventory for the new Blood Bank
+                var targetInventory = new Inventory();
+                _context.inventories.Add(targetInventory);
+                await _context.SaveChangesAsync(); // Generates the InventoryId
+
+                // 2. Instantiate the BloodBank entity mapping your DTO fields
+                newUser = new BloodBank
                 {
                     Name = dto.Name,
+                    BankName = dto.Name,
                     Email = dto.Email,
                     Password = hashedPassword,
-                    phone = dto.Phone,
+                    phone = dto.Phone, // Converted because DTO uses int, entity uses string
+                    Location = "Not Specified Yet", // Fallback since generic RegisterDto lacks a Location field
+                    InventoryId = targetInventory.InventoryId,
                     IsVerified = false,
                     VerificationToken = verificationToken,
                     VerificationTokenExpires = tokenExpires
                 };
-                _context.Admins.Add((Admin)newUser);
+                _context.BloodBank.Add((BloodBank)newUser);
             }
             else if (dto.Role.ToLower() == "hospital")
             {
@@ -273,7 +283,7 @@ public async Task<ActionResult> Login(LoginDto dto)
     if (user == null || !BCrypt.Net.BCrypt.Verify(dto.Password, user.Password))
         return Unauthorized("Invalid login credentials.");
 
-    string role = user is Admin ? "Admin" : user is Hospital ? "Hospital" : "Donor";
+    string role = user is BloodBank ? "BloodBank" : user is Hospital ? "Hospital" : "Donor";
 
     return Ok(new
     {

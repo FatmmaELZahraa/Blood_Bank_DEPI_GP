@@ -66,14 +66,50 @@ namespace Blood_Bank.Controllers
             }
         }
 
+        //[HttpPost("book")]
+        //public async Task<ActionResult> BookAppointment(BookAppointmentDto dto)
+        //{
+        //    var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+        //    var donor = await _context.Donors.FindAsync(userId);
+
+        //    if (donor == null) return BadRequest("Only Donors can book appointments.");
+
+        //    bool alreadyBooked = await _context.Appointments
+        //        .AnyAsync(a => a.DonorId == userId && a.AppointmentDate.Date == dto.AppointmentDate.Date && a.Status == "Confirmed");
+
+        //    if (alreadyBooked)
+        //        return BadRequest("You already have a confirmed appointment on this date.");
+
+        //    var newAppointment = new Appointment
+        //    {
+        //        DonorId = userId,
+        //        Location = dto.Location,
+        //        CenterName = dto.CenterName,
+        //        CenterAddress = dto.CenterAddress,
+        //        AppointmentDate = dto.AppointmentDate,
+        //        TimeSlot = dto.TimeSlot,
+        //        Status = "Completed" 
+        //    };
+
+        //    donor.Points += 1000;
+        //    donor.TotalDonations += 1;
+        //    donor.LastDonationDate = dto.AppointmentDate;
+
+        //    _context.Appointments.Add(newAppointment);
+        //    await _context.SaveChangesAsync();
+
+        //    return Ok(new { message = "Appointment booked and 1000 points granted!", points = donor.Points });
+        //}
+
         [HttpPost("book")]
-        public async Task<ActionResult> BookAppointment(BookAppointmentDto dto)
+        public async Task<ActionResult> BookAppointment([FromBody] BookAppointmentDto dto) // Added [FromBody]
         {
             var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
             var donor = await _context.Donors.FindAsync(userId);
 
             if (donor == null) return BadRequest("Only Donors can book appointments.");
 
+            // Make sure this matches the status you actually save
             bool alreadyBooked = await _context.Appointments
                 .AnyAsync(a => a.DonorId == userId && a.AppointmentDate.Date == dto.AppointmentDate.Date && a.Status == "Confirmed");
 
@@ -88,7 +124,7 @@ namespace Blood_Bank.Controllers
                 CenterAddress = dto.CenterAddress,
                 AppointmentDate = dto.AppointmentDate,
                 TimeSlot = dto.TimeSlot,
-                Status = "Completed" 
+                Status = "Confirmed" // Changed from "Completed" to match your verification check
             };
 
             donor.Points += 1000;
