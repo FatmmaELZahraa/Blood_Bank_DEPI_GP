@@ -601,7 +601,6 @@ export default function ProfilePage() {
         // تحديث بيانات الصفحة
         await fetchProfile();
         
-        // 🌟 إرسال إشارة للـ Layout لكي يقوم بتحديث الـ Sidebar فوراً بدون ريفريش
         window.dispatchEvent(new Event("profileUpdated"));
       } else {
         setError(response?.message || "Failed to update profile");

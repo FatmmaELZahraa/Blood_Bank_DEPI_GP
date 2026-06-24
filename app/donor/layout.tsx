@@ -512,10 +512,8 @@ export default function DonorLayout({
 
     fetchDonorData();
 
-    // الاستماع لحدث تحديث الملف الشخصي لتحديث بيانات الـ Layout فوراً
     window.addEventListener("profileUpdated", fetchDonorData);
 
-    // تنظيف المستمع عند مسح المكون
     return () => {
       window.removeEventListener("profileUpdated", fetchDonorData);
     };
@@ -544,7 +542,7 @@ export default function DonorLayout({
       { href: "/donor/qr-code", icon: QrCode, label: "Digital ID" },
       { href: "/donor/rewards", icon: Award, label: "Rewards" },
       { href: "/donor/history", icon: History, label: "Donation History" },
-      { href: "/donor/request-blood", icon: Droplets, label: "Request Blood" }
+      // { href: "/donor/request-blood", icon: Droplets, label: "Request Blood" }
     ];
 
     if (
