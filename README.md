@@ -80,7 +80,9 @@ Follow these steps to spin up the entire application locally on your machine.
 "ConnectionStrings": {
     "DefaultConnection": "Server=.;Database=BloodBank;Trusted_Connection=True;TrustServerCertificate=True;"
 }
-Step 2: Run the .NET Core Backend API
+```
+
+### Step 2: Run the .NET Core Backend API
 Open a terminal window and navigate to your core backend repository folder:
 cd BloodBank
 Restore NuGet packages and apply the structural migrations to your database:
@@ -88,3 +90,13 @@ dotnet restore
 dotnet ef database update
 dotnet run
 The main API service will initialize (by default on local web targets like http://localhost:5004
+
+### Step 3:Run the Next.js Frontend Client
+```json
+npm install
+```
+```json
+npm run dev
+```
+Open up your web browser workspace and point it directly to: http://localhost:3000
+
