@@ -228,11 +228,11 @@ import {
 import { cn } from "@/lib/utils"
 
 const sidebarItems = [
-  { href: "/admin", icon: LayoutDashboard, label: "Overview" },
-  { href: "/admin/donors", icon: Users, label: "Donors" },
-  { href: "/admin/hospitals", icon: Building2, label: "Hospitals" },
-  { href: "/admin/check-eligibality", icon: BarChart3, label: "Check Eligibility" },
-  { href: "/admin/settings", icon: Settings, label: "Settings" },
+  { href: "/bloodbank", icon: LayoutDashboard, label: "Overview" },
+  { href: "/bloodbank/donors", icon: Users, label: "Donors" },
+  { href: "/bloodbank/hospitals", icon: Building2, label: "Hospitals" },
+  { href: "/bloodbank/check-eligibality", icon: BarChart3, label: "Check Eligibility" },
+  { href: "/bloodbank/settings", icon: Settings, label: "Settings" },
 ]
 
 export default function AdminLayout({
