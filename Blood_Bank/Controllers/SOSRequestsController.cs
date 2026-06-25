@@ -55,7 +55,6 @@ public class SosRequestsController : ControllerBase
             s.Priority,
             s.Description,
             s.RequestDate,
-            s.Status,
             s.HospitalId,
             Hospital = hospitals.FirstOrDefault(h => h.UserID == s.HospitalId)
         });
@@ -87,7 +86,6 @@ public class SosRequestsController : ControllerBase
             sos.Priority,
             sos.Description,
             sos.RequestDate,
-            sos.Status,
             sos.HospitalId,
             Hospital = hospital
         });
@@ -114,8 +112,7 @@ public class SosRequestsController : ControllerBase
             Priority = dto.Priority,
             Description = dto.Description,
             RequestDate = DateTime.UtcNow,
-            HospitalId = dto.HospitalId,
-            Status = "Pending"
+            HospitalId = dto.HospitalId
         };
 
         _db.SosRequests.Add(sos);
@@ -125,28 +122,8 @@ public class SosRequestsController : ControllerBase
         {
             sos.SOSId,
             sos.RequestDate,
-            sos.Priority,
-            sos.Status
+            sos.Priority
         });
-    }
-
-    // PATCH /api/sos-requests/{id}/status
-    [HttpPatch("{id}/status")]
-    [Authorize(Roles = "Admin")]
-    public async Task<IActionResult> UpdateStatus(int id, [FromBody] UpdateSosStatusDto dto)
-    {
-        var sos = await _db.SosRequests.FindAsync(id);
-        if (sos == null)
-            return NotFound(new { error = "SOS request not found." });
-
-        var allowed = new[] { "Fulfilled", "Cancelled" };
-        if (!allowed.Contains(dto.Status))
-            return BadRequest(new { error = "Invalid status.", validValues = allowed });
-
-        sos.Status = dto.Status;
-        await _db.SaveChangesAsync();
-
-        return Ok(new { sos.SOSId, sos.Status });
     }
 
     // DELETE /api/sos-requests/{id}
@@ -174,5 +151,3 @@ public record CreateSosRequestDto(
     int HospitalId,
     string? Description
 );
-
-public record UpdateSosStatusDto(string Status);

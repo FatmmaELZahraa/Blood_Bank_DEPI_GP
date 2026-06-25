@@ -279,10 +279,6 @@ namespace Blood_Bank.Migrations
                     b.Property<DateTime>("RequestDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<int>("Units")
                         .HasColumnType("int");
 
