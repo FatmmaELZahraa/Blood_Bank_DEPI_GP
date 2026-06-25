@@ -100,3 +100,35 @@ npm run dev
 ```
 Open up your web browser workspace and point it directly to: http://localhost:3000
 
+###  Step 4: Run the Machine Learning Microservice (Blood Analysis)
+```json
+cd Ml_Models
+python -m venv venv
+pip install -r requirements.txt
+python app.py
+```
+###  Step 5: Run the Machine Learning Microservice (Smart Donor Match)
+```json
+cd Flask
+python -m venv venv
+pip install -r requirements.txt
+python app.py
+```
+
+###  Step 6: Run the Machine Learning Microservice (Smart Donor Match)
+```json
+cd Flask
+python -m venv venv
+pip install -r requirements.txt
+python bstmatch.py
+```
+
+###  Step 7: Run the Machine Learning Microservice (Blood Shortage Prediction)
+```json
+cd \shortedge_predicit
+python -m venv venv
+pip install -r requirements.txt
+python api.py
+```
+
+
