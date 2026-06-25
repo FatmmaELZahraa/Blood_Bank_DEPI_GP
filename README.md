@@ -125,7 +125,7 @@ python bstmatch.py
 
 ###  Step 7: Run the Machine Learning Microservice (Blood Shortage Prediction)
 ```json
-cd \shortedge_predicit
+cd shortedge_predicit
 python -m venv venv
 pip install -r requirements.txt
 python api.py
