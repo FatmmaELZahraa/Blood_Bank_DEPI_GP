@@ -1,15 +1,15 @@
 # Bank Blood Network 🩸
 
-An integrated management ecosystem featuring donor profile management, real-time hospital inventory tracking, and AI-powered blood analytics to streamline critical operations across blood banks, hospitals, and blood donors[cite: 1].
+An integrated management ecosystem featuring donor profile management, real-time hospital inventory tracking, and AI-powered blood analytics to streamline critical operations across blood banks, hospitals, and blood donors.
 
 ---
 
 ## 🚀 Key Features
 
 ### 1. Donor Portal & Engagement
-* **Digital Profile & QR ID:** Instant QR code configuration utilizing `qrcode.react` for fast on-site check-in registration[cite: 1, 2].
-* **Smart Booking & Eligibility:** Real-time eligibility tracking based on last donation dates and integrated mapping for appointment scheduling[cite: 1].
-* **Gamification UI Framework:** Tailored tracking systems for custom points and badges redeemable for health rewards and healthcare partner discounts[cite: 1].
+* **Digital Profile & QR ID:** Instant QR code configuration utilizing `qrcode.react` for fast on-site check-in registration.
+* **Smart Booking & Eligibility:** Real-time eligibility tracking based on last donation dates and integrated mapping for appointment scheduling.
+* **Gamification UI Framework:** Tailored tracking systems for custom points and badges redeemable for health rewards and healthcare partner discounts.
 
 ### 2. Inventory & Hospital Management
 * **Live Dashboard:** Built-in charts powered by `recharts` for monitoring active blood units by type with low-stock alerts.
@@ -80,3 +80,11 @@ Follow these steps to spin up the entire application locally on your machine.
 "ConnectionStrings": {
     "DefaultConnection": "Server=.;Database=BloodBank;Trusted_Connection=True;TrustServerCertificate=True;"
 }
+Step 2: Run the .NET Core Backend API
+Open a terminal window and navigate to your core backend repository folder:
+cd BloodBank
+Restore NuGet packages and apply the structural migrations to your database:
+dotnet restore
+dotnet ef database update
+dotnet run
+The main API service will initialize (by default on local web targets like http://localhost:5004
