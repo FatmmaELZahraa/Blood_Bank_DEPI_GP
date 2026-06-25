@@ -50,13 +50,11 @@ namespace Blood_Bank.Migrations
 
                     b.Property<string>("CenterAddress")
                         .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("CenterName")
                         .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
@@ -78,8 +76,7 @@ namespace Blood_Bank.Migrations
 
                     b.Property<string>("TimeSlot")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -316,9 +313,6 @@ namespace Blood_Bank.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<bool>("IsVerified")
-                        .HasColumnType("bit");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(150)
@@ -335,12 +329,6 @@ namespace Blood_Bank.Migrations
                     b.Property<DateTime?>("ResetTokenExpires")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("VerificationToken")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("VerificationTokenExpires")
-                        .HasColumnType("datetime2");
-
                     b.Property<int>("phone")
                         .HasMaxLength(20)
                         .HasColumnType("int");
@@ -352,6 +340,13 @@ namespace Blood_Bank.Migrations
                     b.HasDiscriminator<string>("Discriminator").HasValue("User");
 
                     b.UseTphMappingStrategy();
+                });
+
+            modelBuilder.Entity("Blood_Bank.Models.Admin", b =>
+                {
+                    b.HasBaseType("Blood_Bank.Models.User");
+
+                    b.HasDiscriminator().HasValue("Admin");
                 });
 
             modelBuilder.Entity("Blood_Bank.Models.BloodBank", b =>

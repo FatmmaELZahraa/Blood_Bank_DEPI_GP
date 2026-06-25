@@ -13,7 +13,7 @@ using Microsoft.EntityFrameworkCore;
     public class AppDbContext:DbContext
     {
     public DbSet<User> User { get; set; }
-    //public DbSet<Admin> Admins { get; set; }
+    public DbSet<Admin> Admins { get; set; }
     public DbSet<Donor> Donors { get; set; }
     public DbSet<Appointment> Appointments { get; set; }
     public DbSet<Reward> Rewards { get; set; }
@@ -47,7 +47,10 @@ using Microsoft.EntityFrameworkCore;
             entity.Property(e => e.phone).IsRequired();
         });
 
-     
+        //modelBuilder.Entity<Admin>(entity =>
+        //{
+        //    entity.HasKey(e => e.Id);
+        //});
 
         modelBuilder.Entity<Donor>(entity =>
         {
@@ -78,10 +81,7 @@ using Microsoft.EntityFrameworkCore;
             entity.HasKey(e => e.Id);
             entity.Property(e => e.AppointmentDate).IsRequired();
             entity.Property(e => e.Location).IsRequired().HasMaxLength(200);
-            entity.Property(e => e.CenterName).IsRequired().HasMaxLength(200);     // Added
-            entity.Property(e => e.CenterAddress).IsRequired().HasMaxLength(200);  // Added
-            entity.Property(e => e.TimeSlot).IsRequired().HasMaxLength(50);
-
+            entity.Property(e => e.Time).IsRequired();
             entity.HasOne(e => e.Donor)
                 .WithMany(d => d.Appointments)
                 .HasForeignKey(e => e.DonorId)

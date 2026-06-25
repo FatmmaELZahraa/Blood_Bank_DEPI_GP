@@ -24,13 +24,4 @@
     <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="10.2.0" />
   </ItemGroup>
 
-  <ItemGroup>
-    <None Update="Emails_Templetes\GeneralCampaign.html">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Emails_Templetes\ShortageAlert.html">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-
 </Project>
