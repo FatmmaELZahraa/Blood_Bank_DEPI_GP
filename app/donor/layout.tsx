@@ -881,6 +881,268 @@
 // }
 
 
+//6/26/2026 
+// "use client";
+
+// import { useState, useEffect } from "react";
+// import Link from "next/link";
+// import { usePathname, useRouter } from "next/navigation";
+// import {
+//   User,
+//   Calendar,
+//   QrCode,
+//   Award,
+//   History,
+//   Menu,
+//   X,
+//   Droplets,
+//   Bell,
+//   Settings,
+//   LogOut,
+//   Home,
+// } from "lucide-react";
+// import { Button } from "@/components/ui/button";
+// import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+// import {
+//   DropdownMenu,
+//   DropdownMenuContent,
+//   DropdownMenuItem,
+//   DropdownMenuTrigger,
+// } from "@/components/ui/dropdown-menu";
+// import { cn } from "@/lib/utils";
+
+// export default function DonorLayout({
+//   children,
+// }: {
+//   children: React.ReactNode;
+// }) {
+//   const pathname = usePathname();
+//   const router = useRouter();
+//   const [sidebarOpen, setSidebarOpen] = useState(false);
+//   const [isMounted, setIsMounted] = useState(false);
+//   const [isChecking, setIsChecking] = useState(true);
+//   const [userData, setUserData] = useState<{
+//     name: string;
+//     bloodType?: string;
+//     points?: number;
+//   } | null>(null);
+
+//   const isCompleteProfile = pathname === "/donor/complete-profile";
+
+//   useEffect(() => {
+//   setIsMounted(true);
+  
+//   const fetchDonorData = async () => {
+//     const token = localStorage.getItem("token");
+//     if (!token) {
+//       router.push("/login");
+//       return;
+//     }
+
+//     // إضافة الكاش هنا لسرعة التحميل
+//     const cachedProfile = localStorage.getItem("donorProfile");
+//     if (cachedProfile) {
+//       setUserData(JSON.parse(cachedProfile));
+//       setIsChecking(false);
+//       return;
+//     }
+    
+//     try {
+//       const response = await fetch("http://localhost:5004/api/Auth/profile", {
+//         headers: { Authorization: `Bearer ${token}` },
+//       });
+//       if (response.ok) {
+//         const data = await response.json();
+//         setUserData(data);
+//         localStorage.setItem("donorProfile", JSON.stringify(data)); // تخزين الكاش
+//       } else {
+//         localStorage.removeItem("token");
+//         router.push("/login");
+//       }
+//     } catch (error) {
+//       console.error("Failed to fetch donor data", error);
+//     } finally {
+//       setIsChecking(false);
+//     }
+//   };
+
+//   fetchDonorData();
+  
+//    // الاستماع لحدث تحديث الملف الشخصي لتحديث بيانات الـ Layout فوراً
+//     window.addEventListener("profileUpdated", fetchDonorData);
+
+//     // تنظيف المستمع عند مسح المكون
+//     return () => {
+//       window.removeEventListener("profileUpdated", fetchDonorData);
+//     };
+// }, []); // ملاحظة: تركت المصفوفة فارغة [] لأننا لا نريد إعادة التشغيل عند تغير الـ router
+
+//   // جلب البيانات مرة واحدة عند التحميل
+  
+
+//   // الاستماع للحدث (هذا يكفي لتحديث البيانات بدون إعادة جلبها مع كل تغيير في الـ pathname)
+   
+//   const handleSignOut = () => {
+//     localStorage.clear();
+//     router.push("/login");
+//   };
+
+//   const initials = userData?.name
+//     ? userData.name
+//         .split(" ")
+//         .map((n) => n[0])
+//         .join("")
+//         .toUpperCase()
+//     : "??";
+
+//   // دالة ذكية لإظهار عناصر القائمة
+//   const getSidebarItems = () => {
+//     let items = [
+//       { href: "/donor", icon: Home, label: "Dashboard" },
+//       { href: "/donor/profile", icon: User, label: "Profile" },
+//       { href: "/donor/complete-profile", icon: Settings, label: "Complete Profile" },
+//       { href: "/donor/appointments", icon: Calendar, label: "Appointments" },
+//       { href: "/donor/qr-code", icon: QrCode, label: "Digital ID" },
+//       { href: "/donor/rewards", icon: Award, label: "Rewards" },
+//       { href: "/donor/history", icon: History, label: "Donation History" },
+//       // { href: "/donor/request-blood", icon: Droplets, label: "Request Blood" }
+//     ];
+
+//     if (
+//       userData?.bloodType &&
+//       userData.bloodType !== "N/A" &&
+//       userData.bloodType.trim() !== ""
+//     ) {
+//       return items.filter((item) => item.label !== "Complete Profile");
+//     }
+
+//     return items;
+//   };
+
+//   // استبدلي السطر القديم بهذا الكود:
+// if (!isMounted || isChecking) {
+//   return (
+//     <div className="flex h-screen w-full items-center justify-center bg-background">
+//        {/* يمكنك وضع Loader2 هنا إذا أردتِ */}
+//        <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
+//     </div>
+//   );
+// }
+
+
+//     {/* ... باقي الكود الخاص بك كما هو ... */}
+
+//   return (
+//     <div className="min-h-screen bg-background">
+//       {!isCompleteProfile && (
+//         <header className="sticky top-0 z-50 flex items-center justify-between border-b border-border bg-card px-4 py-3 lg:hidden">
+//           <Button
+//             variant="ghost"
+//             size="icon"
+//             onClick={() => setSidebarOpen(!sidebarOpen)}
+//           >
+//             {sidebarOpen ? (
+//               <X className="h-5 w-5" />
+//             ) : (
+//               <Menu className="h-5 w-5" />
+//             )}
+//           </Button>
+//           <Link href="/" className="flex items-center gap-2">
+//             <Droplets className="h-6 w-6 text-primary" />
+//             <span className="font-bold text-foreground font-serif">
+//               BloodLink
+//             </span>
+//           </Link>
+//           <Avatar className="h-8 w-8">
+//             <AvatarFallback className="bg-primary text-primary-foreground">
+//               {initials}
+//             </AvatarFallback>
+//           </Avatar>
+//         </header>
+//       )}
+
+//       <div className="flex">
+//         {!isCompleteProfile && (
+//           <aside
+//             className={cn(
+//               "fixed inset-y-0 left-0 z-40 w-64 transform border-r border-border bg-card transition-transform duration-200 lg:static lg:translate-x-0",
+//               sidebarOpen ? "translate-x-0" : "-translate-x-full",
+//             )}
+//           >
+//             <div className="hidden items-center gap-2 border-b border-border px-6 py-4 lg:flex">
+//               <Link href="/" className="flex items-center gap-2">
+//                 <Droplets className="h-7 w-7 text-primary" />
+//                 <span className="text-xl font-bold text-foreground font-serif">
+//                   BloodLink
+//                 </span>
+//               </Link>
+//             </div>
+
+//             <div className="border-b border-border p-4">
+//               <div className="flex items-center gap-3">
+//                 <Avatar className="h-12 w-12">
+//                   <AvatarFallback className="bg-primary text-primary-foreground text-lg">
+//                     {initials}
+//                   </AvatarFallback>
+//                 </Avatar>
+//                 <div>
+//                   <p className="font-semibold text-foreground font-serif truncate w-32">
+//                     {userData?.name || "Loading..."}
+//                   </p>
+//                   <p className="text-sm text-muted-foreground font-serif">
+//                     Blood Type: {userData?.bloodType || "N/A"}
+//                   </p>
+//                 </div>
+//               </div>
+//             </div>
+
+//             <nav className="p-4">
+//               <ul className="space-y-1">
+//                 {getSidebarItems().map((item) => {
+//                   const isActive = pathname === item.href;
+//                   return (
+//                     <li key={item.href}>
+//                       <Link
+//                         href={item.href}
+//                         onClick={() => setSidebarOpen(false)}
+//                         className={cn(
+//                           "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors",
+//                           isActive
+//                             ? "bg-primary text-primary-foreground"
+//                             : "text-muted-foreground hover:bg-muted hover:text-foreground",
+//                         )}
+//                       >
+//                         <item.icon className="h-5 w-5" />
+//                         {item.label}
+//                       </Link>
+//                     </li>
+//                   );
+//                 })}
+//               </ul>
+//             </nav>
+
+//             <div className="mt-auto border-t border-border p-4">
+//               <div className="rounded-lg bg-primary/10 p-3">
+//                 <div className="flex items-center justify-between">
+//                   <span className="text-sm font-medium text-foreground font-serif">
+//                     Total Points
+//                   </span>
+//                   <Award className="h-5 w-5 text-primary" />
+//                 </div>
+//                 <p className="mt-1 text-2xl font-bold text-primary font-serif">
+//                   {userData?.points?.toLocaleString() || "0"}
+//                 </p>
+//               </div>
+//             </div>
+//           </aside>
+//         )}
+
+//         <main className="flex-1 p-4 lg:p-8">{children}</main>
+//       </div>
+//     </div>
+//   );
+// }
+
 
 "use client";
 
@@ -896,19 +1158,11 @@ import {
   Menu,
   X,
   Droplets,
-  Bell,
   Settings,
-  LogOut,
   Home,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
 
 export default function DonorLayout({
@@ -929,9 +1183,6 @@ export default function DonorLayout({
 
   const isCompleteProfile = pathname === "/donor/complete-profile";
 
-  useEffect(() => {
-  setIsMounted(true);
-  
   const fetchDonorData = async () => {
     const token = localStorage.getItem("token");
     if (!token) {
@@ -939,14 +1190,6 @@ export default function DonorLayout({
       return;
     }
 
-    // إضافة الكاش هنا لسرعة التحميل
-    const cachedProfile = localStorage.getItem("donorProfile");
-    if (cachedProfile) {
-      setUserData(JSON.parse(cachedProfile));
-      setIsChecking(false);
-      return;
-    }
-    
     try {
       const response = await fetch("http://localhost:5004/api/Auth/profile", {
         headers: { Authorization: `Bearer ${token}` },
@@ -954,9 +1197,10 @@ export default function DonorLayout({
       if (response.ok) {
         const data = await response.json();
         setUserData(data);
-        localStorage.setItem("donorProfile", JSON.stringify(data)); // تخزين الكاش
+        localStorage.setItem("donorProfile", JSON.stringify(data)); // تحديث الكاش بالبيانات الجديدة دائماً
       } else {
         localStorage.removeItem("token");
+        localStorage.removeItem("donorProfile");
         router.push("/login");
       }
     } catch (error) {
@@ -966,22 +1210,35 @@ export default function DonorLayout({
     }
   };
 
-  fetchDonorData();
-  
-  // الاحتفاظ بالـ Event Listener
-  window.addEventListener("profileUpdated", fetchDonorData);
-  return () => window.removeEventListener("profileUpdated", fetchDonorData);
-}, []); // ملاحظة: تركت المصفوفة فارغة [] لأننا لا نريد إعادة التشغيل عند تغير الـ router
+  useEffect(() => {
+    setIsMounted(true);
+    
+    // 1. القراءة السريعة الأولوية من الكاش لعرض الصفحة فوراً دون انتظار الـ API
+    const cachedProfile = localStorage.getItem("donorProfile");
+    if (cachedProfile) {
+      setUserData(JSON.parse(cachedProfile));
+      setIsChecking(false);
+    }
 
-  // جلب البيانات مرة واحدة عند التحميل
-  
+    // 2. طلب البيانات الفعلي من السيرفر في الخلفية لتحديث النقاط أو أي تغييرات جديدة
+    fetchDonorData();
+    
+    // الاستماع لأي تحديث يدوي للملف الشخصي عبر الأحداث المخصصة (Custom Events)
+    window.addEventListener("profileUpdated", fetchDonorData);
+    window.addEventListener("pointsUpdated", fetchDonorData); // استماع لحدث تحديث النقاط المضاف حديثاً
 
-  // الاستماع للحدث (هذا يكفي لتحديث البيانات بدون إعادة جلبها مع كل تغيير في الـ pathname)
-   
-  const handleSignOut = () => {
-    localStorage.clear();
-    router.push("/login");
-  };
+    return () => {
+      window.removeEventListener("profileUpdated", fetchDonorData);
+      window.removeEventListener("pointsUpdated", fetchDonorData);
+    };
+  }, []); 
+
+  // إعادة جلب البيانات فوراً عند التنقل بين صفحات الـ Donor لضمان مزامنة النقاط
+  useEffect(() => {
+    if (isMounted) {
+      fetchDonorData();
+    }
+  }, [pathname]);
 
   const initials = userData?.name
     ? userData.name
@@ -991,7 +1248,6 @@ export default function DonorLayout({
         .toUpperCase()
     : "??";
 
-  // دالة ذكية لإظهار عناصر القائمة
   const getSidebarItems = () => {
     let items = [
       { href: "/donor", icon: Home, label: "Dashboard" },
@@ -1001,7 +1257,6 @@ export default function DonorLayout({
       { href: "/donor/qr-code", icon: QrCode, label: "Digital ID" },
       { href: "/donor/rewards", icon: Award, label: "Rewards" },
       { href: "/donor/history", icon: History, label: "Donation History" },
-      // { href: "/donor/request-blood", icon: Droplets, label: "Request Blood" }
     ];
 
     if (
@@ -1015,18 +1270,13 @@ export default function DonorLayout({
     return items;
   };
 
-  // استبدلي السطر القديم بهذا الكود:
-if (!isMounted || isChecking) {
-  return (
-    <div className="flex h-screen w-full items-center justify-center bg-background">
-       {/* يمكنك وضع Loader2 هنا إذا أردتِ */}
-       <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
-    </div>
-  );
-}
-
-
-    {/* ... باقي الكود الخاص بك كما هو ... */}
+  if (!isMounted || isChecking) {
+    return (
+      <div className="flex h-screen w-full items-center justify-center bg-background">
+         <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -1037,17 +1287,11 @@ if (!isMounted || isChecking) {
             size="icon"
             onClick={() => setSidebarOpen(!sidebarOpen)}
           >
-            {sidebarOpen ? (
-              <X className="h-5 w-5" />
-            ) : (
-              <Menu className="h-5 w-5" />
-            )}
+            {sidebarOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </Button>
           <Link href="/" className="flex items-center gap-2">
             <Droplets className="h-6 w-6 text-primary" />
-            <span className="font-bold text-foreground font-serif">
-              BloodLink
-            </span>
+            <span className="font-bold text-foreground font-serif">BloodLink</span>
           </Link>
           <Avatar className="h-8 w-8">
             <AvatarFallback className="bg-primary text-primary-foreground">
@@ -1068,9 +1312,7 @@ if (!isMounted || isChecking) {
             <div className="hidden items-center gap-2 border-b border-border px-6 py-4 lg:flex">
               <Link href="/" className="flex items-center gap-2">
                 <Droplets className="h-7 w-7 text-primary" />
-                <span className="text-xl font-bold text-foreground font-serif">
-                  BloodLink
-                </span>
+                <span className="text-xl font-bold text-foreground font-serif">BloodLink</span>
               </Link>
             </div>
 
@@ -1126,7 +1368,7 @@ if (!isMounted || isChecking) {
                   <Award className="h-5 w-5 text-primary" />
                 </div>
                 <p className="mt-1 text-2xl font-bold text-primary font-serif">
-                  {userData?.points?.toLocaleString() || "0"}
+                  {userData?.points !== undefined ? userData.points.toLocaleString() : "0"}
                 </p>
               </div>
             </div>
