@@ -59,7 +59,32 @@ namespace Blood_Bank.Controllers
         }
 
         // =========================
-        // 3) GET TOP DONORS
+        // 3) GET ALL DONORS (Admin)
+        // =========================
+        [HttpGet("all")]
+        public async Task<IActionResult> GetAllDonors()
+        {
+            var donors = await _context.Donors
+                .OrderByDescending(d => d.TotalDonations)
+                .Select(d => new {
+                    userID = d.UserID,
+                    name = d.Name,
+                    email = d.Email,
+                    phone = d.phone,
+                    bloodType = d.BloodType,
+                    totalDonations = d.TotalDonations,
+                    points = d.Points,
+                    lastDonationDate = d.LastDonationDate,
+                    status = d.IsTopDonor ? "Top Donor" : "Regular",
+                    currentLevel = d.CurrentLevel
+                })
+                .ToListAsync();
+
+            return Ok(donors);
+        }
+
+        // =========================
+        // 4) GET TOP DONORS
         // =========================
         [HttpGet("top-donors")]
         public async Task<IActionResult> GetTopDonors()

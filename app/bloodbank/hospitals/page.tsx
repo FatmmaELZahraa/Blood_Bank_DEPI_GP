@@ -1,374 +1,25 @@
-// "use client"
-
-// import { useState } from "react"
-// import { 
-//   Building2, 
-//   Search,
-//   Download,
-//   MoreHorizontal,
-//   Mail,
-//   Phone,
-//   MapPin,
-//   CheckCircle,
-//   XCircle,
-//   Eye,
-//   Droplets
-// } from "lucide-react"
-// import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-// import { Button } from "@/components/ui/button"
-// import { Badge } from "@/components/ui/badge"
-// import { Input } from "@/components/ui/input"
-// import {
-//   Select,
-//   SelectContent,
-//   SelectItem,
-//   SelectTrigger,
-//   SelectValue,
-// } from "@/components/ui/select"
-// import {
-//   DropdownMenu,
-//   DropdownMenuContent,
-//   DropdownMenuItem,
-//   DropdownMenuSeparator,
-//   DropdownMenuTrigger,
-// } from "@/components/ui/dropdown-menu"
-// import {
-//   Table,
-//   TableBody,
-  
-//   TableCell,
-//   TableHead,
-//   TableHeader,
-//   TableRow,
-// } from "@/components/ui/table"
-// import { Progress } from "@/components/ui/progress"
-
-// // Mock hospitals data
-// const hospitals = [
-//   {
-//     id: 1,
-//     name: "City General Hospital",
-//     email: "bloodbank@citygeneral.com",
-//     phone: "(555) 111-2222",
-//     address: "123 Medical Center Dr",
-//     city: "New York",
-//     type: "General",
-//     totalUnits: 450,
-//     capacity: 600,
-//     sosRequests: 2,
-//     status: "active",
-//     verified: true
-//   },
-//   {
-//     id: 2,
-//     name: "Metro Medical Center",
-//     email: "blood@metromedical.com",
-//     phone: "(555) 222-3333",
-//     address: "456 Healthcare Ave",
-//     city: "Los Angeles",
-//     type: "Specialized",
-//     totalUnits: 280,
-//     capacity: 400,
-//     sosRequests: 0,
-//     status: "active",
-//     verified: true
-//   },
-//   {
-//     id: 3,
-//     name: "Regional Health Center",
-//     email: "bloodbank@regional.com",
-//     phone: "(555) 333-4444",
-//     address: "789 Wellness Blvd",
-//     city: "Chicago",
-//     type: "Regional",
-//     totalUnits: 180,
-//     capacity: 300,
-//     sosRequests: 1,
-//     status: "active",
-//     verified: true
-//   },
-//   {
-//     id: 4,
-//     name: "Community Hospital",
-//     email: "blood@community.com",
-//     phone: "(555) 444-5555",
-//     address: "321 Care St",
-//     city: "Houston",
-//     type: "Community",
-//     totalUnits: 95,
-//     capacity: 200,
-//     sosRequests: 3,
-//     status: "active",
-//     verified: true
-//   },
-//   {
-//     id: 5,
-//     name: "University Medical Center",
-//     email: "bloodbank@umc.edu",
-//     phone: "(555) 555-6666",
-//     address: "555 University Ave",
-//     city: "Boston",
-//     type: "Academic",
-//     totalUnits: 0,
-//     capacity: 500,
-//     sosRequests: 0,
-//     status: "pending",
-//     verified: false
-//   }
-// ]
-
-// export default function AdminHospitalsPage() {
-//   const [searchTerm, setSearchTerm] = useState("")
-//   const [statusFilter, setStatusFilter] = useState("All")
-
-//   const filteredHospitals = hospitals.filter(hospital => {
-//     const matchesSearch = hospital.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-//       hospital.city.toLowerCase().includes(searchTerm.toLowerCase())
-//     const matchesStatus = statusFilter === "All" || hospital.status === statusFilter
-//     return matchesSearch && matchesStatus
-//   })
-
-//   const totalHospitals = hospitals.length
-//   const activeHospitals = hospitals.filter(h => h.status === "active").length
-//   const totalCapacity = hospitals.reduce((acc, h) => acc + h.totalUnits, 0)
-
-//   return (
-//     <div className="space-y-6">
-//       {/* Stats */}
-//       <div className="grid gap-4 sm:grid-cols-3">
-//         <Card>
-//           <CardContent className="pt-6">
-//             <div className="flex items-center justify-between">
-//               <div>
-//                 <p className="text-sm text-muted-foreground">Total Hospitals</p>
-//                 <p className="text-3xl font-bold text-foreground">{totalHospitals}</p>
-//               </div>
-//               <Building2 className="h-8 w-8 text-primary" />
-//             </div>
-//           </CardContent>
-//         </Card>
-//         <Card>
-//           <CardContent className="pt-6">
-//             <div className="flex items-center justify-between">
-//               <div>
-//                 <p className="text-sm text-muted-foreground">Active Partners</p>
-//                 <p className="text-3xl font-bold text-green-600">{activeHospitals}</p>
-//               </div>
-//               <CheckCircle className="h-8 w-8 text-green-500" />
-//             </div>
-//           </CardContent>
-//         </Card>
-//         <Card>
-//           <CardContent className="pt-6">
-//             <div className="flex items-center justify-between">
-//               <div>
-//                 <p className="text-sm text-muted-foreground">Network Blood Units</p>
-//                 <p className="text-3xl font-bold text-primary">{totalCapacity.toLocaleString()}</p>
-//               </div>
-//               <Droplets className="h-8 w-8 text-primary" />
-//             </div>
-//           </CardContent>
-//         </Card>
-//       </div>
-
-//       {/* Hospitals Table */}
-//       <Card>
-//         <CardHeader>
-//           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-//             <div>
-//               <CardTitle>Hospital Partners</CardTitle>
-//               <CardDescription>Manage partner hospitals and blood banks</CardDescription>
-//             </div>
-//             <Button variant="outline">
-//               <Download className="mr-2 h-4 w-4" />
-//               Export
-//             </Button>
-//           </div>
-//         </CardHeader>
-//         <CardContent>
-//           {/* Filters */}
-//           <div className="mb-6 flex flex-col gap-4 sm:flex-row">
-//             <div className="relative flex-1">
-//               <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-//               <Input
-//                 placeholder="Search hospitals..."
-//                 value={searchTerm}
-//                 onChange={(e) => setSearchTerm(e.target.value)}
-//                 className="pl-10"
-//               />
-//             </div>
-//             <Select value={statusFilter} onValueChange={setStatusFilter}>
-//               <SelectTrigger className="w-[140px]">
-//                 <SelectValue placeholder="Status" />
-//               </SelectTrigger>
-//               <SelectContent>
-//                 <SelectItem value="All">All Status</SelectItem>
-//                 <SelectItem value="active">Active</SelectItem>
-//                 <SelectItem value="pending">Pending</SelectItem>
-//                 <SelectItem value="inactive">Inactive</SelectItem>
-//               </SelectContent>
-//             </Select>
-//           </div>
-
-//           {/* Table */}
-//           <div className="rounded-lg border border-border">
-//             <Table>
-//               <TableHeader>
-//                 <TableRow>
-//                   <TableHead>Hospital</TableHead>
-//                   <TableHead>Location</TableHead>
-//                   <TableHead>Type</TableHead>
-//                   <TableHead>Inventory</TableHead>
-//                   <TableHead>SOS</TableHead>
-//                   <TableHead>Status</TableHead>
-//                   <TableHead className="text-right">Actions</TableHead>
-//                 </TableRow>
-//               </TableHeader>
-//               <TableBody>
-//                 {filteredHospitals.map((hospital) => {
-//                   const inventoryPercent = (hospital.totalUnits / hospital.capacity) * 100
-//                   return (
-//                     <TableRow key={hospital.id}>
-//                       <TableCell>
-//                         <div className="flex items-center gap-3">
-//                           <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-accent/10">
-//                             <Building2 className="h-5 w-5 text-accent" />
-//                           </div>
-//                           <div>
-//                             <div className="flex items-center gap-2">
-//                               <p className="font-medium text-foreground">{hospital.name}</p>
-//                               {hospital.verified && (
-//                                 <CheckCircle className="h-4 w-4 text-green-500" />
-//                               )}
-//                             </div>
-//                             <p className="text-sm text-muted-foreground">{hospital.email}</p>
-//                           </div>
-//                         </div>
-//                       </TableCell>
-//                       <TableCell>
-//                         <div className="flex items-center gap-1 text-sm text-muted-foreground">
-//                           <MapPin className="h-3 w-3" />
-//                           {hospital.city}
-//                         </div>
-//                       </TableCell>
-//                       <TableCell>
-//                         <Badge variant="outline">{hospital.type}</Badge>
-//                       </TableCell>
-//                       <TableCell>
-//                         <div className="w-32">
-//                           <div className="flex items-center justify-between text-xs">
-//                             <span className="text-muted-foreground">{hospital.totalUnits} units</span>
-//                             <span className="text-foreground">{Math.round(inventoryPercent)}%</span>
-//                           </div>
-//                           <Progress value={inventoryPercent} className="mt-1 h-1.5" />
-//                         </div>
-//                       </TableCell>
-//                       <TableCell>
-//                         {hospital.sosRequests > 0 ? (
-//                           <Badge className="bg-destructive text-destructive-foreground">
-//                             {hospital.sosRequests} active
-//                           </Badge>
-//                         ) : (
-//                           <span className="text-sm text-muted-foreground">None</span>
-//                         )}
-//                       </TableCell>
-//                       <TableCell>
-//                         <Badge
-//                           variant={hospital.status === "active" ? "default" : "secondary"}
-//                           className={
-//                             hospital.status === "active" 
-//                               ? "bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300" 
-//                               : "bg-amber-100 text-amber-700 dark:bg-amber-900 dark:text-amber-300"
-//                           }
-//                         >
-//                           {hospital.status}
-//                         </Badge>
-//                       </TableCell>
-//                       <TableCell className="text-right">
-//                         <DropdownMenu>
-//                           <DropdownMenuTrigger asChild>
-//                             <Button variant="ghost" size="icon">
-//                               <MoreHorizontal className="h-4 w-4" />
-//                             </Button>
-//                           </DropdownMenuTrigger>
-//                           <DropdownMenuContent align="end">
-//                             <DropdownMenuItem>
-//                               <Eye className="mr-2 h-4 w-4" />
-//                               View Details
-//                             </DropdownMenuItem>
-//                             <DropdownMenuItem>
-//                               <Droplets className="mr-2 h-4 w-4" />
-//                               View Inventory
-//                             </DropdownMenuItem>
-//                             <DropdownMenuItem>
-//                               <Mail className="mr-2 h-4 w-4" />
-//                               Send Email
-//                             </DropdownMenuItem>
-//                             <DropdownMenuItem>
-//                               <Phone className="mr-2 h-4 w-4" />
-//                               Call
-//                             </DropdownMenuItem>
-//                             <DropdownMenuSeparator />
-//                             {hospital.status === "pending" && (
-//                               <DropdownMenuItem className="text-green-600">
-//                                 <CheckCircle className="mr-2 h-4 w-4" />
-//                                 Approve Partner
-//                               </DropdownMenuItem>
-//                             )}
-//                             <DropdownMenuItem className="text-destructive">
-//                               <XCircle className="mr-2 h-4 w-4" />
-//                               Suspend
-//                             </DropdownMenuItem>
-//                           </DropdownMenuContent>
-//                         </DropdownMenu>
-//                       </TableCell>
-//                     </TableRow>
-//                   )
-//                 })}
-//               </TableBody>
-//             </Table>
-//           </div>
-
-//           {/* Pagination */}
-//           <div className="mt-4 flex items-center justify-between">
-//             <p className="text-sm text-muted-foreground">
-//               Showing {filteredHospitals.length} of {hospitals.length} hospitals
-//             </p>
-//             <div className="flex gap-2">
-//               <Button variant="outline" size="sm" disabled>Previous</Button>
-//               <Button variant="outline" size="sm">Next</Button>
-//             </div>
-//           </div>
-//         </CardContent>
-//       </Card>
-//     </div>
-//   )
-// }
-
-
-
-
-
-
-
-
-
-
 "use client"
 
 import { useState, useEffect } from "react"
-import { 
-  Building2, 
+import {
+  Building2,
   Search,
   Download,
   Phone,
   MapPin,
-  CheckCircle,
-  Droplets
+  Droplets,
+  AlertTriangle,
+  Syringe,
+  ChevronDown,
+  ChevronUp,
+  CheckCircle2,
+  Clock,
+  RefreshCw,
 } from "lucide-react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { Badge } from "@/components/ui/badge"
 import {
   Table,
   TableBody,
@@ -379,69 +30,179 @@ import {
 } from "@/components/ui/table"
 import { Progress } from "@/components/ui/progress"
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL
+
+// ─── Types ───────────────────────────────────────────────
+interface Hospital {
+  id: number
+  name: string
+  email: string
+  phone: string | null
+  address: string | null
+  totalCapacity: number
+  currentUnits: number
+  isVerified: boolean
+  createdAt: string
+}
+
+interface SosRequest {
+  sosId: number
+  bloodType: string
+  units: number
+  priority: string
+  description: string | null
+  requestDate: string
+  hospitalId: number
+  hospital?: { userID: number; name: string; phone: string | null }
+  // local UI state
+  uiStatus?: "Pending" | "Completed"
+}
+
+interface BloodRequest {
+  requestId: number
+  bloodType: string
+  quantity: number
+  priority: string
+  status: string
+  requestDate: string
+  notes: string | null
+  userID: number
+  hospital?: { userID: number; name: string }
+  // local UI state
+  uiStatus?: "Pending" | "Completed"
+}
+
+// ─── Helper ───────────────────────────────────────────────
+function authHeaders() {
+  const token = typeof window !== "undefined" ? localStorage.getItem("token") : null
+  return {
+    Authorization: `Bearer ${token}`,
+    "Content-Type": "application/json",
+  }
+}
+
+function priorityBadge(priority: string) {
+  const map: Record<string, string> = {
+    Critical: "bg-red-100 text-red-700 border-red-200",
+    Urgent:   "bg-orange-100 text-orange-700 border-orange-200",
+    High:     "bg-yellow-100 text-yellow-700 border-yellow-200",
+    Normal:   "bg-blue-100 text-blue-700 border-blue-200",
+  }
+  return map[priority] ?? "bg-muted text-muted-foreground"
+}
+
+// ─── Main Page ────────────────────────────────────────────
 export default function AdminHospitalsPage() {
-  const [hospitals, setHospitals] = useState<any[]>([])
+  const [hospitals, setHospitals]       = useState<Hospital[]>([])
+  const [sosRequests, setSosRequests]   = useState<SosRequest[]>([])
+  const [bloodRequests, setBloodRequests] = useState<BloodRequest[]>([])
+
   const [loading, setLoading] = useState(true)
-  const [searchTerm, setSearchTerm] = useState("")
+  const [error, setError]     = useState<string | null>(null)
 
+  const [searchTerm, setSearchTerm]   = useState("")
+  const [expandedId, setExpandedId]   = useState<number | null>(null)
+
+  // sos tab: "Pending" | "Completed"
+  const [sosTab, setSosTab]           = useState<"Pending" | "Completed">("Pending")
+  // blood tab: "Pending" | "Completed"
+  const [bloodTab, setBloodTab]       = useState<"Pending" | "Completed">("Pending")
+
+  // ── Fetch all data ──
   useEffect(() => {
-    const fetchHospitals = async () => {
+    const load = async () => {
       try {
-        const token = localStorage.getItem("token");
-        const response = await fetch("https://localhost:7136/api/admin/hospitals", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        const data = await response.json();
-        setHospitals(data);
-      } catch (error) {
-        console.error("Failed to fetch hospitals:", error);
+        const [hRes, sosRes, brRes] = await Promise.all([
+         fetch(`${API_URL}/api/bloodbank/hospitals`, { headers: authHeaders() }),
+          fetch(`${API_URL}/api/sos-requests`,     { headers: authHeaders() }),
+          fetch(`${API_URL}/api/blood-requests`,   { headers: authHeaders() }),
+        ])
+
+        if (!hRes.ok)   throw new Error(`Hospitals: ${hRes.status}`)
+        if (!sosRes.ok) throw new Error(`SOS: ${sosRes.status}`)
+        if (!brRes.ok)  throw new Error(`Blood Requests: ${brRes.status}`)
+
+        const [hData, sosData, brData] = await Promise.all([
+          hRes.json(), sosRes.json(), brRes.json(),
+        ])
+
+        setHospitals(hData)
+        setSosRequests(sosData.map((s: SosRequest) => ({ ...s, uiStatus: "Pending" as const })))
+        setBloodRequests(brData.map((b: BloodRequest) => ({ ...b, uiStatus: "Pending" as const })))
+      } catch (err: any) {
+        setError(err.message || "Failed to load data")
       } finally {
-        setLoading(false);
+        setLoading(false)
       }
-    };
-    fetchHospitals();
-  }, []);
+    }
+    load()
+  }, [])
 
-  const filteredHospitals = hospitals.filter(hospital => {
-    const matchesSearch = hospital.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      (hospital.address ?? "").toLowerCase().includes(searchTerm.toLowerCase())
-    return matchesSearch
-  })
+  // ── Toggle SOS status locally ──
+  const toggleSosStatus = (id: number) => {
+    setSosRequests(prev =>
+      prev.map(s =>
+        s.sosId === id
+          ? { ...s, uiStatus: s.uiStatus === "Pending" ? "Completed" : "Pending" }
+          : s
+      )
+    )
+  }
 
-  const totalHospitals = hospitals.length
-  const totalCapacity = hospitals.reduce((acc, h) => acc + (h.currentUnits ?? 0), 0)
+  // ── Toggle Blood Request status locally ──
+  const toggleBloodStatus = (id: number) => {
+    setBloodRequests(prev =>
+      prev.map(b =>
+        b.requestId === id
+          ? { ...b, uiStatus: b.uiStatus === "Pending" ? "Completed" : "Pending" }
+          : b
+      )
+    )
+  }
 
-  if (loading) return <div className="p-8 text-center">Loading...</div>;
+  // ── Derived ──
+  const filteredHospitals = hospitals.filter(h =>
+    h.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    (h.address ?? "").toLowerCase().includes(searchTerm.toLowerCase())
+  )
 
+  const totalCapacity = hospitals.reduce((a, h) => a + (h.currentUnits ?? 0), 0)
+
+  const filteredSos   = sosRequests.filter(s => s.uiStatus === sosTab)
+  const filteredBlood = bloodRequests.filter(b => b.uiStatus === bloodTab)
+
+  // ── Loading / Error ──
+  if (loading) return (
+    <div className="flex items-center justify-center p-16">
+      <div className="text-center">
+        <RefreshCw className="mx-auto h-8 w-8 animate-spin text-primary mb-3" />
+        <p className="text-muted-foreground">Loading data…</p>
+      </div>
+    </div>
+  )
+
+  if (error) return (
+    <div className="flex items-center justify-center p-16">
+      <div className="text-center space-y-3">
+        <p className="text-lg font-semibold text-destructive">Connection Error</p>
+        <p className="text-sm text-muted-foreground">{error}</p>
+        <Button onClick={() => window.location.reload()}>Retry</Button>
+      </div>
+    </div>
+  )
+
+  // ─────────────────────────────────────────────────────────
   return (
-    <div className="space-y-6">
-      {/* Stats */}
-      <div className="grid gap-4 sm:grid-cols-2">
-        <Card>
-          <CardContent className="pt-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">Total Hospitals</p>
-                <p className="text-3xl font-bold text-foreground">{totalHospitals}</p>
-              </div>
-              <Building2 className="h-8 w-8 text-primary" />
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="pt-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">Network Blood Units</p>
-                <p className="text-3xl font-bold text-primary">{totalCapacity.toLocaleString()}</p>
-              </div>
-              <Droplets className="h-8 w-8 text-primary" />
-            </div>
-          </CardContent>
-        </Card>
+    <div className="space-y-8">
+
+      {/* ── Stats ── */}
+      <div className="grid gap-4 sm:grid-cols-3">
+        <StatCard icon={<Building2 className="h-7 w-7 text-primary" />} label="Hospitals" value={hospitals.length} />
+        <StatCard icon={<Droplets className="h-7 w-7 text-primary" />}   label="Network Blood Units" value={totalCapacity.toLocaleString()} />
+        <StatCard icon={<AlertTriangle className="h-7 w-7 text-destructive" />} label="Active SOS" value={sosRequests.filter(s => s.uiStatus === "Pending").length} />
       </div>
 
-      {/* Hospitals Table */}
+      {/* ── Hospitals Table ── */}
       <Card>
         <CardHeader>
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
@@ -449,28 +210,23 @@ export default function AdminHospitalsPage() {
               <CardTitle>Hospital Partners</CardTitle>
               <CardDescription>Manage partner hospitals and blood banks</CardDescription>
             </div>
-            <Button variant="outline">
-              <Download className="mr-2 h-4 w-4" />
-              Export
+            <Button variant="outline" size="sm">
+              <Download className="mr-2 h-4 w-4" /> Export
             </Button>
           </div>
         </CardHeader>
         <CardContent>
-          {/* Filters */}
-          <div className="mb-6 flex flex-col gap-4 sm:flex-row">
-            <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-              <Input
-                placeholder="Search hospitals..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10"
-              />
-            </div>
+          <div className="mb-5 relative">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Input
+              placeholder="Search by name or address…"
+              value={searchTerm}
+              onChange={e => setSearchTerm(e.target.value)}
+              className="pl-10"
+            />
           </div>
 
-          {/* Table */}
-          <div className="rounded-lg border border-border">
+          <div className="rounded-lg border border-border overflow-hidden">
             <Table>
               <TableHeader>
                 <TableRow>
@@ -478,60 +234,265 @@ export default function AdminHospitalsPage() {
                   <TableHead>Address</TableHead>
                   <TableHead>Phone</TableHead>
                   <TableHead>Inventory</TableHead>
+                  <TableHead className="w-10" />
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {filteredHospitals.map((hospital) => (
-                  <TableRow key={hospital.id}>
-                    <TableCell>
-                      <div className="flex items-center gap-3">
-                        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-accent/10">
-                          <Building2 className="h-5 w-5 text-accent" />
-                        </div>
-                        <div>
-                          <p className="font-medium text-foreground">{hospital.name}</p>
-                          <p className="text-sm text-muted-foreground">{hospital.email}</p>
-                        </div>
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex items-center gap-1 text-sm text-muted-foreground">
-                        <MapPin className="h-3 w-3" />
-                        {hospital.address || "N/A"}
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex items-center gap-1 text-sm text-muted-foreground">
-                        <Phone className="h-3 w-3" />
-                        {hospital.phone || "N/A"}
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <div className="w-32">
-                        <div className="flex items-center justify-between text-xs">
-                          <span className="text-muted-foreground">{hospital.currentUnits ?? 0} units</span>
-                          <span className="text-foreground">{hospital.totalCapacity ?? 0} cap.</span>
-                        </div>
-                        <Progress 
-                          value={hospital.totalCapacity ? (hospital.currentUnits / hospital.totalCapacity) * 100 : 0} 
-                          className="mt-1 h-1.5" 
-                        />
-                      </div>
+                {filteredHospitals.length === 0 ? (
+                  <TableRow>
+                    <TableCell colSpan={5} className="py-10 text-center text-muted-foreground">
+                      No hospitals found
                     </TableCell>
                   </TableRow>
-                ))}
+                ) : filteredHospitals.map(hospital => {
+                  const isOpen = expandedId === hospital.id
+                  const hosSos   = sosRequests.filter(s => s.hospitalId   === hospital.id)
+                  const hosBlood = bloodRequests.filter(b => b.userID === hospital.id)
+
+                  return (
+                    <>
+                      <TableRow
+                        key={hospital.id}
+                        className="cursor-pointer hover:bg-muted/50 transition-colors"
+                        onClick={() => setExpandedId(isOpen ? null : hospital.id)}
+                      >
+                        <TableCell>
+                          <div className="flex items-center gap-3">
+                            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/10 shrink-0">
+                              <Building2 className="h-4 w-4 text-primary" />
+                            </div>
+                            <div>
+                              <p className="font-medium text-foreground leading-tight">{hospital.name}</p>
+                              <p className="text-xs text-muted-foreground">{hospital.email}</p>
+                            </div>
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex items-center gap-1 text-sm text-muted-foreground">
+                            <MapPin className="h-3 w-3 shrink-0" />
+                            {hospital.address || "—"}
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex items-center gap-1 text-sm text-muted-foreground">
+                            <Phone className="h-3 w-3 shrink-0" />
+                            {hospital.phone || "—"}
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <div className="w-28">
+                            <div className="flex justify-between text-xs mb-1">
+                              <span className="text-muted-foreground">{hospital.currentUnits} units</span>
+                              <span className="text-foreground">{hospital.totalCapacity} cap</span>
+                            </div>
+                            <Progress
+                              value={hospital.totalCapacity ? (hospital.currentUnits / hospital.totalCapacity) * 100 : 0}
+                              className="h-1.5"
+                            />
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          {isOpen
+                            ? <ChevronUp className="h-4 w-4 text-muted-foreground" />
+                            : <ChevronDown className="h-4 w-4 text-muted-foreground" />}
+                        </TableCell>
+                      </TableRow>
+
+                      {/* ── Expanded Panel ── */}
+                      {isOpen && (
+                        <TableRow key={`${hospital.id}-expanded`}>
+                          <TableCell colSpan={5} className="p-0 bg-muted/30">
+                            <div className="p-5 space-y-6">
+
+                              {/* SOS Requests */}
+                              <RequestSection
+                                icon={<AlertTriangle className="h-4 w-4 text-destructive" />}
+                                title="SOS Requests"
+                                tab={sosTab}
+                                setTab={setSosTab}
+                                pendingCount={hosSos.filter(s => s.uiStatus === "Pending").length}
+                                completedCount={hosSos.filter(s => s.uiStatus === "Completed").length}
+                              >
+                                {hosSos.filter(s => s.uiStatus === sosTab).length === 0 ? (
+                                  <EmptyState label={`No ${sosTab.toLowerCase()} SOS requests`} />
+                                ) : hosSos.filter(s => s.uiStatus === sosTab).map(sos => (
+                                  <RequestCard
+                                    key={sos.sosId}
+                                    status={sos.uiStatus!}
+                                    onToggle={() => toggleSosStatus(sos.sosId)}
+                                    badge={
+                                      <span className={`text-xs font-medium px-2 py-0.5 rounded-full border ${priorityBadge(sos.priority)}`}>
+                                        {sos.priority}
+                                      </span>
+                                    }
+                                    lines={[
+                                      <><Droplets className="h-3 w-3" /> {sos.bloodType} — {sos.units} units</>,
+                                      <><Clock className="h-3 w-3" /> {new Date(sos.requestDate).toLocaleDateString()}</>,
+                                      sos.description ? <span className="italic">{sos.description}</span> : null,
+                                    ]}
+                                  />
+                                ))}
+                              </RequestSection>
+
+                              {/* Blood Requests */}
+                              <RequestSection
+                                icon={<Syringe className="h-4 w-4 text-primary" />}
+                                title="Blood Requests"
+                                tab={bloodTab}
+                                setTab={setBloodTab}
+                                pendingCount={hosBlood.filter(b => b.uiStatus === "Pending").length}
+                                completedCount={hosBlood.filter(b => b.uiStatus === "Completed").length}
+                              >
+                                {hosBlood.filter(b => b.uiStatus === bloodTab).length === 0 ? (
+                                  <EmptyState label={`No ${bloodTab.toLowerCase()} blood requests`} />
+                                ) : hosBlood.filter(b => b.uiStatus === bloodTab).map(br => (
+                                  <RequestCard
+                                    key={br.requestId}
+                                    status={br.uiStatus!}
+                                    onToggle={() => toggleBloodStatus(br.requestId)}
+                                    badge={
+                                      <span className={`text-xs font-medium px-2 py-0.5 rounded-full border ${priorityBadge(br.priority)}`}>
+                                        {br.priority}
+                                      </span>
+                                    }
+                                    lines={[
+                                      <><Droplets className="h-3 w-3" /> {br.bloodType} — {br.quantity} units</>,
+                                      <><Clock className="h-3 w-3" /> {new Date(br.requestDate).toLocaleDateString()}</>,
+                                      br.notes ? <span className="italic">{br.notes}</span> : null,
+                                    ]}
+                                  />
+                                ))}
+                              </RequestSection>
+
+                            </div>
+                          </TableCell>
+                        </TableRow>
+                      )}
+                    </>
+                  )
+                })}
               </TableBody>
             </Table>
           </div>
 
-          {/* Pagination */}
-          <div className="mt-4 flex items-center justify-between">
-            <p className="text-sm text-muted-foreground">
-              Showing {filteredHospitals.length} of {hospitals.length} hospitals
-            </p>
-          </div>
+          <p className="mt-4 text-sm text-muted-foreground">
+            Showing {filteredHospitals.length} of {hospitals.length} hospitals
+          </p>
         </CardContent>
       </Card>
     </div>
+  )
+}
+
+// ─── Sub-components ───────────────────────────────────────
+
+function StatCard({ icon, label, value }: { icon: React.ReactNode; label: string; value: string | number }) {
+  return (
+    <Card>
+      <CardContent className="pt-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-sm text-muted-foreground">{label}</p>
+            <p className="text-3xl font-bold text-foreground">{value}</p>
+          </div>
+          {icon}
+        </div>
+      </CardContent>
+    </Card>
+  )
+}
+
+function RequestSection({
+  icon, title, tab, setTab, pendingCount, completedCount, children,
+}: {
+  icon: React.ReactNode
+  title: string
+  tab: "Pending" | "Completed"
+  setTab: (v: "Pending" | "Completed") => void
+  pendingCount: number
+  completedCount: number
+  children: React.ReactNode
+}) {
+  return (
+    <div>
+      <div className="flex items-center gap-2 mb-3">
+        {icon}
+        <h3 className="font-semibold text-sm text-foreground">{title}</h3>
+      </div>
+
+      {/* Tab toggle */}
+      <div className="flex gap-1 mb-3 bg-muted rounded-lg p-1 w-fit">
+        {(["Pending", "Completed"] as const).map(t => (
+          <button
+            key={t}
+            onClick={() => setTab(t)}
+            className={`px-3 py-1.5 rounded-md text-xs font-medium transition-all flex items-center gap-1.5 ${
+              tab === t
+                ? "bg-background shadow-sm text-foreground"
+                : "text-muted-foreground hover:text-foreground"
+            }`}
+          >
+            {t === "Pending"
+              ? <Clock className="h-3 w-3" />
+              : <CheckCircle2 className="h-3 w-3" />}
+            {t}
+            <span className={`text-[10px] px-1.5 py-0.5 rounded-full ${
+              tab === t ? "bg-primary/10 text-primary" : "bg-muted-foreground/20 text-muted-foreground"
+            }`}>
+              {t === "Pending" ? pendingCount : completedCount}
+            </span>
+          </button>
+        ))}
+      </div>
+
+      <div className="space-y-2">{children}</div>
+    </div>
+  )
+}
+
+function RequestCard({
+  status, onToggle, badge, lines,
+}: {
+  status: "Pending" | "Completed"
+  onToggle: () => void
+  badge: React.ReactNode
+  lines: (React.ReactNode | null)[]
+}) {
+  return (
+    <div className={`flex items-start justify-between gap-4 rounded-lg border p-3 transition-all ${
+      status === "Completed"
+        ? "border-green-200 bg-green-50/50 opacity-75"
+        : "border-border bg-background"
+    }`}>
+      <div className="space-y-1 flex-1">
+        <div className="flex items-center gap-2 flex-wrap">
+          {badge}
+          {status === "Completed" && (
+            <span className="text-xs text-green-600 font-medium flex items-center gap-1">
+              <CheckCircle2 className="h-3 w-3" /> Completed
+            </span>
+          )}
+        </div>
+        {lines.filter(Boolean).map((line, i) => (
+          <div key={i} className="flex items-center gap-1.5 text-xs text-muted-foreground">
+            {line}
+          </div>
+        ))}
+      </div>
+      <Button
+        size="sm"
+        variant={status === "Pending" ? "default" : "outline"}
+        className="shrink-0 h-7 text-xs"
+        onClick={onToggle}
+      >
+        {status === "Pending" ? "Mark Complete" : "Mark Pending"}
+      </Button>
+    </div>
+  )
+}
+
+function EmptyState({ label }: { label: string }) {
+  return (
+    <p className="py-4 text-center text-sm text-muted-foreground">{label}</p>
   )
 }

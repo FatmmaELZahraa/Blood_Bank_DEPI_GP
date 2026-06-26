@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react"
 import {
   Droplets,
+  Plus,
   AlertTriangle,
   Search,
   Filter,
@@ -15,6 +16,16 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
 import { Input } from "@/components/ui/input"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
+import { Label } from "@/components/ui/label"
 import {
   Select,
   SelectContent,
@@ -104,6 +115,16 @@ export default function InventoryPage() {
   const [error, setError]                   = useState("")
   const [searchTerm, setSearchTerm]         = useState("")
   const [filterStatus, setFilterStatus]     = useState("all")
+  const [dialogOpen, setDialogOpen]         = useState(false)
+  const [submitting, setSubmitting]         = useState(false)
+  const [submitError, setSubmitError]       = useState("")
+
+  // form state
+  const [selectedType, setSelectedType]           = useState("")
+  const [selectedInventory, setSelectedInventory] = useState("")
+  const [adjustAmount, setAdjustAmount]           = useState("")
+  const [expiryDate, setExpiryDate]               = useState("")
+
   // ── Fetch ──────────────────────────────────────────────────────────────────
 
   useEffect(() => { fetchAll() }, [])
@@ -125,6 +146,42 @@ export default function InventoryPage() {
     }
   }
 
+  // ── Add blood unit ─────────────────────────────────────────────────────────
+
+  async function handleAddStock() {
+    if (!selectedType || !adjustAmount || !expiryDate || !selectedInventory) {
+      setSubmitError("All fields are required.")
+      return
+    }
+    const amount = Number(adjustAmount)
+    if (amount <= 0) {
+      setSubmitError("Units must be greater than 0.")
+      return
+    }
+    try {
+      setSubmitting(true)
+      setSubmitError("")
+      await apiFetch("/api/blood-units", {
+        method: "POST",
+        body: JSON.stringify({
+          inventoryId: Number(selectedInventory),
+          bloodType:   selectedType,
+          quantity:    amount,
+          expiryDate:  new Date(expiryDate).toISOString(),
+        }),
+      })
+      await fetchAll()
+      setDialogOpen(false)
+      setSelectedType("")
+      setSelectedInventory("")
+      setAdjustAmount("")
+      setExpiryDate("")
+    } catch (err: any) {
+      setSubmitError(err.message)
+    } finally {
+      setSubmitting(false)
+    }
+  }
 
   // ── Derived state ──────────────────────────────────────────────────────────
 
@@ -222,6 +279,87 @@ export default function InventoryPage() {
                 <RefreshCw className={`h-4 w-4 ${loading ? "animate-spin" : ""}`} />
               </Button>
 
+              {/* Add Stock Dialog */}
+              <Dialog open={dialogOpen} onOpenChange={(o) => { setDialogOpen(o); setSubmitError("") }}>
+                <DialogTrigger asChild>
+                  <Button>
+                    <Plus className="mr-2 h-4 w-4" />
+                    Add Stock
+                  </Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Add Blood Units</DialogTitle>
+                    <DialogDescription>Add new blood units to a blood bank inventory</DialogDescription>
+                  </DialogHeader>
+                  <div className="space-y-4 py-4">
+
+                    {/* اختار الـ Blood Bank */}
+                    <div className="space-y-2">
+                      <Label>Blood Bank</Label>
+                      <Select value={selectedInventory} onValueChange={setSelectedInventory}>
+                        <SelectTrigger><SelectValue placeholder="Select blood bank" /></SelectTrigger>
+                        <SelectContent>
+                          {inventories.map((inv) => (
+                            <SelectItem key={inv.inventoryId} value={String(inv.inventoryId)}>
+                              {inv.bloodBank.bankName} — {inv.bloodBank.location}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label>Blood Type</Label>
+                      <Select value={selectedType} onValueChange={setSelectedType}>
+                        <SelectTrigger><SelectValue placeholder="Select blood type" /></SelectTrigger>
+                        <SelectContent>
+                          {bloodTypes.map((type) => (
+                            <SelectItem key={type} value={type}>{type}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label>Units to Add</Label>
+                      <Input
+                        type="number"
+                        placeholder="Enter number of units"
+                        value={adjustAmount}
+                        onChange={(e) => setAdjustAmount(e.target.value)}
+                        min="1"
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label>Expiry Date</Label>
+                      <Input
+                        type="date"
+                        value={expiryDate}
+                        onChange={(e) => setExpiryDate(e.target.value)}
+                        min={new Date().toISOString().split("T")[0]}
+                      />
+                    </div>
+
+                    {submitError && (
+                      <div className="flex items-center gap-2 text-sm text-destructive">
+                        <AlertCircle className="h-4 w-4" />
+                        {submitError}
+                      </div>
+                    )}
+                  </div>
+                  <DialogFooter>
+                    <Button
+                      onClick={handleAddStock}
+                      disabled={submitting || !selectedType || !adjustAmount || !expiryDate || !selectedInventory}
+                    >
+                      {submitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                      Confirm
+                    </Button>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
             </div>
           </div>
         </CardHeader>

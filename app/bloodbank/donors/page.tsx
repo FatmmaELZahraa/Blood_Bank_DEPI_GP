@@ -1,364 +1,20 @@
-// "use client"
-
-// import { useState } from "react"
-// import { 
-//   Users, 
-//   Search,
-//   Filter,
-//   Download,
-//   MoreHorizontal,
-//   Mail,
-//   Phone,
-//   MapPin,
-//   CheckCircle,
-//   XCircle,
-//   Eye
-// } from "lucide-react"
-// import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-// import { Button } from "@/components/ui/button"
-// import { Badge } from "@/components/ui/badge"
-// import { Input } from "@/components/ui/input"
-// import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-// import {
-//   Select,
-//   SelectContent,
-//   SelectItem,
-//   SelectTrigger,
-//   SelectValue,
-// } from "@/components/ui/select"
-// import {
-//   DropdownMenu,
-//   DropdownMenuContent,
-//   DropdownMenuItem,
-//   DropdownMenuSeparator,
-//   DropdownMenuTrigger,
-// } from "@/components/ui/dropdown-menu"
-// import {
-//   Table,
-//   TableBody,
-//   TableCell,
-//   TableHead,
-//   TableHeader,
-//   TableRow,
-// } from "@/components/ui/table"
-
-// // Mock donors data
-// const donors = [
-//   {
-//     id: 1,
-//     name: "John Doe",
-//     email: "john.doe@email.com",
-//     phone: "(555) 123-4567",
-//     bloodType: "O+",
-//     donations: 12,
-//     lastDonation: "2026-01-15",
-//     status: "active",
-//     city: "New York",
-//     verified: true
-//   },
-//   {
-//     id: 2,
-//     name: "Sarah Wilson",
-//     email: "sarah.w@email.com",
-//     phone: "(555) 234-5678",
-//     bloodType: "A+",
-//     donations: 8,
-//     lastDonation: "2026-02-20",
-//     status: "active",
-//     city: "Los Angeles",
-//     verified: true
-//   },
-//   {
-//     id: 3,
-//     name: "Michael Brown",
-//     email: "m.brown@email.com",
-//     phone: "(555) 345-6789",
-//     bloodType: "B-",
-//     donations: 3,
-//     lastDonation: "2025-11-10",
-//     status: "inactive",
-//     city: "Chicago",
-//     verified: true
-//   },
-//   {
-//     id: 4,
-//     name: "Emily Davis",
-//     email: "emily.d@email.com",
-//     phone: "(555) 456-7890",
-//     bloodType: "AB+",
-//     donations: 15,
-//     lastDonation: "2026-03-01",
-//     status: "active",
-//     city: "Houston",
-//     verified: true
-//   },
-//   {
-//     id: 5,
-//     name: "Robert Johnson",
-//     email: "r.johnson@email.com",
-//     phone: "(555) 567-8901",
-//     bloodType: "O-",
-//     donations: 0,
-//     lastDonation: null,
-//     status: "pending",
-//     city: "Phoenix",
-//     verified: false
-//   },
-//   {
-//     id: 6,
-//     name: "Jennifer Martinez",
-//     email: "j.martinez@email.com",
-//     phone: "(555) 678-9012",
-//     bloodType: "A-",
-//     donations: 6,
-//     lastDonation: "2025-12-05",
-//     status: "active",
-//     city: "Philadelphia",
-//     verified: true
-//   }
-// ]
-
-// const bloodTypes = ["All", "A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"]
-// const statuses = ["All", "active", "inactive", "pending"]
-
-// export default function AdminDonorsPage() {
-//   const [searchTerm, setSearchTerm] = useState("")
-//   const [bloodTypeFilter, setBloodTypeFilter] = useState("All")
-//   const [statusFilter, setStatusFilter] = useState("All")
-
-//   const filteredDonors = donors.filter(donor => {
-//     const matchesSearch = donor.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-//       donor.email.toLowerCase().includes(searchTerm.toLowerCase())
-//     const matchesBloodType = bloodTypeFilter === "All" || donor.bloodType === bloodTypeFilter
-//     const matchesStatus = statusFilter === "All" || donor.status === statusFilter
-//     return matchesSearch && matchesBloodType && matchesStatus
-//   })
-
-//   const totalDonors = donors.length
-//   const activeDonors = donors.filter(d => d.status === "active").length
-//   const pendingDonors = donors.filter(d => d.status === "pending").length
-
-//   return (
-//     <div className="space-y-6">
-//       {/* Stats */}
-//       <div className="grid gap-4 sm:grid-cols-3">
-//         <Card>
-//           <CardContent className="pt-6">
-//             <div className="flex items-center justify-between">
-//               <div>
-//                 <p className="text-sm text-muted-foreground">Total Donors</p>
-//                 <p className="text-3xl font-bold text-foreground">{totalDonors}</p>
-//               </div>
-//               <Users className="h-8 w-8 text-primary" />
-//             </div>
-//           </CardContent>
-//         </Card>
-//         <Card>
-//           <CardContent className="pt-6">
-//             <div className="flex items-center justify-between">
-//               <div>
-//                 <p className="text-sm text-muted-foreground">Active Donors</p>
-//                 <p className="text-3xl font-bold text-green-600">{activeDonors}</p>
-//               </div>
-//               <CheckCircle className="h-8 w-8 text-green-500" />
-//             </div>
-//           </CardContent>
-//         </Card>
-//         <Card>
-//           <CardContent className="pt-6">
-//             <div className="flex items-center justify-between">
-//               <div>
-//                 <p className="text-sm text-muted-foreground">Pending Verification</p>
-//                 <p className="text-3xl font-bold text-amber-600">{pendingDonors}</p>
-//               </div>
-//               <XCircle className="h-8 w-8 text-amber-500" />
-//             </div>
-//           </CardContent>
-//         </Card>
-//       </div>
-
-//       {/* Donors Table */}
-//       <Card>
-//         <CardHeader>
-//           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-//             <div>
-//               <CardTitle>Donor Management</CardTitle>
-//               <CardDescription>View and manage all registered donors</CardDescription>
-//             </div>
-//             <Button variant="outline">
-//               <Download className="mr-2 h-4 w-4" />
-//               Export
-//             </Button>
-//           </div>
-//         </CardHeader>
-//         <CardContent>
-//           {/* Filters */}
-//           <div className="mb-6 flex flex-col gap-4 sm:flex-row">
-//             <div className="relative flex-1">
-//               <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-//               <Input
-//                 placeholder="Search donors..."
-//                 value={searchTerm}
-//                 onChange={(e) => setSearchTerm(e.target.value)}
-//                 className="pl-10"
-//               />
-//             </div>
-//             <Select value={bloodTypeFilter} onValueChange={setBloodTypeFilter}>
-//               <SelectTrigger className="w-[140px]">
-//                 <SelectValue placeholder="Blood Type" />
-//               </SelectTrigger>
-//               <SelectContent>
-//                 {bloodTypes.map((type) => (
-//                   <SelectItem key={type} value={type}>{type}</SelectItem>
-//                 ))}
-//               </SelectContent>
-//             </Select>
-//             <Select value={statusFilter} onValueChange={setStatusFilter}>
-//               <SelectTrigger className="w-[140px]">
-//                 <SelectValue placeholder="Status" />
-//               </SelectTrigger>
-//               <SelectContent>
-//                 {statuses.map((status) => (
-//                   <SelectItem key={status} value={status}>
-//                     {status.charAt(0).toUpperCase() + status.slice(1)}
-//                   </SelectItem>
-//                 ))}
-//               </SelectContent>
-//             </Select>
-//           </div>
-
-//           {/* Table */}
-//           <div className="rounded-lg border border-border">
-//             <Table>
-//               <TableHeader>
-//                 <TableRow>
-//                   <TableHead>Donor</TableHead>
-//                   <TableHead>Blood Type</TableHead>
-//                   <TableHead>Donations</TableHead>
-//                   <TableHead>Last Donation</TableHead>
-//                   <TableHead>Status</TableHead>
-//                   <TableHead className="text-right">Actions</TableHead>
-//                 </TableRow>
-//               </TableHeader>
-//               <TableBody>
-//                 {filteredDonors.map((donor) => (
-//                   <TableRow key={donor.id}>
-//                     <TableCell>
-//                       <div className="flex items-center gap-3">
-//                         <Avatar>
-//                           <AvatarImage src={`/donor-${donor.id}.jpg`} />
-//                           <AvatarFallback className="bg-primary/10 text-primary">
-//                             {donor.name.split(" ").map(n => n[0]).join("")}
-//                           </AvatarFallback>
-//                         </Avatar>
-//                         <div>
-//                           <div className="flex items-center gap-2">
-//                             <p className="font-medium text-foreground">{donor.name}</p>
-//                             {donor.verified && (
-//                               <CheckCircle className="h-4 w-4 text-green-500" />
-//                             )}
-//                           </div>
-//                           <p className="text-sm text-muted-foreground">{donor.email}</p>
-//                         </div>
-//                       </div>
-//                     </TableCell>
-//                     <TableCell>
-//                       <Badge variant="outline" className="font-bold">
-//                         {donor.bloodType}
-//                       </Badge>
-//                     </TableCell>
-//                     <TableCell>{donor.donations}</TableCell>
-//                     <TableCell>
-//                       {donor.lastDonation 
-//                         ? new Date(donor.lastDonation).toLocaleDateString()
-//                         : "Never"
-//                       }
-//                     </TableCell>
-//                     <TableCell>
-//                       <Badge
-//                         variant={
-//                           donor.status === "active" ? "default" :
-//                           donor.status === "pending" ? "secondary" : "outline"
-//                         }
-//                         className={
-//                           donor.status === "active" ? "bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300" :
-//                           donor.status === "pending" ? "bg-amber-100 text-amber-700 dark:bg-amber-900 dark:text-amber-300" :
-//                           ""
-//                         }
-//                       >
-//                         {donor.status}
-//                       </Badge>
-//                     </TableCell>
-//                     <TableCell className="text-right">
-//                       <DropdownMenu>
-//                         <DropdownMenuTrigger asChild>
-//                           <Button variant="ghost" size="icon">
-//                             <MoreHorizontal className="h-4 w-4" />
-//                           </Button>
-//                         </DropdownMenuTrigger>
-//                         <DropdownMenuContent align="end">
-//                           <DropdownMenuItem>
-//                             <Eye className="mr-2 h-4 w-4" />
-//                             View Profile
-//                           </DropdownMenuItem>
-//                           <DropdownMenuItem>
-//                             <Mail className="mr-2 h-4 w-4" />
-//                             Send Email
-//                           </DropdownMenuItem>
-//                           <DropdownMenuItem>
-//                             <Phone className="mr-2 h-4 w-4" />
-//                             Call
-//                           </DropdownMenuItem>
-//                           <DropdownMenuSeparator />
-//                           {donor.status === "pending" && (
-//                             <DropdownMenuItem className="text-green-600">
-//                               <CheckCircle className="mr-2 h-4 w-4" />
-//                               Verify Donor
-//                             </DropdownMenuItem>
-//                           )}
-//                           <DropdownMenuItem className="text-destructive">
-//                             <XCircle className="mr-2 h-4 w-4" />
-//                             Deactivate
-//                           </DropdownMenuItem>
-//                         </DropdownMenuContent>
-//                       </DropdownMenu>
-//                     </TableCell>
-//                   </TableRow>
-//                 ))}
-//               </TableBody>
-//             </Table>
-//           </div>
-
-//           {/* Pagination placeholder */}
-//           <div className="mt-4 flex items-center justify-between">
-//             <p className="text-sm text-muted-foreground">
-//               Showing {filteredDonors.length} of {donors.length} donors
-//             </p>
-//             <div className="flex gap-2">
-//               <Button variant="outline" size="sm" disabled>Previous</Button>
-//               <Button variant="outline" size="sm">Next</Button>
-//             </div>
-//           </div>
-//         </CardContent>
-//       </Card>
-//     </div>
-//   )
-// }
-
-
-
-
 "use client"
 
 import { useState, useEffect } from "react"
-import { 
-  Users, 
+import {
+  Users,
   Search,
   CheckCircle,
+  Calendar,
+  Check,
+  X,
+  MapPin,
+  Clock,
 } from "lucide-react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import {
   Select,
@@ -376,54 +32,132 @@ import {
   TableRow,
 } from "@/components/ui/table"
 
+const BASE_URL = "http://localhost:5004"
 const bloodTypes = ["All", "A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"]
 
+function getStatusStyle(status: string) {
+  switch (status) {
+    case "Confirmed":  return "bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300"
+    case "Completed":  return "bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300"
+    case "Cancelled":  return "bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300"
+    default:           return "bg-muted text-muted-foreground"
+  }
+}
+
+// ✅ helper: يقرأ الـ field سواء جه PascalCase من C# أو camelCase
+function getField(obj: any, ...keys: string[]): any {
+  for (const key of keys) {
+    if (obj[key] !== undefined && obj[key] !== null) return obj[key]
+  }
+  return undefined
+}
+
+function getInitials(name: string): string {
+  return (name ?? "?")
+    .split(" ")
+    .filter(Boolean)
+    .map((n: string) => n[0])
+    .join("")
+    .toUpperCase()
+    .slice(0, 2)
+}
+
 export default function AdminDonorsPage() {
-  const [donors, setDonors] = useState<any[]>([])
-  const [loading, setLoading] = useState(true) 
-  const [searchTerm, setSearchTerm] = useState("")
-  const [bloodTypeFilter, setBloodTypeFilter] = useState("All")
+  const [donors, setDonors]                     = useState<any[]>([])
+  const [appointments, setAppointments]         = useState<any[]>([])
+  const [loading, setLoading]                   = useState(true)
+  const [searchTerm, setSearchTerm]             = useState("")
+  const [bloodTypeFilter, setBloodTypeFilter]   = useState("All")
+  const [updatingId, setUpdatingId]             = useState<number | null>(null)
 
   useEffect(() => {
-    const fetchDonors = async () => {
+    const fetchData = async () => {
       try {
-        const token = localStorage.getItem("token");
-        const response = await fetch("https://localhost:7136/api/admin/donors", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        const data = await response.json();
-        setDonors(data);
-      } catch (error) {
-        console.error("Failed to fetch donors:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchDonors();
-  }, []);
+        const token   = localStorage.getItem("token")
+        const headers = { Authorization: `Bearer ${token}` }
 
-  const filteredDonors = donors.filter(donor => {
-    const matchesSearch = donor.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      donor.email.toLowerCase().includes(searchTerm.toLowerCase())
-    const matchesBloodType = bloodTypeFilter === "All" || donor.bloodType === bloodTypeFilter
-    return matchesSearch && matchesBloodType
+        const [donorsRes, apptRes] = await Promise.all([
+          fetch(`${BASE_URL}/api/Donor/all`,        { headers }),
+          fetch(`${BASE_URL}/api/Appointments/all`, { headers }),
+        ])
+
+        if (donorsRes.ok) setDonors(await donorsRes.json())
+        if (apptRes.ok)   setAppointments(await apptRes.json())
+      } catch (err) {
+        console.error("Failed to fetch:", err)
+      } finally {
+        setLoading(false)
+      }
+    }
+    fetchData()
+  }, [])
+
+  const updateStatus = async (appointmentId: number, newStatus: string) => {
+    // Optimistic update — update UI immediately
+    setAppointments(prev =>
+      prev.map(a => {
+        const id = getField(a, "id", "Id")
+        return id === appointmentId ? { ...a, status: newStatus, Status: newStatus } : a
+      })
+    )
+    setUpdatingId(appointmentId)
+    try {
+      const token = localStorage.getItem("token")
+      const res   = await fetch(`${BASE_URL}/api/Appointments/${appointmentId}/status`, {
+        method:  "PATCH",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+        body:    JSON.stringify({ status: newStatus }),
+      })
+      if (!res.ok) {
+        const errText = await res.text()
+        console.error("Update failed:", res.status, errText)
+        // Revert on failure — re-fetch appointments
+        const token2 = localStorage.getItem("token")
+        const refetch = await fetch(`${BASE_URL}/api/Appointments/all`, {
+          headers: { Authorization: `Bearer ${token2}` },
+        })
+        if (refetch.ok) setAppointments(await refetch.json())
+      }
+    } catch (err) {
+      console.error("Failed to update:", err)
+    } finally {
+      setUpdatingId(null)
+    }
+  }
+
+  // ✅ fallback: لو الـ backend ما رجعش donorName نلاقيه من قائمة الـ donors
+  const resolveDonorName = (appt: any): string => {
+    const fromAppt = getField(appt, "donorName", "DonorName")
+    if (fromAppt) return fromAppt
+
+    const donorId = getField(appt, "donorId", "DonorId")
+    const found   = donors.find(d => getField(d, "userID", "id", "Id") === donorId)
+    return found ? getField(found, "name", "Name") ?? "Unknown Donor" : "Unknown Donor"
+  }
+
+  const filteredDonors = donors.filter(d => {
+    const name  = getField(d, "name", "Name") ?? ""
+    const email = getField(d, "email", "Email") ?? ""
+    const blood = getField(d, "bloodType", "BloodType") ?? ""
+    const matchSearch = name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                        email.toLowerCase().includes(searchTerm.toLowerCase())
+    const matchBlood  = bloodTypeFilter === "All" || blood === bloodTypeFilter
+    return matchSearch && matchBlood
   })
 
-  const totalDonors = donors.length
-  const topDonors = donors.filter(d => d.status === "Top Donor").length
-
-  if (loading) return <div className="p-8 text-center">Loading...</div>;
+  if (loading) return <div className="p-8 text-center">Loading...</div>
 
   return (
     <div className="space-y-6">
-      {/* Stats */}
+
+      {/* ── Stats ── */}
       <div className="grid gap-4 sm:grid-cols-2">
         <Card>
           <CardContent className="pt-6">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground">Total Donors</p>
-                <p className="text-3xl font-bold text-foreground">{totalDonors}</p>
+                <p className="text-3xl font-bold text-foreground">{donors.length}</p>
               </div>
               <Users className="h-8 w-8 text-primary" />
             </div>
@@ -433,8 +167,8 @@ export default function AdminDonorsPage() {
           <CardContent className="pt-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground">Top Donors</p>
-                <p className="text-3xl font-bold text-green-600">{topDonors}</p>
+                <p className="text-sm text-muted-foreground">Total Appointments</p>
+                <p className="text-3xl font-bold text-green-600">{appointments.length}</p>
               </div>
               <CheckCircle className="h-8 w-8 text-green-500" />
             </div>
@@ -442,21 +176,20 @@ export default function AdminDonorsPage() {
         </Card>
       </div>
 
-      {/* Donors Table */}
+      {/* ── Donors Table ── */}
       <Card>
         <CardHeader>
           <CardTitle>Donor Management</CardTitle>
           <CardDescription>View and manage all registered donors</CardDescription>
         </CardHeader>
         <CardContent>
-          {/* Filters */}
           <div className="mb-6 flex flex-col gap-4 sm:flex-row">
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
               <Input
                 placeholder="Search donors..."
                 value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
+                onChange={e => setSearchTerm(e.target.value)}
                 className="pl-10"
               />
             </div>
@@ -465,14 +198,11 @@ export default function AdminDonorsPage() {
                 <SelectValue placeholder="Blood Type" />
               </SelectTrigger>
               <SelectContent>
-                {bloodTypes.map((type) => (
-                  <SelectItem key={type} value={type}>{type}</SelectItem>
-                ))}
+                {bloodTypes.map(t => <SelectItem key={t} value={t}>{t}</SelectItem>)}
               </SelectContent>
             </Select>
           </div>
 
-          {/* Table */}
           <div className="rounded-lg border border-border">
             <Table>
               <TableHeader>
@@ -483,63 +213,192 @@ export default function AdminDonorsPage() {
                   <TableHead>Donations</TableHead>
                   <TableHead>Points</TableHead>
                   <TableHead>Last Donation</TableHead>
-                  <TableHead>Status</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {filteredDonors.map((donor) => (
-                  <TableRow key={donor.id}>
-                    <TableCell>
-                      <div className="flex items-center gap-3">
-                        <Avatar>
-                          <AvatarFallback className="bg-primary/10 text-primary">
-                            {donor.name.split(" ").map((n: string) => n[0]).join("")}
-                          </AvatarFallback>
-                        </Avatar>
-                        <div>
-                          <p className="font-medium text-foreground">{donor.name}</p>
-                          <p className="text-sm text-muted-foreground">{donor.email}</p>
-                        </div>
-                      </div>
-                    </TableCell>
-                    <TableCell>{donor.phone}</TableCell>
-                    <TableCell>
-                      <Badge variant="outline" className="font-bold">
-                        {donor.bloodType || "N/A"}
-                      </Badge>
-                    </TableCell>
-                    <TableCell>{donor.totalDonations}</TableCell>
-                    <TableCell>{donor.points}</TableCell>
-                    <TableCell>
-                      {donor.lastDonationDate && donor.lastDonationDate !== "0001-01-01T00:00:00"
-                        ? new Date(donor.lastDonationDate).toLocaleDateString()
-                        : "Never"
-                      }
-                    </TableCell>
-                    <TableCell>
-                      <Badge
-                        className={
-                          donor.status === "Top Donor" 
-                            ? "bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300" 
-                            : ""
-                        }
-                      >
-                        {donor.status}
-                      </Badge>
+                {filteredDonors.length === 0 ? (
+                  <TableRow>
+                    <TableCell colSpan={6} className="py-8 text-center text-muted-foreground">
+                      No donors found.
                     </TableCell>
                   </TableRow>
-                ))}
+                ) : filteredDonors.map(donor => {
+                  const id            = getField(donor, "userID", "id", "Id")
+                  const name          = getField(donor, "name", "Name") ?? "—"
+                  const email         = getField(donor, "email", "Email") ?? "—"
+                  const phone         = getField(donor, "phone", "Phone")
+                  const bloodType     = getField(donor, "bloodType", "BloodType")
+                  const totalDon      = getField(donor, "totalDonations", "TotalDonations") ?? 0
+                  const points        = getField(donor, "points", "Points") ?? 0
+                  const lastDonation  = getField(donor, "lastDonationDate", "LastDonationDate")
+
+                  return (
+                    <TableRow key={id}>
+                      <TableCell>
+                        <div className="flex items-center gap-3">
+                          <Avatar>
+                            <AvatarFallback className="bg-primary/10 text-primary">
+                              {getInitials(name)}
+                            </AvatarFallback>
+                          </Avatar>
+                          <div>
+                            <p className="font-medium text-foreground">{name}</p>
+                            <p className="text-sm text-muted-foreground">{email}</p>
+                          </div>
+                        </div>
+                      </TableCell>
+                      <TableCell>{phone ?? "—"}</TableCell>
+                      <TableCell>
+                        <Badge variant="outline" className="font-bold">
+                          {bloodType || "N/A"}
+                        </Badge>
+                      </TableCell>
+                      <TableCell>{totalDon}</TableCell>
+                      <TableCell>{points}</TableCell>
+                      <TableCell>
+                        {lastDonation && lastDonation !== "0001-01-01T00:00:00"
+                          ? new Date(lastDonation).toLocaleDateString("en-GB")
+                          : "Never"}
+                      </TableCell>
+                    </TableRow>
+                  )
+                })}
               </TableBody>
             </Table>
           </div>
 
-          <div className="mt-4 flex items-center justify-between">
+          <div className="mt-3">
             <p className="text-sm text-muted-foreground">
               Showing {filteredDonors.length} of {donors.length} donors
             </p>
           </div>
         </CardContent>
       </Card>
+
+      {/* ── Appointments ── */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Calendar className="h-5 w-5 text-primary" />
+            Donor Appointments
+          </CardTitle>
+          <CardDescription>
+            Review and approve or reject donor appointment requests
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          {appointments.length === 0 ? (
+            <p className="py-8 text-center text-sm text-muted-foreground">No appointments found.</p>
+          ) : (
+            <div className="rounded-lg border border-border overflow-hidden">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Donor</TableHead>
+                    <TableHead>Center</TableHead>
+                    <TableHead>Address</TableHead>
+                    <TableHead>Date</TableHead>
+                    <TableHead>Time Slot</TableHead>
+                    <TableHead>Status</TableHead>
+                    </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {appointments.map(appt => {
+                    const apptId      = getField(appt, "id", "Id")
+                    const donorName   = resolveDonorName(appt)
+                    const centerName  = getField(appt, "centerName", "CenterName") ?? "—"
+                    const address     = getField(appt, "centerAddress", "CenterAddress") ||
+                                        getField(appt, "location", "Location") || "—"
+                    const apptDate    = getField(appt, "appointmentDate", "AppointmentDate")
+                    const timeSlot    = getField(appt, "timeSlot", "TimeSlot")
+                    const status      = getField(appt, "status", "Status") ?? "—"
+
+                    return (
+                      <TableRow key={apptId}>
+
+                        {/* Donor */}
+                        <TableCell>
+                          <div className="flex items-center gap-2">
+                            <Avatar className="h-8 w-8">
+                              <AvatarFallback className="bg-primary/10 text-primary text-xs">
+                                {getInitials(donorName)}
+                              </AvatarFallback>
+                            </Avatar>
+                            <span className="font-medium text-foreground">{donorName}</span>
+                          </div>
+                        </TableCell>
+
+                        {/* Center */}
+                        <TableCell className="font-medium">{centerName}</TableCell>
+
+                        {/* Address */}
+                        <TableCell>
+                          <div className="flex items-center gap-1 text-muted-foreground text-sm">
+                            <MapPin className="h-3.5 w-3.5 shrink-0" />
+                            {address}
+                          </div>
+                        </TableCell>
+
+                        {/* Date */}
+                        <TableCell>
+                          <div className="flex items-center gap-1 text-sm">
+                            <Calendar className="h-3.5 w-3.5 text-muted-foreground" />
+                            {apptDate
+                              ? new Date(apptDate).toLocaleDateString("en-GB", {
+                                  day: "numeric", month: "short", year: "numeric",
+                                })
+                              : "—"}
+                          </div>
+                        </TableCell>
+
+                        {/* Time slot */}
+                        <TableCell>
+                          <div className="flex items-center gap-1 text-sm">
+                            <Clock className="h-3.5 w-3.5 text-muted-foreground" />
+                            {timeSlot || "—"}
+                          </div>
+                        </TableCell>
+
+                        {/* Status — clickable toggle between Pending and Completed */}
+                        <TableCell>
+                          {status === "Completed" ? (
+                            <button
+                              onClick={() => updateStatus(apptId, "Pending")}
+                              disabled={updatingId === apptId}
+                              className="inline-flex items-center gap-1.5 rounded-full border border-green-400 bg-green-100 px-3 py-1 text-xs font-semibold text-green-700 shadow-sm transition-all hover:bg-green-200 hover:shadow active:scale-95 disabled:opacity-50 cursor-pointer"
+                            >
+                              {updatingId === apptId ? (
+                                <span className="animate-pulse">...</span>
+                              ) : (
+                                <><span className="h-1.5 w-1.5 rounded-full bg-green-500 inline-block" />Completed</>
+                              )}
+                            </button>
+                          ) : status === "Pending" || status === "Confirmed" ? (
+                            <button
+                              onClick={() => updateStatus(apptId, "Completed")}
+                              disabled={updatingId === apptId}
+                              className="inline-flex items-center gap-1.5 rounded-full border border-yellow-400 bg-yellow-100 px-3 py-1 text-xs font-semibold text-yellow-700 shadow-sm transition-all hover:bg-yellow-200 hover:shadow active:scale-95 disabled:opacity-50 cursor-pointer"
+                            >
+                              {updatingId === apptId ? (
+                                <span className="animate-pulse">...</span>
+                              ) : (
+                                <><span className="h-1.5 w-1.5 rounded-full bg-yellow-500 inline-block" />Pending</>
+                              )}
+                            </button>
+                          ) : (
+                            <span className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold ${getStatusStyle(status)}`}>{status}</span>
+                          )}
+                        </TableCell>
+                      </TableRow>
+                    )
+                  })}
+                </TableBody>
+              </Table>
+            </div>
+          )}
+        </CardContent>
+      </Card>
+
     </div>
   )
 }

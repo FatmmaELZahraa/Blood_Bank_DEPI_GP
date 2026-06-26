@@ -151,6 +151,50 @@ namespace Blood_Bank.Controllers
             return Ok(new { message = "Appointment cancelled." });
         }
 
+        // GET /api/Appointments/all (Admin only)
+        [HttpGet("all")]
+[Authorize]  // ← كده
+public async Task<ActionResult> GetAllAppointments()
+        {
+            var appointments = await _context.Appointments
+                .OrderByDescending(a => a.AppointmentDate)
+                .Select(a => new {
+                    a.Id,
+                    a.DonorId,
+                    a.CenterName,
+                    a.CenterAddress,
+                    a.Location,
+                    a.AppointmentDate,
+                    a.TimeSlot,
+                    a.Status,
+                    DonorName = _context.Donors
+                        .Where(d => d.UserID == a.DonorId)
+                        .Select(d => d.Name)
+                        .FirstOrDefault()
+                })
+                .ToListAsync();
+
+            return Ok(appointments);
+        }
+
+        // PATCH /api/Appointments/{id}/status (Admin only)
+        [HttpPatch("{id}/status")]
+        [Authorize]
+        public async Task<ActionResult> UpdateAppointmentStatus(int id, [FromBody] UpdateAppointmentStatusDto dto)
+        {
+            var appointment = await _context.Appointments.FindAsync(id);
+            if (appointment == null) return NotFound(new { error = "Appointment not found." });
+
+            var allowed = new[] { "Confirmed", "Completed", "Cancelled" };
+            if (!allowed.Contains(dto.Status))
+                return BadRequest(new { error = "Invalid status.", validValues = allowed });
+
+            appointment.Status = dto.Status;
+            await _context.SaveChangesAsync();
+
+            return Ok(new { appointment.Id, appointment.Status });
+        }
+
         [HttpGet("donation-history")]
         [Authorize]
         public async Task<ActionResult> GetDonationHistory()

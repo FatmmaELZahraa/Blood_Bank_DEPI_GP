@@ -95,11 +95,9 @@ namespace Blood_Bank.Controllers
                     points = donor.Points,
                     medicalHistory = donor.MedicalHistory,
                     isProfileCompleted = !string.IsNullOrEmpty(donor.BloodType) && donor.BloodType != "N/A"
-
                 });
             }
 
-            // ✅ أضف الحالة دي
             if (user is Hospital hospital)
             {
                 return Ok(new
@@ -108,60 +106,63 @@ namespace Blood_Bank.Controllers
                     email = hospital.Email,
                     phone = hospital.phone,
                     role = "Hospital"
-                    // باقي الـ fields هتضيفيها لما تعمل Hospital actions
                 });
             }
 
             return Ok(new { name = user.Name, email = user.Email, phone = user.phone, role = "Admin" });
         }
-        //before Add Confirmation Email
-        //[HttpPost("register")]
-        //public async Task<ActionResult<AuthResponseDto>> Register(RegisterDto dto)
-        //{
-        //    if (await _context.User.AnyAsync(u => u.Email == dto.Email))
-        //        return BadRequest("Email Already Exists Please Login");
 
-        //    string hashedPassword = BCrypt.Net.BCrypt.HashPassword(dto.Password);
+        // GET /api/Auth/hospitals-count
+        [HttpGet("hospitals-count")]
+        [Authorize]
+        public async Task<IActionResult> GetHospitalsCount()
+        {
+            var count = await _context.Hospitals.CountAsync();
+            return Ok(new { count });
+        }
 
-        //    User newUser;
-        //    if (dto.Role.ToLower() == "admin")
-        //    {
-        //        newUser = new Admin
-        //        {
-        //            Name = dto.Name,
-        //            Email = dto.Email,
-        //            Password = hashedPassword,
-        //            phone = dto.Phone 
-        //        };
-        //        _context.Admins.Add((Admin)newUser);
-        //    }
-        //    else if (dto.Role.ToLower() == "hospital")
-        //    {
-        //        newUser = new Hospital
-        //        {
-        //            Name = dto.Name,
-        //            Email = dto.Email,
-        //            Password = hashedPassword,
-        //            phone = dto.Phone
-        //        };
-        //        _context.Hospitals.Add((Hospital)newUser);
+        // GET /api/admin/hospitals
+        [HttpGet("/api/admin/hospitals")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> GetHospitals()
+        {
+            var hospitals = await _context.Hospitals
+                .Select(h => new
+                {
+                    id            = h.UserID,
+                    name          = h.Name,
+                    email         = h.Email,
+                    phone         = h.phone,
+                    address       = h.Address,
+                    totalCapacity = h.TotalCapacity,
+                    currentUnits  = h.CurrentUnits,
+                    isVerified    = h.IsVerified,
+                    createdAt     = h.CreatedAt
+                })
+                .ToListAsync();
 
-        //    }
-        //    else
-        //    {
-        //        newUser = new Donor { Name = dto.Name, Email = dto.Email, Password = hashedPassword, phone = dto.Phone };
-        //        _context.Donors.Add((Donor)newUser);
-        //    }
+            return Ok(hospitals);
+        }
+        // GET /api/bloodbank/hospitals
+[HttpGet("/api/bloodbank/hospitals")]
+[Authorize(Roles = "BloodBank")]
+public async Task<IActionResult> GetHospitalsForBloodBank()
+{
+    var hospitals = await _context.Hospitals
+        .Select(h => new
+        {
+            id      = h.UserID,
+            name    = h.Name,
+            phone   = h.phone,
+            address = h.Address,
+            currentUnits  = h.CurrentUnits,
+            totalCapacity = h.TotalCapacity,
+        })
+        .ToListAsync();
 
-        //    await _context.SaveChangesAsync();
-        //    return Ok(new AuthResponseDto
-        //    {
-        //        UserId = newUser.UserID,
-        //        Name = newUser.Name,
-        //        Role = dto.Role,
-        //        Token = GenerateJwtToken(newUser, dto.Role)
-        //    });
-        //}
+    return Ok(hospitals);
+}
+
         [HttpPost("register")]
         public async Task<ActionResult<AuthResponseDto>> Register(RegisterDto dto)
         {
@@ -174,23 +175,20 @@ namespace Blood_Bank.Controllers
             DateTime tokenExpires = DateTime.UtcNow.AddHours(24);
 
             User newUser;
-            // Check for BloodBank role
             if (dto.Role.ToLower() == "bloodbank" || dto.Role.ToLower() == "blood_bank")
             {
-                // 1. Create a mandatory tracking inventory for the new Blood Bank
                 var targetInventory = new Inventory();
                 _context.inventories.Add(targetInventory);
-                await _context.SaveChangesAsync(); // Generates the InventoryId
+                await _context.SaveChangesAsync();
 
-                // 2. Instantiate the BloodBank entity mapping your DTO fields
                 newUser = new BloodBank
                 {
                     Name = dto.Name,
                     BankName = dto.Name,
                     Email = dto.Email,
                     Password = hashedPassword,
-                    phone = dto.Phone, // Converted because DTO uses int, entity uses string
-                    Location = "Not Specified Yet", // Fallback since generic RegisterDto lacks a Location field
+                    phone = dto.Phone,
+                    Location = "Not Specified Yet",
                     InventoryId = targetInventory.InventoryId,
                     IsVerified = false,
                     VerificationToken = verificationToken,
@@ -255,7 +253,6 @@ namespace Blood_Bank.Controllers
             });
         }
 
-
         [HttpGet("verify-email")]
         public async Task<IActionResult> VerifyEmail([FromQuery] string token)
         {
@@ -275,25 +272,26 @@ namespace Blood_Bank.Controllers
 
             return Ok("Email verified successfully.");
         }
+
         [HttpPost("login")]
-public async Task<ActionResult> Login(LoginDto dto)
-{
-    var user = await _context.User.FirstOrDefaultAsync(u => u.Email == dto.Email);
+        public async Task<ActionResult> Login(LoginDto dto)
+        {
+            var user = await _context.User.FirstOrDefaultAsync(u => u.Email == dto.Email);
 
-    if (user == null || !BCrypt.Net.BCrypt.Verify(dto.Password, user.Password))
-        return Unauthorized("Invalid login credentials.");
+            if (user == null || !BCrypt.Net.BCrypt.Verify(dto.Password, user.Password))
+                return Unauthorized("Invalid login credentials.");
 
-    string role = user is BloodBank ? "BloodBank" : user is Hospital ? "Hospital" : "Donor";
+            string role = user is Admin ? "Admin" : user is BloodBank ? "BloodBank" : user is Hospital ? "Hospital" : "Donor";
 
-    return Ok(new
-    {
-        name    = user.Name,
-        role    = role,
-        userId  = user.UserID,   
-        token   = GenerateJwtToken(user, role)
-    });
-}
-        
+            return Ok(new
+            {
+                name   = user.Name,
+                role   = role,
+                userId = user.UserID,
+                token  = GenerateJwtToken(user, role)
+            });
+        }
+
         [HttpPost("logout")]
         public IActionResult Logout() => Ok(new { message = "Logged out successfully" });
 
