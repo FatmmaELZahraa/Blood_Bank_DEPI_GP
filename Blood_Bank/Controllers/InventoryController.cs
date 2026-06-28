@@ -29,11 +29,11 @@ public class InventoryController : ControllerBase
                 i.InventoryId,
                 BloodBank = new
                 {
-                    i.BloodBank.UserID,
-                    i.BloodBank.BankName,
-                    i.BloodBank.Location
+                    i.BloodBank!.UserID,
+                    i.BloodBank!.BankName,
+                    i.BloodBank!.Location
                 },
-                Summary = i.BloodUnits
+                Summary = i.BloodUnits!
                     .Where(u => u.ExpiryDate > DateTime.UtcNow)
                     .GroupBy(u => u.BloodType)
                     .Select(g => new
@@ -62,10 +62,10 @@ public class InventoryController : ControllerBase
                 i.InventoryId,
                 BloodBank = new
                 {
-                    i.BloodBank.BankName,
-                    i.BloodBank.Location
+                    i.BloodBank!.BankName,
+                    i.BloodBank!.Location
                 },
-                BloodUnits = i.BloodUnits.Select(u => new
+                BloodUnits = i.BloodUnits!.Select(u => new
                 {
                     u.UnitId,
                     u.BloodType,
@@ -109,17 +109,17 @@ public class InventoryController : ControllerBase
         var inventory = await _db.inventories
             .Include(i => i.BloodBank)
             .Include(i => i.BloodUnits)
-            .Where(i => i.BloodBank.UserID == bankId)
+            .Where(i => i.BloodBank!.UserID == bankId)
             .Select(i => new
             {
                 i.InventoryId,
                 BloodBank = new
                 {
-                    i.BloodBank.UserID,
+                    i.BloodBank!.UserID,
                     i.BloodBank.BankName,
                     i.BloodBank.Location
                 },
-                Summary = i.BloodUnits
+                Summary = i.BloodUnits!
                     .Where(u => u.ExpiryDate > DateTime.UtcNow)
                     .GroupBy(u => u.BloodType)
                     .Select(g => new

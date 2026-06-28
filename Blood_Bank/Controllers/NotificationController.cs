@@ -47,7 +47,7 @@ namespace Blood_Bank.Controllers
                 string finalizedHtml = baseHtml.Replace("{{DonorName}}", donor.Name);
 
                 await _emailService.SendEmailAsync(
-                    donor.Email,
+                    donor.Email ?? " ",
                     "Urgent Blood Donation Request ❤️",
                     finalizedHtml
                 );
@@ -88,7 +88,7 @@ namespace Blood_Bank.Controllers
                     .Replace("{{BloodType}}", donor.BloodType);
 
                 await _emailService.SendEmailAsync(
-                    donor.Email,
+                    donor.Email ?? " ",
                     $"🚨 Urgent Shortage Alert: Blood Type ({bloodType}) Required Immediately",
                     finalizedHtml
                 );

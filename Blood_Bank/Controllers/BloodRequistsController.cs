@@ -65,7 +65,7 @@ public class BloodRequestsController : ControllerBase
     }
     // GET /api/blood-requests/{id}
     [HttpGet("{id}")]
-    [HttpGet("{id}")]
+    //[HttpGet("{id}")]
     public async Task<IActionResult> GetById(int id)
     {
         var request = await _db.BloodRequests
