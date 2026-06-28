@@ -121,7 +121,7 @@ namespace Blood_Bank.Controllers
             return Ok(new { count });
         }
 
-        // GET /api/admin/hospitals
+    
         [HttpGet("/api/admin/hospitals")]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetHospitals()
@@ -143,7 +143,7 @@ namespace Blood_Bank.Controllers
 
             return Ok(hospitals);
         }
-        // GET /api/bloodbank/hospitals
+ 
 [HttpGet("/api/bloodbank/hospitals")]
 [Authorize(Roles = "BloodBank")]
 public async Task<IActionResult> GetHospitalsForBloodBank()
