@@ -212,9 +212,9 @@ namespace Blood_Bank.Controllers
                     return NotFound(new { success = false, message = "User not found" });
 
                 // Get current and new password from request
-                string currentPassword = request?.currentPassword;
-                string newPassword = request?.newPassword;
-                string confirmPassword = request?.confirmPassword;
+                string currentPassword = request?.currentPassword??" ";
+                string newPassword = request?.newPassword??" ";
+                string confirmPassword = request?.confirmPassword??" ";
 
                 if (string.IsNullOrEmpty(currentPassword) || string.IsNullOrEmpty(newPassword))
                     return BadRequest(new { success = false, message = "Current password and new password are required" });
