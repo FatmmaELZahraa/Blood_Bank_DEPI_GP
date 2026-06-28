@@ -6,7 +6,7 @@ namespace Blood_Bank.Models
     {
         public int RequestId { get; set; }
         public int UserID { get; set; }
-        public Hospital Hospital { get; set; }
+        public Hospital? Hospital { get; set; }
         public string? BloodType { get; set; }
         public decimal Quantity { get; set; }
         public DateTime RequestDate { get; set; } = DateTime.UtcNow;

@@ -17,9 +17,7 @@ namespace Blood_Bank.Controllers
             _context = context;
         }
 
-        // =========================
-        // 1) COMPLETE PROFILE
-        // =========================
+     
         [HttpPost("complete-profile/{id}")]
         public async Task<IActionResult> CompleteProfile(int id, [FromBody] CompleteProfileDto dto)
         {
@@ -37,9 +35,7 @@ namespace Blood_Bank.Controllers
             return Ok("Profile completed successfully");
         }
 
-        // =========================
-        // 2) MARK AS TOP DONOR
-        // =========================
+      
         [HttpPost("mark-top/{id}")]
         public async Task<IActionResult> MarkTopDonor(int id)
         {
@@ -58,9 +54,7 @@ namespace Blood_Bank.Controllers
             return Ok("Marked as Top Donor");
         }
 
-        // =========================
-        // 3) GET ALL DONORS (Admin)
-        // =========================
+      
         [HttpGet("all")]
         public async Task<IActionResult> GetAllDonors()
         {
@@ -83,9 +77,7 @@ namespace Blood_Bank.Controllers
             return Ok(donors);
         }
 
-        // =========================
-        // 4) GET TOP DONORS
-        // =========================
+      
         [HttpGet("top-donors")]
         public async Task<IActionResult> GetTopDonors()
         {

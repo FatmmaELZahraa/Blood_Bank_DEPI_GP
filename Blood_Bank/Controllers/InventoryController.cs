@@ -18,7 +18,6 @@ public class InventoryController : ControllerBase
         _db = db;
     }
 
-    // ✅ NEW: GET /api/inventories — جيب كل الـ inventories مع summary لكل blood type
     [HttpGet("inventories")]
     public async Task<IActionResult> GetAllInventories()
     {
@@ -104,7 +103,6 @@ public class InventoryController : ControllerBase
         return Ok(new { InventoryId = id, Summary = summary });
     }
 
-    // ✅ NEW: GET /api/inventories/by-bank/{bankId} — جيب الـ inventory بتاع BloodBank معين
     [HttpGet("inventories/by-bank/{bankId}")]
     public async Task<IActionResult> GetByBank(int bankId)
     {
@@ -241,7 +239,7 @@ public class InventoryController : ControllerBase
             .Select(u => new
             {
                 u.UnitId,
-                u.InventoryId,  // ✅ أضفنا InventoryId
+                u.InventoryId,  
                 u.BloodType,
                 u.Quantity,
                 u.ExpiryDate,
@@ -257,7 +255,6 @@ public class InventoryController : ControllerBase
     private static bool IsValidBloodType(string bt) => ValidBloodTypes.Contains(bt);
 }
 
-// --- DTOs ---
 public record CreateBloodUnitDto(
     int InventoryId,
     string BloodType,

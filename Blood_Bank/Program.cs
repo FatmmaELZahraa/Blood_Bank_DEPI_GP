@@ -51,7 +51,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 
 var jwtSettings = builder.Configuration.GetSection("Jwt");
-var key = Encoding.UTF8.GetBytes(jwtSettings["Key"]);
+var key = Encoding.UTF8.GetBytes(jwtSettings["Key"]??" " );
 
 builder.Services.AddAuthentication(options =>
 {
@@ -82,7 +82,6 @@ builder.Services.AddCors(options =>
 builder.Services.AddScoped<IEmailService, EmailService>();
 var app = builder.Build();
 
-// 4. إعداد Pipeline التشغيل
 if (app.Environment.IsDevelopment())
 {
     app.UseDeveloperExceptionPage();

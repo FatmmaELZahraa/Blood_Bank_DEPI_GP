@@ -38,19 +38,16 @@ public class BloodRequestsController : ControllerBase
         if (!string.IsNullOrEmpty(priority))
             query = query.Where(r => r.priority == priority);
 
-        // جيب الـ requests الأول
         var requests = await query
             .OrderByDescending(r => r.RequestDate)
             .ToListAsync();
 
-        // جيب الـ hospitals منفصلة
         var userIds = requests.Select(r => r.UserID).Distinct().ToList();
         var hospitals = await _db.Hospitals
             .Where(h => userIds.Contains(h.UserID))
             .Select(h => new { h.UserID, h.Name })
             .ToListAsync();
 
-        // دمجهم في الـ response
         var results = requests.Select(r => new
         {
             r.RequestId,
@@ -101,7 +98,6 @@ public class BloodRequestsController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] CreateBloodRequestDto dto)
     {
-        // تحقق من الـ hospital عن طريق User table مباشرة
         var hospitalExists = await _db.Hospitals
             .AnyAsync(h => h.UserID == dto.UserID);
 
