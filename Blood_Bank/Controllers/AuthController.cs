@@ -121,7 +121,7 @@ namespace Blood_Bank.Controllers
             return Ok(new { count });
         }
 
-        // GET /api/admin/hospitals
+    
         [HttpGet("/api/admin/hospitals")]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetHospitals()
@@ -143,7 +143,7 @@ namespace Blood_Bank.Controllers
 
             return Ok(hospitals);
         }
-        // GET /api/bloodbank/hospitals
+ 
 [HttpGet("/api/bloodbank/hospitals")]
 [Authorize(Roles = "BloodBank")]
 public async Task<IActionResult> GetHospitalsForBloodBank()
@@ -175,7 +175,7 @@ public async Task<IActionResult> GetHospitalsForBloodBank()
             DateTime tokenExpires = DateTime.UtcNow.AddHours(24);
 
             User newUser;
-            if (dto.Role.ToLower() == "bloodbank" || dto.Role.ToLower() == "blood_bank")
+            if (dto.Role?.ToLower() == "bloodbank" || dto.Role?.ToLower() == "blood_bank")
             {
                 var targetInventory = new Inventory();
                 _context.inventories.Add(targetInventory);
@@ -196,7 +196,7 @@ public async Task<IActionResult> GetHospitalsForBloodBank()
                 };
                 _context.BloodBank.Add((BloodBank)newUser);
             }
-            else if (dto.Role.ToLower() == "hospital")
+            else if (dto.Role?.ToLower() == "hospital")
             {
                 newUser = new Hospital
                 {
@@ -243,7 +243,7 @@ public async Task<IActionResult> GetHospitalsForBloodBank()
         <p style='font-size: 0.8em; color: #999;'>If you didn't create an account, you can safely ignore this email.</p>
     </div>";
 
-            await _emailService.SendEmailAsync(newUser.Email, "Confirm your email - BloodLink", emailBody);
+            await _emailService.SendEmailAsync(newUser.Email??" ", "Confirm your email - BloodLink", emailBody);
 
             return Ok(new
             {

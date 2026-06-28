@@ -44,7 +44,6 @@ function getStatusStyle(status: string) {
   }
 }
 
-// ✅ helper: يقرأ الـ field سواء جه PascalCase من C# أو camelCase
 function getField(obj: any, ...keys: string[]): any {
   for (const key of keys) {
     if (obj[key] !== undefined && obj[key] !== null) return obj[key]
@@ -93,7 +92,6 @@ export default function AdminDonorsPage() {
   }, [])
 
   const updateStatus = async (appointmentId: number, newStatus: string) => {
-    // Optimistic update — update UI immediately
     setAppointments(prev =>
       prev.map(a => {
         const id = getField(a, "id", "Id")
@@ -125,7 +123,6 @@ export default function AdminDonorsPage() {
     }
   }
 
-  // ✅ fallback: لو الـ backend ما رجعش donorName نلاقيه من قائمة الـ donors
   const resolveDonorName = (appt: any): string => {
     const fromAppt = getField(appt, "donorName", "DonorName")
     if (fromAppt) return fromAppt
@@ -150,7 +147,6 @@ export default function AdminDonorsPage() {
   return (
     <div className="space-y-6">
 
-      {/* ── Stats ── */}
       <div className="grid gap-4 sm:grid-cols-2">
         <Card>
           <CardContent className="pt-6">
@@ -176,7 +172,6 @@ export default function AdminDonorsPage() {
         </Card>
       </div>
 
-      {/* ── Donors Table ── */}
       <Card>
         <CardHeader>
           <CardTitle>Donor Management</CardTitle>
@@ -275,7 +270,6 @@ export default function AdminDonorsPage() {
         </CardContent>
       </Card>
 
-      {/* ── Appointments ── */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
@@ -328,10 +322,8 @@ export default function AdminDonorsPage() {
                           </div>
                         </TableCell>
 
-                        {/* Center */}
                         <TableCell className="font-medium">{centerName}</TableCell>
 
-                        {/* Address */}
                         <TableCell>
                           <div className="flex items-center gap-1 text-muted-foreground text-sm">
                             <MapPin className="h-3.5 w-3.5 shrink-0" />
@@ -339,7 +331,6 @@ export default function AdminDonorsPage() {
                           </div>
                         </TableCell>
 
-                        {/* Date */}
                         <TableCell>
                           <div className="flex items-center gap-1 text-sm">
                             <Calendar className="h-3.5 w-3.5 text-muted-foreground" />
@@ -351,7 +342,6 @@ export default function AdminDonorsPage() {
                           </div>
                         </TableCell>
 
-                        {/* Time slot */}
                         <TableCell>
                           <div className="flex items-center gap-1 text-sm">
                             <Clock className="h-3.5 w-3.5 text-muted-foreground" />
@@ -359,7 +349,6 @@ export default function AdminDonorsPage() {
                           </div>
                         </TableCell>
 
-                        {/* Status — clickable toggle between Pending and Completed */}
                         <TableCell>
                           {status === "Completed" ? (
                             <button

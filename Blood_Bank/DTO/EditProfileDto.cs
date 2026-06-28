@@ -2,14 +2,11 @@
 {
     public class EditProfileDto
     {
-        // بيانات أساسية
         public string Name { get; set; } = string.Empty;
         public string Phone { get; set; } = string.Empty;
 
-        // اختياري
         public string? Email { get; set; }
 
-        // اختياري لو المستخدم هيغير الباسورد
         public string? Password { get; set; }
 
         // Donor

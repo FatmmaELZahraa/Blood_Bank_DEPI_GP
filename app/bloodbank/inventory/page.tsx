@@ -66,7 +66,6 @@ async function apiFetch(path: string, options: RequestInit = {}) {
   return res.status === 204 ? null : res.json()
 }
 
-// ── Types ────────────────────────────────────────────────────────────────────
 
 interface BloodSummary {
   bloodType: string
@@ -97,7 +96,6 @@ const CAPACITY: Record<string, number> = {
 
 const bloodTypes = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"]
 
-// ── Status helper ────────────────────────────────────────────────────────────
 
 function getStatus(units: number, capacity: number) {
   const pct = (units / capacity) * 100
@@ -106,7 +104,6 @@ function getStatus(units: number, capacity: number) {
   return              { label: "Good",     color: "bg-green-500",   textColor: "text-green-600"  }
 }
 
-// ── Component ────────────────────────────────────────────────────────────────
 
 export default function InventoryPage() {
   const [inventories, setInventories]       = useState<InventoryData[]>([])
@@ -125,7 +122,6 @@ export default function InventoryPage() {
   const [adjustAmount, setAdjustAmount]           = useState("")
   const [expiryDate, setExpiryDate]               = useState("")
 
-  // ── Fetch ──────────────────────────────────────────────────────────────────
 
   useEffect(() => { fetchAll() }, [])
 
@@ -146,7 +142,6 @@ export default function InventoryPage() {
     }
   }
 
-  // ── Add blood unit ─────────────────────────────────────────────────────────
 
   async function handleAddStock() {
     if (!selectedType || !adjustAmount || !expiryDate || !selectedInventory) {
@@ -183,9 +178,7 @@ export default function InventoryPage() {
     }
   }
 
-  // ── Derived state ──────────────────────────────────────────────────────────
-
-  // دمج كل الـ summaries من كل الـ inventories في جدول واحد لكل blood type
+ 
   const inventory = bloodTypes.map((type) => {
     const totalUnitsForType = inventories.reduce((acc, inv) => {
       const found = inv.summary.find((s) => s.bloodType === type)
@@ -207,7 +200,6 @@ export default function InventoryPage() {
   const totalCapacity = inventory.reduce((acc, i) => acc + i.capacity, 0)
   const expiringTotal = expiring.length
 
-  // ── Render ─────────────────────────────────────────────────────────────────
 
   return (
     <div className="space-y-6">
@@ -294,7 +286,6 @@ export default function InventoryPage() {
                   </DialogHeader>
                   <div className="space-y-4 py-4">
 
-                    {/* اختار الـ Blood Bank */}
                     <div className="space-y-2">
                       <Label>Blood Bank</Label>
                       <Select value={selectedInventory} onValueChange={setSelectedInventory}>

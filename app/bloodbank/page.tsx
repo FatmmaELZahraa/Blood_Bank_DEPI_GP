@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useRef } from "react"
 
-// Resolve CSS custom properties at runtime for Recharts (SVG can't use CSS vars)
 function useCSSVar(variable: string, fallback: string): string {
   const [value, setValue] = useState(fallback)
   useEffect(() => {

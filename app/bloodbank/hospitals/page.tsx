@@ -71,7 +71,6 @@ interface BloodRequest {
   uiStatus?: "Pending" | "Completed"
 }
 
-// ─── Helper ───────────────────────────────────────────────
 function authHeaders() {
   const token = typeof window !== "undefined" ? localStorage.getItem("token") : null
   return {
@@ -90,7 +89,6 @@ function priorityBadge(priority: string) {
   return map[priority] ?? "bg-muted text-muted-foreground"
 }
 
-// ─── Main Page ────────────────────────────────────────────
 export default function AdminHospitalsPage() {
   const [hospitals, setHospitals]       = useState<Hospital[]>([])
   const [sosRequests, setSosRequests]   = useState<SosRequest[]>([])
@@ -102,12 +100,9 @@ export default function AdminHospitalsPage() {
   const [searchTerm, setSearchTerm]   = useState("")
   const [expandedId, setExpandedId]   = useState<number | null>(null)
 
-  // sos tab: "Pending" | "Completed"
   const [sosTab, setSosTab]           = useState<"Pending" | "Completed">("Pending")
-  // blood tab: "Pending" | "Completed"
   const [bloodTab, setBloodTab]       = useState<"Pending" | "Completed">("Pending")
 
-  // ── Fetch all data ──
   useEffect(() => {
     const load = async () => {
       try {
@@ -179,7 +174,6 @@ export default function AdminHospitalsPage() {
     }
   }
 
-  // ── Derived ──
   const filteredHospitals = hospitals.filter(h =>
     h.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     (h.address ?? "").toLowerCase().includes(searchTerm.toLowerCase())
@@ -210,7 +204,6 @@ export default function AdminHospitalsPage() {
     </div>
   )
 
-  // ─────────────────────────────────────────────────────────
   return (
     <div className="space-y-8">
 
@@ -412,7 +405,6 @@ export default function AdminHospitalsPage() {
   )
 }
 
-// ─── Sub-components ───────────────────────────────────────
 
 function StatCard({ icon, label, value }: { icon: React.ReactNode; label: string; value: string | number }) {
   return (

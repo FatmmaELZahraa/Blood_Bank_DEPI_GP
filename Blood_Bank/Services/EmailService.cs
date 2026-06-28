@@ -15,10 +15,9 @@ namespace Blood_Bank.Services
         public async Task SendEmailAsync(string toEmail, string subject, string body)
         {
             var email = new MimeMessage();
-            // Get sender details from appsettings.json
             email.From.Add(new MailboxAddress(
                 _config["EmailSettings:SenderName"],
-                _config["EmailSettings:SenderEmail"]
+                _config["EmailSettings:SenderEmail"]??" "
             ));
             email.To.Add(MailboxAddress.Parse(toEmail));
             email.Subject = subject;
@@ -30,14 +29,14 @@ namespace Blood_Bank.Services
             try
             {
                 await smtp.ConnectAsync(
-                    _config["EmailSettings:SmtpServer"],
-                    int.Parse(_config["EmailSettings:SmtpPort"]),
+                    _config["EmailSettings:SmtpServer"]??" ",
+                    int.Parse(_config["EmailSettings:SmtpPort"]??" "),
                     MailKit.Security.SecureSocketOptions.StartTls
                 );
 
                 await smtp.AuthenticateAsync(
-                    _config["EmailSettings:SenderEmail"],
-                    _config["EmailSettings:Password"]
+                    _config["EmailSettings:SenderEmail"]??" ",
+                    _config["EmailSettings:Password"]??" "
                 );
 
                 await smtp.SendAsync(email);

@@ -18,7 +18,6 @@ public class InventoryController : ControllerBase
         _db = db;
     }
 
-    // ✅ NEW: GET /api/inventories — جيب كل الـ inventories مع summary لكل blood type
     [HttpGet("inventories")]
     public async Task<IActionResult> GetAllInventories()
     {
@@ -30,11 +29,11 @@ public class InventoryController : ControllerBase
                 i.InventoryId,
                 BloodBank = new
                 {
-                    i.BloodBank.UserID,
-                    i.BloodBank.BankName,
-                    i.BloodBank.Location
+                    i.BloodBank!.UserID,
+                    i.BloodBank!.BankName,
+                    i.BloodBank!.Location
                 },
-                Summary = i.BloodUnits
+                Summary = i.BloodUnits!
                     .Where(u => u.ExpiryDate > DateTime.UtcNow)
                     .GroupBy(u => u.BloodType)
                     .Select(g => new
@@ -63,10 +62,10 @@ public class InventoryController : ControllerBase
                 i.InventoryId,
                 BloodBank = new
                 {
-                    i.BloodBank.BankName,
-                    i.BloodBank.Location
+                    i.BloodBank!.BankName,
+                    i.BloodBank!.Location
                 },
-                BloodUnits = i.BloodUnits.Select(u => new
+                BloodUnits = i.BloodUnits!.Select(u => new
                 {
                     u.UnitId,
                     u.BloodType,
@@ -104,24 +103,23 @@ public class InventoryController : ControllerBase
         return Ok(new { InventoryId = id, Summary = summary });
     }
 
-    // ✅ NEW: GET /api/inventories/by-bank/{bankId} — جيب الـ inventory بتاع BloodBank معين
     [HttpGet("inventories/by-bank/{bankId}")]
     public async Task<IActionResult> GetByBank(int bankId)
     {
         var inventory = await _db.inventories
             .Include(i => i.BloodBank)
             .Include(i => i.BloodUnits)
-            .Where(i => i.BloodBank.UserID == bankId)
+            .Where(i => i.BloodBank!.UserID == bankId)
             .Select(i => new
             {
                 i.InventoryId,
                 BloodBank = new
                 {
-                    i.BloodBank.UserID,
+                    i.BloodBank!.UserID,
                     i.BloodBank.BankName,
                     i.BloodBank.Location
                 },
-                Summary = i.BloodUnits
+                Summary = i.BloodUnits!
                     .Where(u => u.ExpiryDate > DateTime.UtcNow)
                     .GroupBy(u => u.BloodType)
                     .Select(g => new
@@ -241,7 +239,7 @@ public class InventoryController : ControllerBase
             .Select(u => new
             {
                 u.UnitId,
-                u.InventoryId,  // ✅ أضفنا InventoryId
+                u.InventoryId,  
                 u.BloodType,
                 u.Quantity,
                 u.ExpiryDate,
@@ -257,7 +255,6 @@ public class InventoryController : ControllerBase
     private static bool IsValidBloodType(string bt) => ValidBloodTypes.Contains(bt);
 }
 
-// --- DTOs ---
 public record CreateBloodUnitDto(
     int InventoryId,
     string BloodType,
