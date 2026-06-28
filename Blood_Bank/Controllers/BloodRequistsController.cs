@@ -135,14 +135,13 @@ public class BloodRequestsController : ControllerBase
 
     // PATCH /api/blood-requests/{id}/status
     [HttpPatch("{id}/status")]
-    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> UpdateStatus(int id, [FromBody] UpdateStatusDto dto)
     {
         var request = await _db.BloodRequests.FindAsync(id);
         if (request == null)
             return NotFound(new { error = "Blood request not found." });
 
-        var allowed = new[] { "Approved", "Fulfilled", "Rejected" };
+        var allowed = new[] { "Pending", "Approved", "Fulfilled", "Rejected", "Completed" };
         if (!allowed.Contains(dto.Status))
             return BadRequest(new { error = "Invalid status.", validValues = allowed });
 

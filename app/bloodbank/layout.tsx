@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { 
@@ -43,6 +43,34 @@ export default function AdminLayout({
 }) {
   const pathname = usePathname()
   const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [bankName, setBankName] = useState<string>("")
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const token = localStorage.getItem("token")
+        if (!token) return
+        const res = await fetch("http://localhost:5004/api/Auth/profile", {
+          headers: { Authorization: `Bearer ${token}` },
+        })
+        if (res.ok) {
+          const data = await res.json()
+          setBankName(data.name ?? "")
+        }
+      } catch (e) {
+        console.error("Failed to fetch profile:", e)
+      }
+    }
+    fetchProfile()
+  }, [])
+
+  // Get initials from bank name (e.g. "Cairo Blood Bank" → "CB")
+  const initials = bankName
+    .split(" ")
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((w) => w[0].toUpperCase())
+    .join("")
 
   return (
     <div className="min-h-screen bg-background">
@@ -64,7 +92,7 @@ export default function AdminLayout({
             <Button variant="ghost" size="icon" className="rounded-full">
               <Avatar className="h-8 w-8">
                 <AvatarImage src="/admin-avatar.jpg" />
-                <AvatarFallback className="bg-primary text-primary-foreground">AD</AvatarFallback>
+                <AvatarFallback className="bg-primary text-primary-foreground">{initials || "BB"}</AvatarFallback>
               </Avatar>
             </Button>
           </DropdownMenuTrigger>
@@ -100,14 +128,13 @@ export default function AdminLayout({
             </Link>
           </div>
 
-          {/* Admin Info */}
           <div className="border-b border-border p-4">
             <div className="flex items-center gap-3">
               <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10">
-                <Shield className="h-6 w-6 text-primary" />
+                <span className="text-lg font-bold text-primary">{initials || "BB"}</span>
               </div>
               <div>
-                <p className="font-serif text-foreground">Blood Bank Panel</p>
+                <p className="font-serif text-foreground">{bankName || "Blood Bank Panel"}</p>
                 <p className="text-sm text-muted-foreground font-serif">System Administrator</p>
               </div>
             </div>
@@ -169,9 +196,9 @@ export default function AdminLayout({
                   <Button variant="ghost" className="gap-2">
                     <Avatar className="h-8 w-8">
                       <AvatarImage src="/admin-avatar.jpg" />
-                      <AvatarFallback className="bg-primary text-primary-foreground">AD</AvatarFallback>
+                      <AvatarFallback className="bg-primary text-primary-foreground">{initials || "BB"}</AvatarFallback>
                     </Avatar>
-                    <span className="hidden xl:inline">Administrator</span>
+                    <span className="hidden xl:inline">{bankName || "Administrator"}</span>
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">

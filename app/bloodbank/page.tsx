@@ -76,6 +76,7 @@ export default function AdminDashboardPage() {
   const [sosRequests, setSosRequests] = useState<any[]>([]);
   const [bloodRequests, setBloodRequests] = useState<any[]>([]);
   const [appointments, setAppointments] = useState<any[]>([]);
+  const [totalBloodUnits, setTotalBloodUnits] = useState<number>(0);
   const [loading, setLoading] = useState(true);
 
   // Resolve CSS vars for Recharts at runtime
@@ -102,12 +103,13 @@ export default function AdminDashboardPage() {
         const token = localStorage.getItem("token");
         const headers = { Authorization: `Bearer ${token}` };
 
-        const [overviewRes, donorsRes, sosRes, bloodRes, apptRes] = await Promise.all([
+        const [overviewRes, donorsRes, sosRes, bloodRes, apptRes, inventoriesRes] = await Promise.all([
           fetch("http://localhost:5004/api/admin/overview", { headers }),
           fetch("http://localhost:5004/api/Donor/all", { headers }),
           fetch("http://localhost:5004/api/sos-requests", { headers }),
           fetch("http://localhost:5004/api/blood-requests", { headers }),
           fetch("http://localhost:5004/api/Appointments/all", { headers }),
+          fetch("http://localhost:5004/api/inventories", { headers }),
         ]);
 
         if (overviewRes.ok) setOverview(await overviewRes.json());
@@ -115,6 +117,18 @@ export default function AdminDashboardPage() {
         if (sosRes.ok) { const d = await sosRes.json(); console.log("🔴 SOS[0]:", d[0]); setSosRequests(d); }
         if (bloodRes.ok) { const d = await bloodRes.json(); console.log("🩸 Blood[0]:", d[0]); setBloodRequests(d); }
         if (apptRes.ok) { const d = await apptRes.json(); console.log("📅 Appt[0]:", d[0]); setAppointments(d); }
+
+        if (inventoriesRes.ok) {
+          const inventories = await inventoriesRes.json();
+          const total = inventories.reduce((sum: number, inv: any) => {
+            const invTotal = (inv.summary ?? []).reduce(
+              (s: number, g: any) => s + (g.totalQuantity ?? 0),
+              0
+            );
+            return sum + invTotal;
+          }, 0);
+          setTotalBloodUnits(total);
+        }
       } catch (error) {
         console.error("❌ Failed to fetch data:", error);
       } finally {
@@ -223,7 +237,7 @@ export default function AdminDashboardPage() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground">Total Blood Units</p>
-                <p className="text-3xl font-serif text-foreground">{overview?.totalBloodUnits ?? 0}</p>
+                <p className="text-3xl font-serif text-foreground">{totalBloodUnits}</p>
                 <p className="flex items-center gap-1 text-xs text-amber-600">
                   <TrendingDown className="h-3 w-3" />
                   -3.2% from last week

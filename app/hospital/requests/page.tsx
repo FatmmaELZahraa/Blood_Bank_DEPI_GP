@@ -165,6 +165,7 @@ export default function BloodRequestsPage() {
     Approved:  "bg-blue-100 text-blue-800",
     Fulfilled: "bg-green-100 text-green-800",
     Rejected:  "bg-red-100 text-red-800",
+    Completed: "bg-purple-100 text-purple-800",
   }
 
   const pendingCount = requests.filter(r => r.status === "Pending").length
@@ -256,17 +257,23 @@ export default function BloodRequestsPage() {
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-        {["Pending", "Approved", "Fulfilled", "Rejected"].map(s => (
-          <Card key={s} className="cursor-pointer" onClick={() => setFilterStatus(s)}>
-            <CardContent className="pt-4">
-              <p className="text-sm text-muted-foreground">{s}</p>
-              <p className="text-2xl font-bold">
-                {requests.filter(r => r.status === s).length}
-              </p>
-            </CardContent>
-          </Card>
-        ))}
+      <div className="grid grid-cols-2 gap-4">
+        <Card className="cursor-pointer" onClick={() => setFilterStatus("Pending")}>
+          <CardContent className="pt-4">
+            <p className="text-sm text-muted-foreground">Pending</p>
+            <p className="text-2xl font-bold">
+              {requests.filter(r => r.status === "Pending").length}
+            </p>
+          </CardContent>
+        </Card>
+        <Card className="cursor-pointer" onClick={() => setFilterStatus("Completed")}>
+          <CardContent className="pt-4">
+            <p className="text-sm text-muted-foreground">Completed</p>
+            <p className="text-2xl font-bold">
+              {requests.filter(r => r.status === "Completed" || r.status === "Fulfilled").length}
+            </p>
+          </CardContent>
+        </Card>
       </div>
 
       {/* Filters */}

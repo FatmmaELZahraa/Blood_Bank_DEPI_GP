@@ -28,9 +28,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { Progress } from "@/components/ui/progress"
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL
+const API_URL = "http://localhost:5004"
 
 // ─── Types ───────────────────────────────────────────────
 interface Hospital {
@@ -138,26 +137,46 @@ export default function AdminHospitalsPage() {
     load()
   }, [])
 
-  // ── Toggle SOS status locally ──
-  const toggleSosStatus = (id: number) => {
-    setSosRequests(prev =>
-      prev.map(s =>
-        s.sosId === id
-          ? { ...s, uiStatus: s.uiStatus === "Pending" ? "Completed" : "Pending" }
-          : s
+  // ── Toggle SOS status ──
+  const toggleSosStatus = async (id: number) => {
+    const current = sosRequests.find(s => s.sosId === id)
+    if (!current) return
+    const newStatus = current.uiStatus === "Pending" ? "Completed" : "Pending"
+    try {
+      const res = await fetch(`${API_URL}/api/sos-requests/${id}/status`, {
+        method: "PATCH",
+        headers: { ...authHeaders(), "Content-Type": "application/json" },
+        body: JSON.stringify({ status: newStatus }),
+      })
+      if (!res.ok) throw new Error(await res.text())
+      setSosRequests(prev =>
+        prev.map(s => s.sosId === id ? { ...s, uiStatus: newStatus } : s)
       )
-    )
+    } catch (e) {
+      console.error("SOS toggle failed:", e)
+      alert("Failed to update SOS status")
+    }
   }
 
-  // ── Toggle Blood Request status locally ──
-  const toggleBloodStatus = (id: number) => {
-    setBloodRequests(prev =>
-      prev.map(b =>
-        b.requestId === id
-          ? { ...b, uiStatus: b.uiStatus === "Pending" ? "Completed" : "Pending" }
-          : b
+  // ── Toggle Blood Request status ──
+  const toggleBloodStatus = async (id: number) => {
+    const current = bloodRequests.find(b => b.requestId === id)
+    if (!current) return
+    const newStatus = current.uiStatus === "Pending" ? "Completed" : "Pending"
+    try {
+      const res = await fetch(`${API_URL}/api/blood-requests/${id}/status`, {
+        method: "PATCH",
+        headers: { ...authHeaders(), "Content-Type": "application/json" },
+        body: JSON.stringify({ status: newStatus }),
+      })
+      if (!res.ok) throw new Error(await res.text())
+      setBloodRequests(prev =>
+        prev.map(b => b.requestId === id ? { ...b, uiStatus: newStatus } : b)
       )
-    )
+    } catch (e) {
+      console.error("Blood toggle failed:", e)
+      alert("Failed to update Blood Request status")
+    }
   }
 
   // ── Derived ──
@@ -233,14 +252,15 @@ export default function AdminHospitalsPage() {
                   <TableHead>Hospital</TableHead>
                   <TableHead>Address</TableHead>
                   <TableHead>Phone</TableHead>
-                  <TableHead>Inventory</TableHead>
+                  <TableHead>SOS Requests</TableHead>
+                  <TableHead>Blood Requests</TableHead>
                   <TableHead className="w-10" />
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {filteredHospitals.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={5} className="py-10 text-center text-muted-foreground">
+                    <TableCell colSpan={6} className="py-10 text-center text-muted-foreground">
                       No hospitals found
                     </TableCell>
                   </TableRow>
@@ -280,16 +300,24 @@ export default function AdminHospitalsPage() {
                           </div>
                         </TableCell>
                         <TableCell>
-                          <div className="w-28">
-                            <div className="flex justify-between text-xs mb-1">
-                              <span className="text-muted-foreground">{hospital.currentUnits} units</span>
-                              <span className="text-foreground">{hospital.totalCapacity} cap</span>
-                            </div>
-                            <Progress
-                              value={hospital.totalCapacity ? (hospital.currentUnits / hospital.totalCapacity) * 100 : 0}
-                              className="h-1.5"
-                            />
-                          </div>
+                          {hosSos.length > 0 ? (
+                            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-red-100 text-red-700 border border-red-200">
+                              <AlertTriangle className="h-3 w-3" />
+                              {hosSos.length} active
+                            </span>
+                          ) : (
+                            <span className="text-sm text-muted-foreground">None</span>
+                          )}
+                        </TableCell>
+                        <TableCell>
+                          {hosBlood.length > 0 ? (
+                            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-700 border border-blue-200">
+                              <Droplets className="h-3 w-3" />
+                              {hosBlood.length} active
+                            </span>
+                          ) : (
+                            <span className="text-sm text-muted-foreground">None</span>
+                          )}
                         </TableCell>
                         <TableCell>
                           {isOpen
@@ -301,7 +329,7 @@ export default function AdminHospitalsPage() {
                       {/* ── Expanded Panel ── */}
                       {isOpen && (
                         <TableRow key={`${hospital.id}-expanded`}>
-                          <TableCell colSpan={5} className="p-0 bg-muted/30">
+                          <TableCell colSpan={6} className="p-0 bg-muted/30">
                             <div className="p-5 space-y-6">
 
                               {/* SOS Requests */}
